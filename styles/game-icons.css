@@ -1,0 +1,56 @@
+/* ============================================ */
+/* GAME ICONS */
+/* ============================================ */
+
+/* ============================================ */
+/* ИКОНКИ ИГР СЛЕВА СВЕРХУ */
+/* ============================================ */
+
+.game-icons {
+    position: fixed;
+    top: calc(16px + var(--safe-top));
+    left: calc(16px + var(--safe-left));
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.game-icons.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+body.hud-hidden .game-icons {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.game-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(var(--accent-soft-rgb), 0.35);
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    touch-action: manipulation;
+}
+
+.game-icon:hover {
+    transform: translateY(-2px) scale(1.08);
+    border-color: var(--accent-bright);
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(var(--accent-rgb), 0.5);
+}

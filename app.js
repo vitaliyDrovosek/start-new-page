@@ -15,6 +15,8 @@ import Typing from './modules/Typing.js';
 import Achievements from './modules/Achievements.js';
 import GameIcons from './modules/GameIcons.js';
 import TimeWidget from './modules/TimeWidget.js';
+import Notes from './modules/Notes.js';
+import Grain from './modules/Grain.js';
 
 class App {
     constructor() {
@@ -42,6 +44,8 @@ class App {
         this.achievements = new Achievements(this);
         this.gameIcons = new GameIcons(this);
         this.timeWidget = new TimeWidget(this);
+        this.notes = new Notes(this);
+        this.grain = new Grain(this);
 
         this.glowEnabled = this.data.glowEnabled !== false;
         document.body.classList.toggle('glow-enabled', this.glowEnabled);
@@ -73,6 +77,8 @@ class App {
         this.achievements.init();
         this.gameIcons.init();
         this.timeWidget.init();
+        this.notes.init();
+        this.grain.init();
 
         this.search.loadReplaceTab();
         this.setupEventListeners();
@@ -91,7 +97,9 @@ class App {
             }
         }, 5000);
     }
-}
+
+    
+    }
 
 const app = new App();
 

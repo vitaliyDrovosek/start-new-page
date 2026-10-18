@@ -384,6 +384,14 @@ class HUD {
             this.hideDropdown();
         }
     }
+
+    toggleGrain() {
+        this.app.grain?.toggle();
+    }
+
+    setGrainOpacity(value) {
+        this.app.grain?.setOpacity(value);
+    }
 }
 
 export default HUD;

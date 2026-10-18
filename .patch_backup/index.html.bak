@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+
+    <title>Вкус детства / new tab</title>
+
+    <!-- Фавикон и иконки -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="shortcut icon" type="image/png" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body class="blur-enabled">
+    <video id="bgVideo" autoplay muted loop playsinline style="display:none;"></video>
+    <img id="bgImage" style="display:none;">
+    <div id="youtubeWrapper" class="youtube-wrapper" style="display:none;"></div>
+    <canvas id="particles"></canvas>
+    <div class="grain-overlay"></div>
+    <div class="overlay"></div>
+
+    <!-- ИКОНКИ ИГР СЛЕВА СВЕРХУ -->
+    <div class="game-icons" id="gameIcons">
+        <button class="game-icon" id="gameIconAim" title="Aim Trainer"><span class="svg-icon" data-icon="aim"></span></button>
+        <button class="game-icon" id="gameIconTyping" title="Typing Speed"><span class="svg-icon" data-icon="keyboard"></span></button>
+    </div>
+
+    <!-- КНОПКА ЗАМЕТОК -->
+    <button class="notes-btn" id="notesBtn" title="Заметки"><span class="svg-icon" data-icon="notes"></span></button>
+
+    <!-- ПАНЕЛЬ ЗАМЕТОК -->
+    <div class="notes-panel" id="notesPanel">
+        <div class="notes-header">
+            <span class="notes-title">Заметки</span>
+            <button class="notes-add-btn" id="notesAddBtn" title="Добавить заметку">+</button>
+            <button class="notes-close" id="notesCloseBtn">✕</button>
+        </div>
+        <div class="notes-list" id="notesList"></div>
+    </div>
+
+    <!-- ВИДЖЕТ ВРЕМЕНИ -->
+    <div class="time-widget" id="timeWidget">
+        <div class="tw-drag" id="timeWidgetDrag" title="Перетащить">⠿</div>
+
+        <div class="tw-block">
+            <div class="tw-header">
+                <span class="tw-title">Секундомер</span>
+            </div>
+            <div class="tw-display" id="swDisplay">00:00.00</div>
+            <div class="tw-controls">
+                <button class="tw-btn tw-btn-primary" id="swStartBtn">▶</button>
+                <button class="tw-btn" id="swLapBtn">◉</button>
+                <button class="tw-btn" id="swResetBtn">↺</button>
+            </div>
+            <div class="tw-laps" id="swLaps"></div>
+        </div>
+
+        <div class="tw-divider"></div>
+
+        <div class="tw-block">
+            <div class="tw-header">
+                <span class="tw-title">Таймер</span>
+            </div>
+            <div class="tw-display" id="cdDisplay">00:00</div>
+            <div class="tw-presets" id="cdPresets"></div>
+            <div class="tw-controls">
+                <button class="tw-btn tw-btn-primary" id="cdStartBtn">▶</button>
+                <button class="tw-btn" id="cdResetBtn">↺</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЦЕНТР ЭКРАНА — цифры при sleep -->
+    <div class="time-center" id="timeCenter">
+        <div class="time-center-item" id="timeCenterSw">00:00.00</div>
+        <div class="time-center-sep" id="timeCenterSep">|</div>
+        <div class="time-center-item" id="timeCenterCd">00:00</div>
+    </div>
+
+    <div class="weather-widget" id="weatherWidget">
+        <div class="weather-city">🌆 Омск</div>
+        <div class="weather-main">
+            <div class="weather-temp" id="weatherTemp">--°C</div>
+            <div class="weather-icon" id="weatherIcon">☀️</div>
+        </div>
+        <div class="weather-details">
+            <div class="weather-detail">
+                <div class="weather-detail-label">Влажность</div>
+                <div class="weather-detail-value" id="weatherHumidity">--%</div>
+            </div>
+            <div class="weather-detail">
+                <div class="weather-detail-label">Ветер</div>
+                <div class="weather-detail-value" id="weatherWind">-- м/с</div>
+            </div>
+            <div class="weather-detail">
+                <div class="weather-detail-label">Давление</div>
+                <div class="weather-detail-value" id="weatherPressure">-- мм</div>
+            </div>
+            <div class="weather-detail">
+                <div class="weather-detail-label">Ощущается</div>
+                <div class="weather-detail-value" id="weatherFeels">--°C</div>
+            </div>
+        </div>
+        <div class="weather-update" id="weatherUpdate">Обновлено: --:--</div>
+    </div>
+
+    <div class="top">
+        <div class="clock" id="clock"></div>
+        <div class="search-container">
+            <input id="searchInput" class="search-input" placeholder="Поиск..." autocomplete="off">
+            <div id="searchHistory" class="search-history"></div>
+        </div>
+    </div>
+
+    <div class="dropdown-container">
+        <button class="dropdown-button" onclick="app.hud.toggleDropdown()">☰</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-header">
+                <span class="dropdown-title">Меню</span>
+                <button class="dropdown-close" onclick="app.hud.hideDropdown()">✕</button>
+            </div>
+
+            <div class="dropdown-columns">
+
+                <!-- КОЛОНКА 1: ИГРЫ -->
+                <div class="dropdown-column">
+                    <div class="dropdown-column-title">Игры</div>
+
+                    <button class="dropdown-item" onclick="app.aim.open(); app.hud.hideDropdown()">
+                        <span>Убийца осу</span>
+                        <span id="aimBestIndicator" class="aim-best-indicator">—</span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.typing.open(); app.hud.hideDropdown()">
+                        <span>Нажимать кнопки</span>
+                        <span id="typingBestIndicator" class="aim-best-indicator">—</span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.achievements.openModal(); app.hud.hideDropdown()">
+                        <span>Достижения</span>
+                        <span id="achievementsCounter" class="aim-best-indicator">0 / 21</span>
+                    </button>
+
+                    <div class="dropdown-divider"></div>
+
+                    <button class="dropdown-item" onclick="app.timeWidget.toggle()" id="timeWidgetToggleBtn">
+                        <span>Виджет времени</span>
+                        <span id="timeWidgetIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.hud.toggleAutoSleep()" id="timeAutoSleepToggleBtn">
+                        <span>Спящий режим при таймере</span>
+                        <span id="timeAutoSleepIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.hud.toggleGameIcons()" id="gameIconsToggleBtn">
+                        <span>Иконки игр</span>
+                        <span id="gameIconsIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <div class="dropdown-divider"></div>
+
+                    <button class="dropdown-item" onclick="app.hud.forceHide(); app.hud.hideDropdown()">
+                        <span>Скрыть HUD</span>
+                    </button>
+                </div>
+
+                <!-- КОЛОНКА 2: ВНЕШНИЙ ВИД -->
+                <div class="dropdown-column">
+                    <div class="dropdown-column-title">Внешний вид</div>
+
+                    <button class="dropdown-item" onclick="app.background.set(); app.hud.hideDropdown()">
+                        <span>Установить фон</span>
+                    </button>
+
+                    <div class="volume-control">
+                        <span class="volume-icon" id="volumeIcon" onclick="app.audio.toggleMute()">🔊</span>
+                        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="50">
+                        <span class="volume-value" id="volumeValue">50%</span>
+                    </div>
+
+                    <div class="hue-control">
+                        <label for="hueSlider">
+                            <span>Оттенок</span>
+                            <span id="hueValue">220°</span>
+                        </label>
+                        <input type="range" id="hueSlider" class="hue-slider" min="0" max="360" value="220" step="1">
+
+                        <label for="brightnessSlider">
+                            <span>Яркость</span>
+                            <span id="brightnessValue">60%</span>
+                        </label>
+                        <input type="range" id="brightnessSlider" class="hue-slider" min="10" max="100" value="60"
+                            step="1">
+
+                        <label for="opacitySlider">
+                            <span>Прозрачность</span>
+                            <span id="opacityValue">100%</span>
+                        </label>
+                        <input type="range" id="opacitySlider" class="hue-slider" min="20" max="100" value="100"
+                            step="1">
+
+                        <button id="rgbModeBtn" class="rgb-mode-btn">RGB</button>
+                    </div>
+
+                    <div class="dropdown-divider"></div>
+
+                    
+                    <button class="dropdown-item" onclick="app.hud.toggleGrain()" id="grainToggleBtn">
+                        <span>Зернистый шум</span>
+                        <span id="grainIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <div class="hue-control grain-opacity-control">
+                        <label for="grainOpacity">
+                            <span>Интенсивность шума</span>
+                            <span id="grainOpacityValue">5.5%</span>
+                        </label>
+                        <input type="range" id="grainOpacity" class="grain-slider" min="0" max="30" value="5.5" step="1">
+                    </div>
+
+<button class="dropdown-item" onclick="app.hud.toggleGlow()" id="glowToggleBtn">
+                        <span>Эффект свечения
+                        </span>
+                        <span id="glowIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.hud.toggleBlur()" id="blurToggleBtn">
+                        <span>Размытие фона</span>
+                        <span id="blurIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.particles.toggle()" id="particlesToggleBtn">
+                        <span>Частицы</span>
+                        <span id="particlesIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="toggleParticlesSettings()">
+                        <span>Настройки частиц</span>
+                    </button>
+
+                    <div class="particles-settings-panel" id="particlesSettingsPanel">
+                        <div class="particles-settings-content">
+                            <div class="settings-group">
+                                <label>Количество частиц: <span id="starCountValue">50</span></label>
+                                <input type="range" id="starCount" min="10" max="1000" value="20" step="1">
+                            </div>
+                            <div class="settings-group">
+                                <label>Сила отталкивания от мыши: <span id="repelForceValue">0.3</span></label>
+                                <input type="range" id="repelForce" min="0" max="1" value="0.3" step="0.01">
+                            </div>
+                            <div class="settings-group">
+                                <label>Радиус отталкивания от мыши: <span id="repelRadiusValue">200</span></label>
+                                <input type="range" id="repelRadius" min="50" max="500" value="200" step="5">
+                            </div>
+                            <div class="settings-group">
+                                <label>Базовая скорость: <span id="baseSpeedValue">0.15</span></label>
+                                <input type="range" id="baseSpeed" min="0" max="0.5" value="0.15" step="0.01">
+                            </div>
+                            <div class="settings-group">
+                                <label>Отскок от стен: <span id="bounceValue">0.2</span></label>
+                                <input type="range" id="bounce" min="0" max="1" value="0.2" step="0.01">
+                            </div>
+                            <div class="settings-group">
+                                <label>Расстояние линий: <span id="lineDistanceValue">150</span></label>
+                                <input type="range" id="lineDistance" min="50" max="300" value="150" step="5">
+                            </div>
+                            <div class="settings-group">
+                                <label>Мин. расстояние между частицами: <span
+                                        id="overlapDistanceValue">5</span></label>
+                                <input type="range" id="overlapDistance" min="0" max="50" value="5" step="1">
+                            </div>
+                            <div class="settings-group">
+                                <label>Сила отталкивания частиц: <span
+                                        id="particleRepelForceValue">0.01</span></label>
+                                <input type="range" id="particleRepelForce" min="0" max="0.1" value="0.01" step="0.001">
+                            </div>
+                            <div class="settings-group">
+                                <label>Радиус отталкивания частиц: <span id="particleRepelRadiusValue">60</span></label>
+                                <input type="range" id="particleRepelRadius" min="20" max="200" value="60" step="5">
+                            </div>
+                        </div>
+                        <div class="particles-settings-footer">
+                            <button onclick="resetParticlesSettings()">Сбросить</button>
+                            <button onclick="saveParticlesSettings()">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- КОЛОНКА 3: ПОИСК И СИСТЕМА -->
+                <div class="dropdown-column">
+                    <div class="dropdown-column-title">Поиск и система</div>
+
+                    <button class="dropdown-item" onclick="app.groups.add(); app.hud.hideDropdown()">Добавить
+                        группу</button>
+
+                    <button class="dropdown-item" onclick="app.hud.toggleGroupsLock()" id="groupsLockToggleBtn">
+                        <span>Блокировка групп</span>
+                        <span id="groupsLockIndicator" class="toggle-indicator"></span>
+                    </button>
+                    <button class="dropdown-item" onclick="app.notes.toggleButton()" id="notesToggleBtn">
+                        <span>Кнопка заметок</span>
+                        <span id="notesIndicator" class="toggle-indicator"></span>
+                    </button>
+
+
+                    <button class="dropdown-item" onclick="app.search.toggleOpenMethod()" id="openMethodToggleBtn">
+                        <span>Заменять вкладку</span>
+                        <span id="openMethodIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.search.setEngine('yandex'); app.hud.hideDropdown()"
+                        id="engineYandex">Яндекс</button>
+                    <button class="dropdown-item" onclick="app.search.setEngine('google'); app.hud.hideDropdown()"
+                        id="engineGoogle">Google</button>
+
+                    <div class="dropdown-divider"></div>
+
+                    <button class="dropdown-item" onclick="app.weather.toggle()" id="weatherToggleBtn">
+                        <span>Показать погоду</span>
+                        <span id="weatherIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.hud.toggleSleepMode()" id="sleepModeToggleBtn">
+                        <span>Режим ожидания</span>
+                        <span id="sleepModeIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <div class="dropdown-divider"></div>
+
+                    <button class="dropdown-item" onclick="app.history.toggle()" id="toggleHistoryBtn">
+                        <span>История поиска</span>
+                        <span id="historyIndicator" class="toggle-indicator"></span>
+                    </button>
+                    <button class="dropdown-item" onclick="app.history.clear(); app.hud.hideDropdown()">Очистить
+                        историю</button>
+
+                    <div class="dropdown-divider"></div>
+
+                    <button class="dropdown-item" onclick="app.storage.copyConfig()">
+                        <span>Копировать конфигурацию</span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.storage.pasteConfig()">
+                        <span>Вставить конфигурацию</span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.storage.resetConfig()" style="color: #ff6b6b;">
+                        <span>Удалить текущую конфигурацию</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="groups" id="groups"></div>
+
+    <!-- AIM TRAINER -->
+    <div class="aim-overlay" id="aimOverlay">
+        <button class="aim-close" id="aimCloseBtn" title="Закрыть (Esc)">✕</button>
+
+        <div class="aim-hud" id="aimHud">
+            <div class="aim-hud-item">
+                <span class="aim-hud-label">Цель</span>
+                <span class="aim-hud-value" id="aimCounter">0 / 30</span>
+            </div>
+            <div class="aim-hud-item">
+                <span class="aim-hud-label">Промахи</span>
+                <span class="aim-hud-value" id="aimMisses">0</span>
+            </div>
+        </div>
+
+        <div class="aim-field" id="aimField"></div>
+
+        <div class="aim-result" id="aimResult">
+            <div class="aim-record-badge" id="aimRecordBadge">Новый рекорд</div>
+            <h2 class="aim-result-title">Партия завершена</h2>
+
+            <div class="aim-result-grid">
+                <div class="aim-result-item">
+                    <div class="aim-result-label">Среднее время</div>
+                    <div class="aim-result-value" id="aimAvg">— с</div>
+                </div>
+                <div class="aim-result-item">
+                    <div class="aim-result-label">Лучший результат</div>
+                    <div class="aim-result-value" id="aimBestResult">— с</div>
+                </div>
+                <div class="aim-result-item">
+                    <div class="aim-result-label">Попадания</div>
+                    <div class="aim-result-value" id="aimHitsResult">—</div>
+                </div>
+                <div class="aim-result-item">
+                    <div class="aim-result-label">Промахи</div>
+                    <div class="aim-result-value" id="aimMissesResult">—</div>
+                </div>
+            </div>
+
+            <div class="aim-result-actions">
+                <button class="aim-btn aim-btn-secondary" id="aimExitBtn">Закрыть</button>
+                <button class="aim-btn aim-btn-primary" id="aimRestartBtn">Ещё раз</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TYPING SPEED -->
+    <div class="aim-overlay" id="typingOverlay">
+        <button class="aim-close" id="typingCloseBtn" title="Закрыть (Esc)">✕</button>
+
+        <div class="aim-hud visible" id="typingHud">
+            <div class="aim-hud-item">
+                <span class="aim-hud-label">Время</span>
+                <span class="aim-hud-value" id="typingTimer">60с</span>
+            </div>
+            <div class="aim-hud-item">
+                <span class="aim-hud-label">Слова</span>
+                <span class="aim-hud-value" id="typingScore">0</span>
+            </div>
+            <div class="aim-hud-item">
+                <span class="aim-hud-label">WPM</span>
+                <span class="aim-hud-value" id="typingWpmLive">0</span>
+            </div>
+            <div class="aim-hud-item">
+                <span class="aim-hud-label">Точность</span>
+                <span class="aim-hud-value" id="typingAccuracyLive">100%</span>
+            </div>
+        </div>
+
+        <div class="typing-field">
+            <div class="typing-word" id="typingWord"></div>
+            <input type="text" id="typingInput" class="typing-input" autocomplete="off" autocorrect="off"
+                autocapitalize="off" spellcheck="false" placeholder="Начни печатать...">
+        </div>
+
+        <div class="aim-result" id="typingResult">
+            <div class="aim-record-badge" id="typingRecordBadge">Новый рекорд</div>
+            <h2 class="aim-result-title">Время вышло</h2>
+
+            <div class="aim-result-grid">
+                <div class="aim-result-item">
+                    <div class="aim-result-label">WPM</div>
+                    <div class="aim-result-value" id="typingWpmResult">0</div>
+                </div>
+                <div class="aim-result-item">
+                    <div class="aim-result-label">Точность</div>
+                    <div class="aim-result-value" id="typingAccuracyResult">0%</div>
+                </div>
+                <div class="aim-result-item">
+                    <div class="aim-result-label">Слов набрано</div>
+                    <div class="aim-result-value" id="typingWordsResult">0</div>
+                </div>
+                <div class="aim-result-item">
+                    <div class="aim-result-label">Ошибок</div>
+                    <div class="aim-result-value" id="typingErrorsResult">0</div>
+                </div>
+            </div>
+
+            <div style="text-align:center; margin-bottom: 30px; opacity: 0.6; font-size: 0.9rem;">
+                Лучший результат: <span id="typingBestResult">0 WPM</span>
+            </div>
+
+            <div class="aim-result-actions">
+                <button class="aim-btn aim-btn-secondary" id="typingExitBtn">Закрыть</button>
+                <button class="aim-btn aim-btn-primary" id="typingRestartBtn">Ещё раз</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST ДОСТИЖЕНИЯ -->
+    <div class="achievement-toast" id="achievementToast">
+        <div class="achievement-toast-header">Достижение получено</div>
+        <div class="achievement-toast-body">
+            <div class="achievement-toast-title"></div>
+            <div class="achievement-toast-desc"></div>
+        </div>
+        <div class="achievement-toast-progress"></div>
+    </div>
+
+    <!-- МОДАЛКА ДОСТИЖЕНИЙ -->
+    <div class="achievements-modal" id="achievementsModal">
+        <button class="aim-close" id="achievementsCloseBtn" title="Закрыть (Esc)">✕</button>
+
+        <div class="achievements-header">
+            <h2>Достижения</h2>
+            <div class="achievements-counter">0 / 21</div>
+        </div>
+
+        <div class="achievements-grid"></div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+
+    <!-- GLOW ШАРИКИ -->
+    <div class="glow-ball"></div>
+    <div class="glow-ball-small"></div>
+    <div class="glow-ball-bottom"></div>
+
+    <script>
+    // Привязка слайдера интенсивности зерна к логике
+    document.addEventListener('DOMContentLoaded', () => {
+        const setupGrainSlider = () => {
+            const slider = document.getElementById('grainOpacity');
+            const valEl = document.getElementById('grainOpacityValue');
+            if (!slider) return;
+            slider.addEventListener('input', (e) => {
+                const v = parseInt(e.target.value);
+                if (valEl) valEl.textContent = v + '%';
+                if (window.app && window.app.grain) {
+                    window.app.data.grainOpacity = v;
+                    window.app.grain.apply();
+                }
+            });
+            slider.addEventListener('change', () => {
+                if (window.app) window.app.storage.save();
+            });
+        };
+        setupGrainSlider();
+        // если HUD инициализируется позже — попробовать ещё раз
+        setTimeout(setupGrainSlider, 500);
+    });
+    </script>
+</body>
+
+</html>

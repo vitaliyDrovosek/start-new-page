@@ -1,0 +1,128 @@
+/* ============================================ */
+/* TYPING */
+/* ============================================ */
+
+/* TYPING SPEED */
+.typing-field {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 40px 20px;
+    user-select: none;
+}
+
+.typing-word {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 300;
+    letter-spacing: 4px;
+    display: flex;
+    gap: 4px;
+    transition: transform 0.1s ease;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.typing-word.shake {
+    animation: typingShake 0.2s ease;
+}
+
+@keyframes typingShake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-8px);
+    }
+
+    75% {
+        transform: translateX(8px);
+    }
+}
+
+.typing-char {
+    color: rgba(255, 255, 255, 0.35);
+    transition: color 0.1s ease, text-shadow 0.1s ease;
+}
+
+.typing-char.correct {
+    color: var(--accent-bright);
+    text-shadow: 0 0 15px rgba(var(--accent-bright-rgb), 0.6);
+}
+
+.typing-char.wrong {
+    color: #ff5555;
+    text-shadow: 0 0 15px rgba(255, 85, 85, 0.6);
+}
+
+.typing-char.current {
+    color: #fff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    position: relative;
+}
+
+.typing-char.current::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.9);
+    animation: typingCursorBlink 0.8s ease-in-out infinite;
+}
+
+@keyframes typingCursorBlink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.typing-input {
+    width: min(600px, 90%);
+    padding: 18px 28px;
+    border-radius: 50px;
+    border: 2px solid rgba(var(--accent-soft-rgb), 0.4);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    letter-spacing: 3px;
+    text-align: center;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 25px rgba(var(--accent-deep-rgb), 0.2);
+}
+
+.typing-input:focus {
+    border-color: var(--accent);
+    box-shadow:
+        0 0 30px rgba(var(--accent-bright-rgb), 0.5),
+        0 0 0 1px var(--accent),
+        0 0 60px rgba(var(--accent-rgb), 0.35);
+}
+
+.typing-input::placeholder {
+    color: rgba(255, 255, 255, 0.25);
+    letter-spacing: 1px;
+    font-size: 1rem;
+}
+
+.typing-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

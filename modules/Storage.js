@@ -36,11 +36,14 @@ class Storage {
             videoCurrentTime: savedData.videoCurrentTime || 0,
             replaceTab: savedData.replaceTab ?? true,
             glowEnabled: savedData.glowEnabled ?? true,
+            grainEnabled: savedData.grainEnabled ?? false,
+            grainOpacity: Math.min(30, Math.max(0, savedData.grainOpacity ?? 5.5)),
 
             gameIconsEnabled: savedData.gameIconsEnabled ?? false,
             timeWidgetEnabled: savedData.timeWidgetEnabled ?? false,
             timeWidgetPos: savedData.timeWidgetPos ?? null,
             timeAutoSleepEnabled: savedData.timeAutoSleepEnabled ?? true,
+            timeWidgetState: savedData.timeWidgetState ?? null,
 
             groupsLocked: savedData.groupsLocked ?? false,
 
@@ -62,11 +65,19 @@ class Storage {
             searchCount: savedData.searchCount ?? 0,
             hueChanges: savedData.hueChanges ?? 0,
 
+            notes: (() => {
+                const n = savedData.notes;
+                if (Array.isArray(n)) return n;
+                if (typeof n === 'string' && n.trim()) {
+                    return [{ id: 'legacy_' + Date.now(), text: n, createdAt: Date.now() }];
+                }
+                return [];
+            })(),
+
             particlesSettings: savedData.particlesSettings || defaultParticlesSettings
         };
     }
-
-    save() {
+    syncParticlesFromState() {
         if (this.app.particles) {
             this.app.data.particlesEnabled = this.app.particles.enabled;
             this.app.data.particlesSettings = {
@@ -81,6 +92,12 @@ class Storage {
                 PARTICLE_REPEL_RADIUS: this.app.particles.PARTICLE_REPEL_RADIUS
             };
         }
+    }
+
+
+
+    save() {
+        this.syncParticlesFromState();
 
         this.app.data.glowEnabled = this.app.glowEnabled;
 
@@ -96,6 +113,7 @@ class Storage {
     }
 
     copyConfig() {
+        this.syncParticlesFromState();
         const config = JSON.stringify(this.app.data, null, 2);
         navigator.clipboard.writeText(config)
             .then(() => alert("Конфигурация скопирована в буфер обмена"))
@@ -126,6 +144,13 @@ class Storage {
             if (this.app.particles && newConfig.particlesSettings) {
                 this.app.particles.updateSettings(newConfig.particlesSettings);
             }
+            if (this.app.particles && newConfig.particlesEnabled !== undefined) {
+                this.app.particles.enabled = !!newConfig.particlesEnabled;
+                const indicator = document.getElementById('particlesIndicator');
+                if (indicator) {
+                    indicator.classList.toggle('off', !this.app.particles.enabled);
+                }
+            }
 
             this.save();
             this.applyChanges();
@@ -155,6 +180,22 @@ class Storage {
             this.app.timeWidget.updateVisibility();
             this.app.timeWidget.updateIndicator();
             this.app.timeWidget.restorePosition();
+            this.app.timeWidget.restoreState();
+        }
+
+        if (this.app.grain) {
+            this.app.grain.apply();
+        }
+
+        if (this.app.notes) {
+            this.app.notes.updateVisibility();
+            this.app.notes.updateIndicator();
+            this.app.notes.render();
+        }
+
+        if (this.app.notes) {
+            const ta = document.getElementById('notesTextarea');
+            if (ta) ta.value = this.app.data.notes || '';
         }
 
         if (this.app.hud) {

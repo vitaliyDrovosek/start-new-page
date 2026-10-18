@@ -1,0 +1,87 @@
+/* ============================================ */
+/* GLOW */
+/* ============================================ */
+
+/* ============================================ */
+/* GLOW-ШАРЫ */
+/* ============================================ */
+
+.glow-ball,
+.glow-ball-small,
+.glow-ball-bottom {
+    position: fixed;
+    left: 0;
+    top: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    filter: blur(40px);
+
+    --start-x: 50vw;
+    --start-y: 30vh;
+    --drift-x: 10vw;
+    --drift-y: 10vh;
+    --drift-duration: 20s;
+    --size: 600px;
+    --rgb: 59, 130, 246;
+    --intensity: 0.3;
+
+    width: var(--size);
+    height: var(--size);
+
+    background: radial-gradient(circle,
+            rgba(var(--rgb), var(--intensity)) 0%,
+            rgba(var(--rgb), calc(var(--intensity) * 0.4)) 40%,
+            transparent 70%);
+
+    transform: translate(calc(var(--start-x) - 50%),
+            calc(var(--start-y) - 50%));
+}
+
+body.glow-enabled .glow-ball,
+body.glow-enabled .glow-ball-small,
+body.glow-enabled .glow-ball-bottom {
+    opacity: 1;
+    animation: glowDrift var(--drift-duration) ease-in-out infinite alternate;
+}
+
+body.glow-enabled .glow-ball.glow-pulse,
+body.glow-enabled .glow-ball-small.glow-pulse {
+    animation:
+        glowDrift var(--drift-duration) ease-in-out infinite alternate,
+        glowPulse 4s ease-in-out infinite;
+}
+
+body.glow-disabled .glow-ball,
+body.glow-disabled .glow-ball-small,
+body.glow-disabled .glow-ball-bottom {
+    opacity: 0 !important;
+    animation: none !important;
+}
+
+@keyframes glowDrift {
+    0% {
+        transform: translate(calc(var(--start-x) - 50%),
+                calc(var(--start-y) - 50%)) scale(1);
+    }
+
+    100% {
+        transform: translate(calc(var(--start-x) - 50% + var(--drift-x)),
+                calc(var(--start-y) - 50% + var(--drift-y))) scale(1.2);
+    }
+}
+
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+        filter: blur(40px);
+    }
+
+    50% {
+        opacity: 1;
+        filter: blur(50px);
+    }
+}

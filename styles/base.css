@@ -1,0 +1,70 @@
+/* ============================================ */
+/* BASE */
+/* ============================================ */
+
+:root {
+    /* базовые */
+    --accent: #3b82f6;
+    --accent-hover: #60a5fa;
+    --accent-rgb: 59, 130, 246;
+
+    /* вариации — управляются через Hue.js */
+    --accent-soft: #7ba7dd;
+    --accent-soft-rgb: 123, 167, 221;
+
+    --accent-deep: #2960b0;
+    --accent-deep-rgb: 41, 96, 176;
+
+    --accent-bright: #80aaff;
+    --accent-bright-rgb: 128, 170, 255;
+
+    --accent-dark: #1f3a66;
+    --accent-dark-rgb: 31, 58, 102;
+
+    --accent-muted: #6e88a8;
+    --accent-muted-rgb: 110, 136, 168;
+
+    /* инвертированный акцент — для выключенных индикаторов */
+    --accent-invert: #ff8a3d;
+    --accent-invert-rgb: 255, 138, 61;
+
+    /* UI настройки */
+    --ui-brightness: 0.6;
+    --ui-opacity: 1;
+
+    /* стекло и текст */
+    --glass: rgba(255, 255, 255, 0.12);
+    --glass-hover: rgba(255, 255, 255, 0.2);
+    --text-primary: #ffffff;
+    --text-secondary: #e2e8f0;
+    --history-bg: rgba(20, 20, 30, 0.85);
+
+    /* safe-area для iPhone */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: #0f0f1a;
+    color: var(--text-primary);
+    overflow-x: hidden;
+    transition: background 0.5s ease;
+}

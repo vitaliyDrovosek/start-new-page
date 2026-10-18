@@ -1,0 +1,97 @@
+/* ============================================ */
+/* SVG ICONS — строго контурные                  */
+/* ============================================ */
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    line-height: 1;
+    flex-shrink: 0;
+    color: var(--text-primary);
+}
+
+/* Базовый стиль для всех SVG */
+.svg-icon svg,
+button > svg,
+a > svg,
+svg.svg-icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 2 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    transition: stroke 0.2s ease, color 0.2s ease;
+}
+
+/* Жёстко перебиваем ВСЁ внутри SVG (вложенные path, rect, circle) */
+.svg-icon svg *,
+button > svg *,
+a > svg *,
+svg.svg-icon * {
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 2 !important; /* или inherit, но лучше 2px на всех */
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    vector-effect: non-scaling-stroke; /* толщина не меняется при масштабировании */
+}
+
+/* ============================================ */
+/* Размеры                                       */
+/* ============================================ */
+
+/* Кнопки в заметках */
+.note-action .svg-icon,
+.note-action svg {
+    width: 13px !important;
+    height: 13px !important;
+    max-width: 13px !important;
+    max-height: 13px !important;
+    color: var(--text-secondary);
+}
+.note-action:hover .svg-icon,
+.note-action:hover svg { color: var(--accent-bright); }
+
+.note-action.note-pin.active .svg-icon,
+.note-action.note-pin.active svg {
+    color: var(--accent);
+    filter: drop-shadow(0 0 4px rgba(var(--accent-rgb), 0.6));
+}
+
+.note-action.note-delete:hover .svg-icon,
+.note-action.note-delete:hover svg { color: #ff6b6b; }
+
+/* Главная кнопка заметок */
+#notesBtn .svg-icon,
+#notesBtn svg {
+    width: 18px !important;
+    height: 18px !important;
+    max-width: 18px !important;
+    max-height: 18px !important;
+    color: var(--text-primary);
+}
+
+/* Иконки игр */
+.game-icon .svg-icon,
+.game-icon svg {
+    width: 16px !important;
+    height: 16px !important;
+    max-width: 16px !important;
+    max-height: 16px !important;
+    color: var(--text-primary);
+}
+
+/* Мобилки */
+@media (max-width: 768px) {
+    .note-action .svg-icon,
+    .note-action svg { width: 15px !important; height: 15px !important; }
+    #notesBtn .svg-icon,
+    #notesBtn svg { width: 20px !important; height: 20px !important; }
+    .game-icon .svg-icon,
+    .game-icon svg { width: 18px !important; height: 18px !important; }
+}
