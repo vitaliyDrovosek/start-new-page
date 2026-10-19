@@ -83,31 +83,39 @@
         <div class="time-center-item" id="timeCenterCd">00:00</div>
     </div>
 
-    <div class="weather-widget" id="weatherWidget">
-        <div class="weather-city">🌆 Омск</div>
-        <div class="weather-main">
-            <div class="weather-temp" id="weatherTemp">--°C</div>
-            <div class="weather-icon" id="weatherIcon">☀️</div>
+    <div class="time-widget weather-widget" id="weatherWidget">
+        <div class="tw-drag" id="weatherDrag" title="Перетащить">⠿</div>
+
+        <div class="tw-block">
+            <div class="tw-header">
+                <span class="tw-title">Погода</span>
+                <span class="tw-title" id="weatherUpdate">—</span>
+            </div>
+            <div class="tw-display" id="weatherTemp">--°C</div>
+
+            <div class="weather-grid">
+                <div class="weather-cell">
+                    <span class="weather-cell-label">Влажность</span>
+                    <span class="weather-cell-value" id="weatherHumidity">--%</span>
+                </div>
+                <div class="weather-cell">
+                    <span class="weather-cell-label">Ветер</span>
+                    <span class="weather-cell-value" id="weatherWind">-- м/с</span>
+                </div>
+                <div class="weather-cell">
+                    <span class="weather-cell-label">Давление</span>
+                    <span class="weather-cell-value" id="weatherPressure">-- мм</span>
+                </div>
+                <div class="weather-cell">
+                    <span class="weather-cell-label">Ощущается</span>
+                    <span class="weather-cell-value" id="weatherFeels">--°C</span>
+                </div>
+            </div>
+
+            <div class="tw-controls">
+                <button class="tw-btn tw-btn-primary" id="weatherRefreshBtn">↻ Обновить</button>
+            </div>
         </div>
-        <div class="weather-details">
-            <div class="weather-detail">
-                <div class="weather-detail-label">Влажность</div>
-                <div class="weather-detail-value" id="weatherHumidity">--%</div>
-            </div>
-            <div class="weather-detail">
-                <div class="weather-detail-label">Ветер</div>
-                <div class="weather-detail-value" id="weatherWind">-- м/с</div>
-            </div>
-            <div class="weather-detail">
-                <div class="weather-detail-label">Давление</div>
-                <div class="weather-detail-value" id="weatherPressure">-- мм</div>
-            </div>
-            <div class="weather-detail">
-                <div class="weather-detail-label">Ощущается</div>
-                <div class="weather-detail-value" id="weatherFeels">--°C</div>
-            </div>
-        </div>
-        <div class="weather-update" id="weatherUpdate">Обновлено: --:--</div>
     </div>
 
     <div class="top">

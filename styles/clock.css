@@ -140,3 +140,81 @@ canvas#particles {
     position: relative;
     z-index: 50;
 }
+
+/* ============================================ */
+/* CLOCK — гарантированно виден над поиском      */
+/* ============================================ */
+
+.top {
+    position: relative;
+    padding-top: 90px; /* место под часы */
+}
+
+.clock {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(2.2rem, 7vw, 3.5rem);
+    font-weight: 300;
+    color: var(--text-primary);
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+    letter-spacing: 1px;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+body.hud-hidden .clock {
+    top: 20px;
+    right: 20px;
+    left: auto;
+    transform: none;
+    font-size: 1.2rem;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    padding: 6px 14px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================ */
+/* CLOCK — гарантированно виден над поиском      */
+/* ============================================ */
+
+.top {
+    position: relative;
+    padding-top: 90px; /* место под часы */
+}
+
+.clock {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(2.2rem, 7vw, 3.5rem);
+    font-weight: 300;
+    color: var(--text-primary);
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+    letter-spacing: 1px;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+body.hud-hidden .clock {
+    top: 20px;
+    right: 20px;
+    left: auto;
+    transform: none;
+    font-size: 1.2rem;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    padding: 6px 14px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}

@@ -30,6 +30,7 @@ class Storage {
             searchHistory: savedData.searchHistory || [],
             historyEnabled: savedData.historyEnabled ?? true,
             weatherEnabled: savedData.weatherEnabled ?? false,
+            weatherPos: savedData.weatherPos ?? null,
             sleepModeEnabled: savedData.sleepModeEnabled ?? true,
             blurEnabled: savedData.blurEnabled ?? true,
             particlesEnabled: savedData.particlesEnabled ?? true,
