@@ -1,0 +1,404 @@
+/* ============================================ */
+/* HUE */
+/* ============================================ */
+
+/* HUE-СЛАЙДЕР */
+.hue-control {
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hue-control label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.hue-control label:first-child {
+    margin-top: 0;
+}
+
+.hue-control label span:last-child {
+    background: var(--accent);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    min-width: 48px;
+    text-align: center;
+    box-shadow:
+        0 2px 8px rgba(var(--accent-deep-rgb), 0.6),
+        0 0 15px rgba(var(--accent-bright-rgb), 0.4);
+    transition: background 0.2s ease;
+}
+
+.hue-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 10px;
+    outline: none;
+    cursor: pointer;
+    background: linear-gradient(to right,
+            hsl(0, 80%, 60%),
+            hsl(60, 80%, 60%),
+            hsl(120, 80%, 60%),
+            hsl(180, 80%, 60%),
+            hsl(240, 80%, 60%),
+            hsl(300, 80%, 60%),
+            hsl(360, 80%, 60%));
+    box-shadow:
+        0 0 15px rgba(var(--accent-rgb), 0.4),
+        0 0 0 1px rgba(var(--accent-rgb), 0.3);
+}
+
+#brightnessSlider,
+#opacitySlider {
+    background: linear-gradient(to right,
+            rgba(0, 0, 0, 0.6),
+            var(--accent));
+    box-shadow:
+        0 0 15px rgba(var(--accent-rgb), 0.3),
+        0 0 0 1px rgba(var(--accent-rgb), 0.25);
+}
+
+.hue-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-bright) 0%, var(--accent) 100%);
+    border: 3px solid #fff;
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.4),
+        0 0 18px rgba(var(--accent-bright-rgb), 0.7);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.hue-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+.hue-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid #fff;
+    cursor: pointer;
+}
+
+/* RGB-КНОПКА */
+.rgb-mode-btn {
+    margin-top: 8px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(var(--accent-soft-rgb), 0.35);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    letter-spacing: 0.3px;
+}
+
+.rgb-mode-btn:hover {
+    background: rgba(var(--accent-deep-rgb), 0.3);
+    border-color: rgba(var(--accent-bright-rgb), 0.6);
+    box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.35);
+    transform: translateY(-1px);
+}
+
+.rgb-mode-btn.active {
+    background: var(--accent);
+    border-color: var(--accent-bright);
+    color: #000;
+    font-weight: 600;
+    box-shadow:
+        0 0 12px rgba(var(--accent-rgb), 0.5),
+        0 0 25px rgba(var(--accent-bright-rgb), 0.3);
+}
+
+/* RGB-РЕЖИМ */
+@property --rgb-hue {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+}
+
+body.rgb-mode {
+    animation: rgbHueSpin 8s linear infinite;
+
+    --accent: hsl(var(--rgb-hue), 85%, 60%);
+    --accent-hover: hsl(var(--rgb-hue), 90%, 68%);
+
+    --accent-soft: hsl(var(--rgb-hue), 50%, 65%);
+    --accent-deep: hsl(var(--rgb-hue), 70%, 40%);
+    --accent-bright: hsl(var(--rgb-hue), 95%, 70%);
+    --accent-dark: hsl(var(--rgb-hue), 55%, 25%);
+    --accent-muted: hsl(var(--rgb-hue), 40%, 50%);
+
+    --accent-invert: hsl(calc(var(--rgb-hue) + 180), 85%, 60%);
+}
+
+@keyframes rgbHueSpin {
+    from {
+        --rgb-hue: 0;
+    }
+
+    to {
+        --rgb-hue: 360;
+    }
+}
+
+body.rgb-mode .dropdown-button {
+    background: var(--accent);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow:
+        0 4px 15px rgba(var(--accent-rgb), 0.5),
+        0 0 25px hsla(var(--rgb-hue), 90%, 60%, 0.3);
+}
+
+body.rgb-mode .search-input {
+    border-color: hsl(var(--rgb-hue), 85%, 60%);
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 30px hsla(var(--rgb-hue), 90%, 60%, 0.4),
+        0 0 60px hsla(calc(var(--rgb-hue) + 60), 90%, 60%, 0.3);
+}
+
+body.rgb-mode .search-input:focus {
+    border-color: hsl(var(--rgb-hue), 95%, 70%);
+    box-shadow:
+        0 0 40px hsla(var(--rgb-hue), 95%, 60%, 0.6),
+        0 0 80px hsla(calc(var(--rgb-hue) + 90), 95%, 60%, 0.4);
+}
+
+body.rgb-mode .toggle-indicator {
+    background: hsl(var(--rgb-hue), 95%, 65%);
+    box-shadow:
+        0 0 12px hsla(var(--rgb-hue), 95%, 60%, 0.9),
+        0 0 25px hsla(calc(var(--rgb-hue) + 60), 95%, 60%, 0.6);
+}
+
+body.rgb-mode .toggle-indicator.off {
+    background: hsl(calc(var(--rgb-hue) + 180), 95%, 65%);
+    box-shadow:
+        0 0 12px hsla(calc(var(--rgb-hue) + 180), 95%, 60%, 0.9),
+        0 0 25px hsla(calc(var(--rgb-hue) + 180), 95%, 60%, 0.6);
+}
+
+body.rgb-mode .dropdown-item:hover {
+    background: linear-gradient(90deg,
+            hsl(var(--rgb-hue), 90%, 60%),
+            hsl(calc(var(--rgb-hue) + 90), 90%, 60%),
+            hsl(calc(var(--rgb-hue) + 180), 90%, 60%));
+    background-size: 200% 100%;
+    animation: rgbGradientShift 3s linear infinite;
+    border-color: transparent;
+    box-shadow:
+        0 0 25px hsla(var(--rgb-hue), 90%, 60%, 0.6),
+        0 0 50px hsla(calc(var(--rgb-hue) + 120), 90%, 60%, 0.4);
+}
+
+body.rgb-mode .link:hover {
+    background: hsla(var(--rgb-hue), 60%, 40%, 0.45);
+    transform: translateX(6px);
+    border-color: hsla(var(--rgb-hue), 70%, 55%, 0.5);
+    box-shadow: 0 2px 12px hsla(var(--rgb-hue), 70%, 50%, 0.25);
+}
+
+body.rgb-mode .group {
+    border-color: hsla(var(--rgb-hue), 70%, 60%, 0.4);
+}
+
+body.rgb-mode .group:hover {
+    border-color: hsl(var(--rgb-hue), 90%, 65%);
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.4),
+        0 0 35px hsla(var(--rgb-hue), 90%, 60%, 0.5),
+        0 0 70px hsla(calc(var(--rgb-hue) + 120), 90%, 60%, 0.3);
+}
+
+body.rgb-mode .dropdown-menu {
+    border-color: hsla(var(--rgb-hue), 80%, 60%, 0.5);
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        0 0 35px hsla(var(--rgb-hue), 90%, 60%, 0.4);
+}
+
+body.rgb-mode .search-history {
+    border-color: hsla(var(--rgb-hue), 70%, 60%, 0.45);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        0 0 30px hsla(var(--rgb-hue), 90%, 60%, 0.35);
+}
+
+body.rgb-mode .history-item:hover {
+    background: hsla(var(--rgb-hue), 80%, 55%, 0.35);
+    box-shadow: 0 0 18px hsla(var(--rgb-hue), 90%, 60%, 0.5);
+}
+
+body.rgb-mode .weather-widget {
+    border-color: hsla(var(--rgb-hue), 70%, 60%, 0.45);
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 30px hsla(var(--rgb-hue), 90%, 60%, 0.35);
+}
+
+body.rgb-mode .weather-city {
+    border-bottom-color: hsla(var(--rgb-hue), 80%, 60%, 0.5);
+}
+
+body.rgb-mode .hue-slider::-webkit-slider-thumb {
+    background: linear-gradient(135deg,
+            hsl(0, 90%, 60%),
+            hsl(120, 90%, 60%),
+            hsl(240, 90%, 60%));
+    background-size: 300% 300%;
+    animation: rgbGradientShift 4s linear infinite;
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.4),
+        0 0 20px hsla(var(--rgb-hue), 95%, 60%, 0.8);
+}
+
+@keyframes rgbGradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+/* ============================================ */
+/* HUE SLIDERS — нейтральный трек               */
+/* (оттенок / яркость / прозрачность)           */
+/* ============================================ */
+
+/* Трек — серый, как у .volume-slider и #grainOpacity */
+.hue-control input.hue-slider[type="range"],
+#hueSlider,
+#brightnessSlider,
+#opacitySlider,
+body.rgb-mode .hue-control input.hue-slider[type="range"],
+body.rgb-mode #hueSlider,
+body.rgb-mode #brightnessSlider,
+body.rgb-mode #opacitySlider {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 100% !important;
+    height: 4px !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    background-image: none !important;
+    border-radius: 10px !important;
+    outline: none !important;
+    cursor: pointer !important;
+    box-shadow: none !important;
+    border: none !important;
+    animation: none !important;
+    filter: none !important;
+}
+
+/* Firefox */
+#hueSlider::-moz-range-track,
+#brightnessSlider::-moz-range-track,
+#opacitySlider::-moz-range-track {
+    background: rgba(255, 255, 255, 0.2) !important;
+    height: 4px !important;
+    border-radius: 10px !important;
+    border: none !important;
+}
+
+/* Thumb — оставляем акцентный градиент как в hue.css, но с белой обводкой */
+.hue-control input.hue-slider[type="range"]::-webkit-slider-thumb,
+#hueSlider::-webkit-slider-thumb,
+#brightnessSlider::-webkit-slider-thumb,
+#opacitySlider::-webkit-slider-thumb,
+body.rgb-mode .hue-control input.hue-slider[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, var(--accent-bright) 0%, var(--accent) 100%) !important;
+    border: 2px solid white !important;
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.3),
+        0 0 12px rgba(var(--accent-rgb), 0.5) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    animation: none !important;
+}
+
+.hue-control input.hue-slider[type="range"]::-webkit-slider-thumb:hover,
+#hueSlider::-webkit-slider-thumb:hover,
+#brightnessSlider::-webkit-slider-thumb:hover,
+#opacitySlider::-webkit-slider-thumb:hover {
+    transform: scale(1.2) !important;
+    box-shadow: 0 2px 15px rgba(var(--accent-rgb), 0.6) !important;
+}
+
+/* Firefox thumb */
+#hueSlider::-moz-range-thumb,
+#brightnessSlider::-moz-range-thumb,
+#opacitySlider::-moz-range-thumb {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    background: var(--accent) !important;
+    border: 2px solid white !important;
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.3),
+        0 0 12px rgba(var(--accent-rgb), 0.5) !important;
+    cursor: pointer !important;
+    animation: none !important;
+}
+
+/* ============================================ */
+/* HUE-CONTROL — карточка как .volume-control   */
+/* ============================================ */
+
+.hue-control {
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(var(--accent-dark-rgb), 0.3);
+    border-radius: 15px;
+    margin-top: 4px;
+    border: 1px solid rgba(var(--accent-muted-rgb), 0.25);
+}
+
+/* Внутренние подписи — как в .volume-control */
+.hue-control label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Бейдж со значением — сбросить «пилюлю» из hue.css, чтобы совпадало с volume-value */
+.hue-control label span:last-child {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    min-width: auto;
+}

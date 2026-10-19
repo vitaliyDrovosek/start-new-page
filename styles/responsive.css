@@ -1,0 +1,857 @@
+/* ============================================ */
+/* RESPONSIVE */
+/* ============================================ */
+
+/* ============================================ */
+/* МОБИЛЬНАЯ АДАПТАЦИЯ */
+/* ============================================ */
+
+/* Планшеты: 769px – 1024px */
+@media (max-width: 1024px) {
+    .dropdown-columns {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+    }
+}
+
+/* Телефоны: до 768px */
+@media (max-width: 768px) {
+
+    /* Часы */
+    .clock {
+        font-size: clamp(2rem, 10vw, 3rem);
+        top: calc(20px + var(--safe-top));
+    }
+
+    body.hud-hidden .clock {
+        font-size: 1.1rem;
+        right: calc(15px + var(--safe-right));
+        top: calc(15px + var(--safe-top));
+        padding: 6px 12px;
+    }
+
+    /* Поиск */
+    .search-input {
+        padding: 14px 22px;
+        font-size: 1rem;
+        margin-top: 5rem;
+    }
+
+    .search-history {
+        border-radius: 18px;
+        max-height: 280px;
+    }
+
+    /* Группы */
+    .groups {
+        gap: 12px;
+        padding: 10px;
+        margin: 10px auto 100px;
+    }
+
+    .group {
+        width: 100%;
+        max-width: 360px;
+        padding: 14px;
+    }
+
+    .group-title {
+        font-size: 1rem;
+    }
+
+    .link {
+        padding: 12px 14px;
+        font-size: 0.95rem;
+        min-height: 44px;
+    }
+
+    /* Дропдаун */
+    .dropdown-container {
+        bottom: calc(20px + var(--safe-bottom));
+        right: calc(20px + var(--safe-right));
+    }
+
+    .dropdown-button {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
+    }
+
+    .dropdown-menu {
+        position: fixed;
+        left: 50%;
+        right: auto;
+        bottom: calc(16px + var(--safe-bottom));
+        top: auto;
+        width: 80vw;
+        max-width: 80vw;
+        max-height: 85dvh;
+        border-radius: 24px;
+        padding: 0;
+        transform: translate(-50%, 100%);
+        transition: transform 0.3s ease;
+        overflow: hidden;
+        display: none;
+        flex-direction: column;
+        touch-action: pan-y;
+    }
+
+    .dropdown-menu.show {
+        display: flex;
+        transform: translate(-50%, 0);
+    }
+
+    body.dropdown-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Заголовок дропдауна с крестиком — sticky сверху */
+    .dropdown-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 18px;
+        margin: 0;
+        background: rgba(20, 20, 30, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(var(--accent-muted-rgb), 0.25);
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-radius: 24px 24px 0 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .dropdown-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--text-primary);
+        opacity: 0.85;
+    }
+
+    .dropdown-close {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-primary);
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 1px solid rgba(var(--accent-soft-rgb), 0.25);
+        transition: all 0.2s ease;
+        touch-action: manipulation;
+        flex-shrink: 0;
+    }
+
+    .dropdown-close:active {
+        background: rgba(var(--accent-deep-rgb), 0.5);
+        transform: scale(0.95);
+    }
+
+    /* Скроллируемая область */
+    .dropdown-columns {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 14px 14px calc(20px + var(--safe-bottom));
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        flex: 1;
+        min-height: 0;
+    }
+
+    .dropdown-column {
+        gap: 6px;
+    }
+
+    /* Обычные заголовки колонок внутри */
+    .dropdown-column-title {
+        position: static;
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        padding: 8px 4px 4px;
+        margin: 0;
+        border-radius: 0;
+        z-index: auto;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        font-size: 0.7rem;
+        opacity: 0.6;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+    }
+
+    .dropdown-item {
+        padding: 14px 18px;
+        font-size: 0.95rem;
+        min-height: 48px;
+    }
+
+    .dropdown-item:hover {
+        transform: none;
+    }
+
+    .dropdown-item:active {
+        background: linear-gradient(90deg,
+                var(--accent) 0%,
+                var(--accent-deep) 100%);
+        transform: scale(0.98);
+    }
+
+    .dropdown-divider {
+        margin: 4px 0;
+    }
+
+    /* Настройки частиц */
+    .particles-settings-panel {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        max-height: 100dvh;
+        border-radius: 0;
+        margin: 0;
+        z-index: 10003;
+    }
+
+    .particles-settings-content {
+        padding: 16px;
+    }
+
+    .settings-group {
+        padding: 14px 16px;
+        margin-bottom: 10px;
+    }
+
+    .settings-group input[type="range"] {
+        height: 6px;
+    }
+
+    .settings-group input[type="range"]::-webkit-slider-thumb {
+        width: 24px;
+        height: 24px;
+    }
+
+    .particles-settings-footer {
+        padding: 16px;
+    }
+
+    .particles-settings-footer button {
+        padding: 14px 16px;
+        font-size: 0.95rem;
+        min-height: 48px;
+    }
+
+    /* Громкость и hue */
+    .volume-control {
+        padding: 14px 18px;
+    }
+
+    .volume-slider {
+        height: 6px;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+        width: 22px;
+        height: 22px;
+    }
+
+    .hue-control {
+        padding: 12px 18px;
+        gap: 10px;
+    }
+
+    .hue-slider {
+        height: 10px;
+    }
+
+    .hue-slider::-webkit-slider-thumb {
+        width: 26px;
+        height: 26px;
+    }
+
+    .hue-control label {
+        font-size: 0.95rem;
+    }
+
+    .rgb-mode-btn {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        min-height: 44px;
+    }
+
+    /* Погода */
+    .weather-widget {
+        top: calc(10px + var(--safe-top));
+        right: calc(10px + var(--safe-right));
+        left: calc(10px + var(--safe-left));
+        width: auto;
+        min-width: 0;
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .weather-temp {
+        font-size: 2rem;
+    }
+
+    .weather-icon {
+        font-size: 2.4rem;
+    }
+
+    .weather-details {
+        gap: 8px;
+    }
+
+    .weather-detail {
+        padding: 6px;
+    }
+
+    .weather-detail-label {
+        font-size: 0.7rem;
+    }
+
+    .weather-detail-value {
+        font-size: 0.9rem;
+    }
+
+    /* Иконки игр */
+    .game-icons {
+        top: calc(12px + var(--safe-top));
+        left: calc(12px + var(--safe-left));
+    }
+
+    .game-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+    }
+
+    /* Виджет времени */
+    .time-widget {
+        min-width: 200px;
+        padding: 12px 14px;
+        left: auto;
+        right: calc(20px + var(--safe-right));
+        bottom: calc(90px + var(--safe-bottom));
+    }
+
+    .tw-display {
+        font-size: 1.5rem;
+    }
+
+    .tw-btn {
+        min-height: 40px;
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    .tw-preset {
+        min-height: 32px;
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+
+    .tw-custom-input {
+        min-height: 32px;
+        font-size: 0.8rem;
+        width: 60px;
+    }
+
+    /* Игры — Aim */
+    .aim-overlay {
+        padding: 12px;
+        padding-top: calc(60px + var(--safe-top));
+    }
+
+    .aim-close {
+        width: 40px;
+        height: 40px;
+        top: calc(12px + var(--safe-top));
+        right: calc(12px + var(--safe-right));
+    }
+
+    .aim-hud {
+        gap: 24px;
+        padding: 6px 0 12px;
+    }
+
+    .aim-hud-label {
+        font-size: 0.65rem;
+    }
+
+    .aim-hud-value {
+        font-size: 1.2rem;
+    }
+
+    .aim-field {
+        border-radius: 14px;
+    }
+
+    .aim-target {
+        min-width: 70px;
+        min-height: 70px;
+    }
+
+    .aim-result {
+        padding: 20px;
+    }
+
+    .aim-result-title {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+    }
+
+    .aim-result-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 24px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .aim-result-item {
+        padding: 12px 14px;
+    }
+
+    .aim-result-label {
+        font-size: 0.65rem;
+    }
+
+    .aim-result-value {
+        font-size: 1.2rem;
+    }
+
+    .aim-record-badge {
+        top: calc(60px + var(--safe-top));
+        font-size: 0.75rem;
+        padding: 6px 16px;
+    }
+
+    .aim-result-actions {
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .aim-btn {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+        min-height: 44px;
+    }
+
+    /* Игры — Typing */
+    .typing-field {
+        gap: 20px;
+        padding: 20px 12px;
+    }
+
+    .typing-word {
+        font-size: 1.8rem;
+        letter-spacing: 2px;
+    }
+
+    .typing-input {
+        font-size: 1.1rem;
+        padding: 14px 18px;
+        letter-spacing: 2px;
+    }
+
+    /* Toast достижений */
+    .achievement-toast {
+        width: calc(100% - 24px - var(--safe-left) - var(--safe-right));
+        left: calc(-100% - 24px);
+    }
+
+    .achievement-toast.visible {
+        left: calc(12px + var(--safe-left));
+    }
+
+    .achievement-toast-title {
+        font-size: 1rem;
+    }
+
+    .achievement-toast-desc {
+        font-size: 0.8rem;
+    }
+
+    /* Модалка достижений */
+    .achievements-modal {
+        padding: calc(20px + var(--safe-top)) 12px calc(20px + var(--safe-bottom));
+    }
+
+    .achievements-header {
+        padding: 0 4px;
+        margin-bottom: 18px;
+    }
+
+    .achievements-header h2 {
+        font-size: 1.3rem;
+        letter-spacing: 2px;
+    }
+
+    .achievements-counter {
+        font-size: 0.85rem;
+        padding: 5px 12px;
+    }
+
+    .achievements-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 0 4px 30px;
+    }
+
+    .achievement-card {
+        padding: 14px 16px;
+    }
+
+    .achievement-card-title {
+        font-size: 1rem;
+    }
+
+    .achievement-card-desc {
+        font-size: 0.8rem;
+    }
+
+    /* Центр времени */
+    .time-center {
+        gap: 16px;
+    }
+
+    .time-center-item {
+        font-size: clamp(1.8rem, 12vw, 3rem);
+        letter-spacing: 2px;
+    }
+
+    .time-center-sep {
+        font-size: clamp(1rem, 6vw, 1.6rem);
+    }
+
+    /* Glow */
+    .glow-ball,
+    .glow-ball-small,
+    .glow-ball-bottom {
+        filter: blur(30px);
+    }
+}
+
+/* Узкие телефоны: до 480px */
+@media (max-width: 480px) {
+    .clock {
+        font-size: clamp(1.8rem, 11vw, 2.5rem);
+    }
+
+    body.hud-hidden .clock {
+        font-size: 1rem;
+        right: calc(10px + var(--safe-right));
+        top: calc(10px + var(--safe-top));
+        padding: 4px 10px;
+    }
+
+    .search-input {
+        padding: 12px 18px;
+        font-size: 0.95rem;
+        margin-top: 4rem;
+    }
+
+    .top {
+        min-height: 25vh;
+        padding: 16px 12px;
+    }
+
+    .group {
+        padding: 12px;
+    }
+
+    .link {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .dropdown-item {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        min-height: 46px;
+    }
+
+    .time-widget {
+        min-width: 180px;
+        padding: 10px 12px;
+    }
+
+    .tw-display {
+        font-size: 1.3rem;
+    }
+
+    .tw-title {
+        font-size: 0.7rem;
+    }
+
+    .tw-btn {
+        min-height: 36px;
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .game-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .achievements-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .achievements-counter {
+        font-size: 0.8rem;
+        padding: 4px 10px;
+    }
+
+    .aim-hud {
+        gap: 18px;
+    }
+
+    .aim-hud-value {
+        font-size: 1.1rem;
+    }
+}
+
+/* Ландшафт на телефоне */
+@media (max-height: 500px) and (orientation: landscape) {
+    .top {
+        min-height: 20vh;
+        padding: 10px 16px;
+    }
+
+    .search-input {
+        margin-top: 1.5rem;
+        padding: 10px 18px;
+        font-size: 0.95rem;
+    }
+
+    .clock {
+        font-size: clamp(1.4rem, 5vw, 2rem);
+        top: calc(10px + var(--safe-top));
+    }
+
+    .groups {
+        margin: 8px auto 80px;
+        gap: 8px;
+    }
+
+    .group {
+        padding: 10px;
+    }
+
+    .link {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+        min-height: 36px;
+    }
+
+    .dropdown-menu {
+        max-height: 92dvh;
+    }
+
+    .weather-widget {
+        padding: 10px;
+    }
+
+    .weather-temp {
+        font-size: 1.6rem;
+    }
+
+    .weather-icon {
+        font-size: 2rem;
+    }
+
+    .weather-main {
+        margin-bottom: 8px;
+    }
+
+    .aim-overlay {
+        padding-top: calc(50px + var(--safe-top));
+    }
+
+    .aim-hud {
+        padding: 4px 0 8px;
+    }
+
+    .time-widget {
+        max-height: 80dvh;
+        overflow-y: auto;
+    }
+
+    .time-center-item {
+        font-size: clamp(1.4rem, 6vw, 2rem);
+    }
+}
+
+/* Тач-устройства: убираем hover-эффекты, оставляем active */
+@media (hover: none) and (pointer: coarse) {
+
+    .dropdown-item:hover,
+    .link:hover,
+    .group:hover,
+    .tw-btn:hover,
+    .game-icon:hover,
+    .aim-btn:hover {
+        transform: none;
+    }
+
+    .link:hover {
+        background: rgba(var(--accent-dark-rgb), 0.2);
+        border-color: rgba(var(--accent-soft-rgb), 0.08);
+        box-shadow: none;
+    }
+
+    .group:hover {
+        transform: none;
+    }
+
+    .dropdown-item:active,
+    .link:active,
+    .tw-btn:active,
+    .game-icon:active,
+    .aim-btn:active {
+        transform: scale(0.97);
+        transition: transform 0.1s ease;
+    }
+
+    /* Увеличиваем зону тапа у крестика удаления группы */
+    .group-title span:last-child {
+        padding: 8px 12px;
+        margin: -8px -12px -8px 0;
+    }
+}
+
+/* Шапка дропдауна — только на мобилке */
+.dropdown-header {
+    display: none;
+}
+
+
+@media (max-width: 768px) {
+    .dropdown-header {
+        display: flex;
+    }
+}
+
+/* ============================================ */
+/* GROUPS — только мобилка (десктоп не трогаем)  */
+/* ============================================ */
+
+@media (max-width: 768px) {
+
+    /* Группы под поиском — на всю ширину, с отступами */
+    .groups {
+        padding: 0 12px;
+        margin: 8px auto 100px;
+        gap: 12px;
+        flex-wrap: nowrap;            /* отключаем перенос */
+        justify-content: flex-start;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        touch-action: pan-x pan-y;
+    }
+
+    .groups::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Группа — карточка на весь экран (свайпом переключаются) */
+    .group {
+        flex: 0 0 calc(100% - 24px);
+        width: calc(100% - 24px);
+        max-width: none;
+        scroll-snap-align: center;
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    /* Ссылки — крупнее для пальца */
+    .link {
+        padding: 12px 14px;
+        font-size: 0.95rem;
+        min-height: 44px;
+    }
+
+    /* Дропдаун — свайп работает всегда */
+    .dropdown-columns {
+        min-height: 60vh;
+        touch-action: pan-y;
+        overscroll-behavior: contain;
+    }
+}
+
+/* ============================================ */
+/* DROPDOWN SWIPE FIX — только мобилка           */
+/* ============================================ */
+
+@media (max-width: 768px) {
+    .dropdown-menu {
+        touch-action: pan-y;
+        overscroll-behavior: contain;
+    }
+}
+
+/* ============================================ */
+/* VOLUME — фикс мобилки (текст в рамке)         */
+/* ============================================ */
+
+@media (max-width: 768px) {
+    .volume-control {
+        padding: 10px 14px;
+        gap: 8px;
+        flex-wrap: nowrap;
+        overflow: hidden;
+    }
+
+    .volume-icon {
+        font-size: 1rem;
+        min-width: 20px;
+    }
+
+    .volume-slider {
+        flex-grow: 1;
+        flex-shrink: 1;
+        min-width: 0;         /* ← ключ: не даёт вылезать */
+    }
+
+    .volume-value {
+        font-size: 0.8rem;
+        min-width: 38px;
+        max-width: 38px;
+        text-align: right;
+        flex-shrink: 0;
+    }
+}
+
+/* На самых узких экранах — ещё компактнее */
+@media (max-width: 380px) {
+    .volume-control {
+        padding: 8px 10px;
+        gap: 6px;
+    }
+
+    .volume-value {
+        font-size: 0.75rem;
+        min-width: 34px;
+        max-width: 34px;
+    }
+}

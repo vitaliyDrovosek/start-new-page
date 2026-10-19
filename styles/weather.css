@@ -1,0 +1,112 @@
+/* ============================================ */
+/* WEATHER — в стиле time-widget                 */
+/* ============================================ */
+
+.weather-widget {
+    /* наследует базовые стили .time-widget */
+    min-width: 220px !important;
+    max-width: 260px !important;
+}
+
+.weather-widget.visible {
+    display: flex !important;
+}
+
+.weather-widget .tw-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.weather-widget .tw-header .tw-title:last-child {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+}
+
+.weather-widget .tw-display {
+    font-size: 2.2rem !important;
+    letter-spacing: 0 !important;
+    margin: 4px 0 2px;
+}
+
+/* Сетка параметров */
+.weather-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.weather-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 8px;
+    border-radius: 10px;
+    background: rgba(var(--accent-dark-rgb), 0.25);
+    border: 1px solid rgba(var(--accent-soft-rgb), 0.1);
+}
+
+.weather-cell-label {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    opacity: 0.65;
+    letter-spacing: 0.5px;
+}
+
+.weather-cell-value {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* Кнопка обновления — как .tw-btn-primary */
+.weather-widget .tw-controls {
+    margin-top: 6px;
+}
+
+.weather-widget .tw-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(var(--accent-soft-rgb), 0.25);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    touch-action: manipulation;
+}
+
+.weather-widget .tw-btn-primary {
+    background: var(--accent);
+    border-color: var(--accent-bright);
+    color: #000;
+    font-weight: 600;
+}
+
+.weather-widget .tw-btn-primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.6);
+    transform: translateY(-1px);
+}
+
+/* Мобилки */
+@media (max-width: 768px) {
+    .weather-widget {
+        min-width: 200px !important;
+        max-width: 240px !important;
+    }
+    .weather-widget .tw-display {
+        font-size: 1.9rem !important;
+    }
+    .weather-cell-value {
+        font-size: 0.8rem;
+    }
+}
+
+

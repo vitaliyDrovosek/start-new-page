@@ -1,0 +1,189 @@
+/* ============================================ */
+/* SEARCH */
+/* ============================================ */
+
+/* Поиск */
+.search-container {
+    max-width: 600px;
+    width: 90%;
+    margin: 0 auto;
+    position: relative;
+    transition: opacity 0.5s ease;
+    z-index: 10000 !important;
+}
+
+.search-input {
+    width: 100%;
+    padding: 16px 28px;
+    border-radius: 50px;
+    border: 2px solid rgba(var(--accent-soft-rgb), 0.4);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 25px rgba(var(--accent-deep-rgb), 0.2);
+    margin-top: 10rem;
+}
+
+.search-input:focus {
+    border-color: var(--accent);
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow:
+        0 0 30px rgba(var(--accent-bright-rgb), 0.5),
+        0 0 0 1px var(--accent),
+        0 0 60px rgba(var(--accent-rgb), 0.35);
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* История поиска */
+.search-history {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: rgba(20, 20, 30, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(var(--accent-muted-rgb), 0.35);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        0 0 25px rgba(var(--accent-deep-rgb), 0.2);
+    max-height: 350px;
+    overflow-y: auto;
+    display: none;
+    z-index: 10001 !important;
+    padding: 8px;
+}
+
+.search-history.show {
+    display: block;
+    animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 14px;
+    margin-bottom: 2px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.history-item:hover {
+    background: rgba(var(--accent-deep-rgb), 0.35);
+    transform: translateX(2px);
+    box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.35);
+}
+
+.history-text {
+    flex-grow: 1;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.history-time {
+    font-size: 0.65rem;
+    opacity: 0.5;
+    margin-right: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 6px;
+    border-radius: 20px;
+}
+
+.history-delete {
+    opacity: 0.3;
+    transition: opacity 0.2s ease;
+    font-size: 0.7rem;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    line-height: 1;
+}
+
+.history-delete:hover {
+    opacity: 1;
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.15);
+}
+
+.history-clear {
+    padding: 10px 14px;
+    text-align: center;
+    color: var(--accent);
+    cursor: pointer;
+    border-radius: 14px;
+    margin-top: 6px;
+    background: rgba(var(--accent-rgb), 0.1);
+    font-size: 0.85rem;
+    transition: background 0.2s ease;
+}
+
+.history-clear:hover {
+    background: rgba(var(--accent-rgb), 0.2);
+}
+
+.search-history::-webkit-scrollbar {
+    width: 4px;
+}
+
+.search-history::-webkit-scrollbar-track {
+    background: transparent;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.search-history::-webkit-scrollbar-thumb {
+    background: rgba(var(--accent-rgb), 0.2);
+    border-radius: 10px;
+}
+
+.search-history::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--accent-rgb), 0.3);
+}
+
+/* Индикаторы */
+.toggle-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-left: 8px;
+    background: var(--accent-bright);
+    box-shadow:
+        0 0 10px rgba(var(--accent-bright-rgb), 0.8),
+        0 0 20px rgba(var(--accent-rgb), 0.5);
+    transition: all 0.3s ease;
+}
+
+.toggle-indicator.off {
+    background: var(--accent-invert);
+    box-shadow:
+        0 0 10px rgba(var(--accent-invert-rgb), 0.7),
+        0 0 20px rgba(var(--accent-invert-rgb), 0.4);
+}

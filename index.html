@@ -13,6 +13,8 @@
     <link rel="apple-touch-icon" href="icons/icon-192.png">
 
     <link rel="stylesheet" href="styles.css">
+
+    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
 </head>
 
 <body class="blur-enabled">
@@ -20,12 +22,26 @@
     <img id="bgImage" style="display:none;">
     <div id="youtubeWrapper" class="youtube-wrapper" style="display:none;"></div>
     <canvas id="particles"></canvas>
+    <div class="grain-overlay"></div>
     <div class="overlay"></div>
 
     <!-- ИКОНКИ ИГР СЛЕВА СВЕРХУ -->
     <div class="game-icons" id="gameIcons">
-        <button class="game-icon" id="gameIconAim" title="Aim Trainer">🎯</button>
-        <button class="game-icon" id="gameIconTyping" title="Typing Speed">⌨️</button>
+        <button class="game-icon" id="gameIconAim" title="Aim Trainer"><span class="iconify" data-icon="mdi:target"></span></button>
+        <button class="game-icon" id="gameIconTyping" title="Typing Speed"><span class="iconify" data-icon="mdi:keyboard-outline"></span></button>
+    </div>
+
+    <!-- КНОПКА ЗАМЕТОК -->
+    <button class="notes-btn" id="notesBtn" title="Заметки"><span class="iconify" data-icon="mdi:notebook-outline"></span></button>
+
+    <!-- ПАНЕЛЬ ЗАМЕТОК -->
+    <div class="notes-panel" id="notesPanel">
+        <div class="notes-header">
+            <span class="notes-title">Заметки</span>
+            <button class="notes-add-btn" id="notesAddBtn" title="Добавить заметку">+</button>
+            <button class="notes-close" id="notesCloseBtn">✕</button>
+        </div>
+        <div class="notes-list" id="notesList"></div>
     </div>
 
     <!-- ВИДЖЕТ ВРЕМЕНИ -->
@@ -67,31 +83,39 @@
         <div class="time-center-item" id="timeCenterCd">00:00</div>
     </div>
 
-    <div class="weather-widget" id="weatherWidget">
-        <div class="weather-city">🌆 Омск</div>
-        <div class="weather-main">
-            <div class="weather-temp" id="weatherTemp">--°C</div>
-            <div class="weather-icon" id="weatherIcon">☀️</div>
+    <div class="time-widget weather-widget" id="weatherWidget">
+        <div class="tw-drag" id="weatherDrag" title="Перетащить">⠿</div>
+
+        <div class="tw-block">
+            <div class="tw-header">
+                <span class="tw-title">Погода</span>
+                <span class="tw-title" id="weatherUpdate">—</span>
+            </div>
+            <div class="tw-display" id="weatherTemp">--°C</div>
+
+            <div class="weather-grid">
+                <div class="weather-cell">
+                    <span class="weather-cell-label">Влажность</span>
+                    <span class="weather-cell-value" id="weatherHumidity">--%</span>
+                </div>
+                <div class="weather-cell">
+                    <span class="weather-cell-label">Ветер</span>
+                    <span class="weather-cell-value" id="weatherWind">-- м/с</span>
+                </div>
+                <div class="weather-cell">
+                    <span class="weather-cell-label">Давление</span>
+                    <span class="weather-cell-value" id="weatherPressure">-- мм</span>
+                </div>
+                <div class="weather-cell">
+                    <span class="weather-cell-label">Ощущается</span>
+                    <span class="weather-cell-value" id="weatherFeels">--°C</span>
+                </div>
+            </div>
+
+            <div class="tw-controls">
+                <button class="tw-btn tw-btn-primary" id="weatherRefreshBtn">↻ Обновить</button>
+            </div>
         </div>
-        <div class="weather-details">
-            <div class="weather-detail">
-                <div class="weather-detail-label">Влажность</div>
-                <div class="weather-detail-value" id="weatherHumidity">--%</div>
-            </div>
-            <div class="weather-detail">
-                <div class="weather-detail-label">Ветер</div>
-                <div class="weather-detail-value" id="weatherWind">-- м/с</div>
-            </div>
-            <div class="weather-detail">
-                <div class="weather-detail-label">Давление</div>
-                <div class="weather-detail-value" id="weatherPressure">-- мм</div>
-            </div>
-            <div class="weather-detail">
-                <div class="weather-detail-label">Ощущается</div>
-                <div class="weather-detail-value" id="weatherFeels">--°C</div>
-            </div>
-        </div>
-        <div class="weather-update" id="weatherUpdate">Обновлено: --:--</div>
     </div>
 
     <div class="top">
@@ -195,7 +219,21 @@
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.hud.toggleGlow()" id="glowToggleBtn">
+                    
+                    <button class="dropdown-item" onclick="app.hud.toggleGrain()" id="grainToggleBtn">
+                        <span>Зернистый шум</span>
+                        <span id="grainIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <div class="hue-control grain-opacity-control">
+                        <label for="grainOpacity">
+                            <span>Интенсивность шума</span>
+                            <span id="grainOpacityValue">5.5%</span>
+                        </label>
+                        <input type="range" id="grainOpacity" class="grain-slider" min="0" max="30" value="5.5" step="1">
+                    </div>
+
+<button class="dropdown-item" onclick="app.hud.toggleGlow()" id="glowToggleBtn">
                         <span>Эффект свечения
                         </span>
                         <span id="glowIndicator" class="toggle-indicator"></span>
@@ -274,6 +312,11 @@
                         <span>Блокировка групп</span>
                         <span id="groupsLockIndicator" class="toggle-indicator"></span>
                     </button>
+                    <button class="dropdown-item" onclick="app.notes.toggleButton()" id="notesToggleBtn">
+                        <span>Кнопка заметок</span>
+                        <span id="notesIndicator" class="toggle-indicator"></span>
+                    </button>
+
 
                     <button class="dropdown-item" onclick="app.search.toggleOpenMethod()" id="openMethodToggleBtn">
                         <span>Заменять вкладку</span>
@@ -465,6 +508,31 @@
     <div class="glow-ball"></div>
     <div class="glow-ball-small"></div>
     <div class="glow-ball-bottom"></div>
+
+    <script>
+    // Привязка слайдера интенсивности зерна к логике
+    document.addEventListener('DOMContentLoaded', () => {
+        const setupGrainSlider = () => {
+            const slider = document.getElementById('grainOpacity');
+            const valEl = document.getElementById('grainOpacityValue');
+            if (!slider) return;
+            slider.addEventListener('input', (e) => {
+                const v = parseInt(e.target.value);
+                if (valEl) valEl.textContent = v + '%';
+                if (window.app && window.app.grain) {
+                    window.app.data.grainOpacity = v;
+                    window.app.grain.apply();
+                }
+            });
+            slider.addEventListener('change', () => {
+                if (window.app) window.app.storage.save();
+            });
+        };
+        setupGrainSlider();
+        // если HUD инициализируется позже — попробовать ещё раз
+        setTimeout(setupGrainSlider, 500);
+    });
+    </script>
 </body>
 
 </html>

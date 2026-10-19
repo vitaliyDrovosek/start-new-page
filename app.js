@@ -15,9 +15,14 @@ import Typing from './modules/Typing.js';
 import Achievements from './modules/Achievements.js';
 import GameIcons from './modules/GameIcons.js';
 import TimeWidget from './modules/TimeWidget.js';
+import Notes from './modules/Notes.js';
+import Grain from './modules/Grain.js';
 
 class App {
     constructor() {
+        window.__dragActive = false;
+        window.__dragEndTimer = null;
+
         this.searchEngines = {
             yandex: { name: 'Yandex', url: 'https://yandex.ru/search/?text=' },
             google: { name: 'Google', url: 'https://www.google.com/search?q=' }
@@ -42,6 +47,8 @@ class App {
         this.achievements = new Achievements(this);
         this.gameIcons = new GameIcons(this);
         this.timeWidget = new TimeWidget(this);
+        this.notes = new Notes(this);
+        this.grain = new Grain(this);
 
         this.glowEnabled = this.data.glowEnabled !== false;
         document.body.classList.toggle('glow-enabled', this.glowEnabled);
@@ -51,7 +58,23 @@ class App {
         this.init();
     }
 
-    init() {
+    setDrag(active) {
+        window.__dragActive = active;
+        if (active) {
+            clearTimeout(window.__dragEndTimer);
+        } else {
+            clearTimeout(window.__dragEndTimer);
+            window.__dragEndTimer = setTimeout(() => {
+                window.__dragActive = false;
+            }, 100);
+        }
+    }
+
+    isDragging() {
+        return window.__dragActive === true;
+    }
+
+init() {
         this.hud.init();
         this.audio.init();
         this.weather.init();
@@ -73,6 +96,8 @@ class App {
         this.achievements.init();
         this.gameIcons.init();
         this.timeWidget.init();
+        this.notes.init();
+        this.grain.init();
 
         this.search.loadReplaceTab();
         this.setupEventListeners();
@@ -91,7 +116,9 @@ class App {
             }
         }, 5000);
     }
-}
+
+    
+    }
 
 const app = new App();
 

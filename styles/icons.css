@@ -1,0 +1,56 @@
+/* ============================================ */
+/* ICONIFY (CDN)                                 */
+/* ============================================ */
+
+/* Контейнер иконки */
+.iconify {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    flex-shrink: 0;
+    line-height: 1;
+    /* Размер задаётся через width/height */
+}
+
+/* Кнопки в заметках */
+.note-action .iconify {
+    width: 14px;
+    height: 14px;
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+}
+.note-action:hover .iconify {
+    color: var(--accent-bright);
+}
+.note-action.note-pin.active .iconify {
+    color: var(--accent);
+    filter: drop-shadow(0 0 4px rgba(var(--accent-rgb), 0.6));
+}
+.note-action.note-delete:hover .iconify {
+    color: #ff6b6b;
+}
+
+/* Главная кнопка заметок */
+#notesBtn .iconify {
+    width: 20px;
+    height: 20px;
+    color: var(--text-primary);
+}
+
+/* Иконки игр */
+.game-icon .iconify {
+    width: 18px;
+    height: 18px;
+    color: var(--text-primary);
+}
+.game-icon:hover .iconify {
+    color: var(--accent-bright);
+}
+
+/* Мобилки */
+@media (max-width: 768px) {
+    .note-action .iconify { width: 16px; height: 16px; }
+    #notesBtn .iconify { width: 22px; height: 22px; }
+    .game-icon .iconify { width: 20px; height: 20px; }
+}
