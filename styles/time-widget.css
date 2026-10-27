@@ -1,10 +1,4 @@
-/* ============================================ */
-/* TIME WIDGET */
-/* ============================================ */
 
-/* ============================================ */
-/* ВИДЖЕТ ВРЕМЕНИ */
-/* ============================================ */
 
 .time-widget {
     position: fixed;
@@ -248,10 +242,6 @@ body.hud-hidden .time-widget .tw-display {
     display: none !important;
 }
 
-/* ============================================ */
-/* ЦЕНТР ЭКРАНА — ЦИФРЫ ПРИ SLEEP */
-/* ============================================ */
-
 .time-center {
     position: fixed;
     top: 50%;
@@ -318,4 +308,20 @@ body.hud-hidden .time-widget .tw-display {
 .time-center-sep:has(+ .time-center-item.hidden),
 .time-center-item.hidden+.time-center-sep {
     display: none;
+}
+
+/* ============================================ */
+/* TIME CENTER — инверсия фона под цифрами      */
+/* (только при скрытом HUD)                     */
+/* ============================================ */
+
+body.hud-hidden .time-center.visible {
+    backdrop-filter: invert(1);
+    -webkit-backdrop-filter: invert(1);
+}
+
+/* Чтобы инверсия была аккуратной — скругление и отступы */
+body.hud-hidden .time-center.visible {
+    padding: 20px 40px;
+    border-radius: 30px;
 }

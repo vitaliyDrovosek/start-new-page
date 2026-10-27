@@ -128,6 +128,26 @@ class TimeWidget {
         this.updateCenter();
     }
 
+    toggleSleepDisplay() {
+        this.app.data.timeCenterInSleepEnabled = !(this.app.data.timeCenterInSleepEnabled !== false);
+        this.updateSleepDisplayIndicator();
+        this.app.storage.save();
+        if (this.app.data.timeCenterInSleepEnabled === false) {
+            this.hideCenter();
+        } else if (this.app.data.timeCenterInSleepEnabled && this.isActive()) {
+            if (document.body.classList.contains('hud-hidden')) {
+                this.renderCenter();
+            }
+        }
+    }
+
+    updateSleepDisplayIndicator() {
+        const indicator = document.getElementById('timeCenterSleepIndicator');
+        if (indicator) {
+            indicator.classList.toggle('off', this.app.data.timeCenterInSleepEnabled === false);
+        }
+    }
+
     isSwActive() { return this.swRunning || this.swElapsed > 0; }
     isCdActive() { return this.cdRunning || this.cdRemaining > 0 || this.cdFinished; }
     isActive() { return this.swRunning || this.cdRunning; }
@@ -151,6 +171,10 @@ class TimeWidget {
 
     renderCenter() {
         if (!this.centerEl) return;
+        if (this.app.data.timeCenterInSleepEnabled === false) {
+            this.centerEl.classList.remove('visible');
+            return;
+        }
         const showSw = this.swRunning;
         const showCd = this.cdRunning;
         if (!showSw && !showCd) { this.centerEl.classList.remove('visible'); return; }
@@ -167,6 +191,10 @@ class TimeWidget {
     }
     updateCenter() {
         if (!this.centerEl?.classList.contains('visible')) return;
+        if (this.app.data.timeCenterInSleepEnabled === false) {
+            this.centerEl.classList.remove('visible');
+            return;
+        }
         if (this.centerSwEl && !this.centerSwEl.classList.contains('hidden'))
             this.centerSwEl.textContent = this.swFormat(this.swElapsed);
         if (this.centerCdEl && !this.centerCdEl.classList.contains('hidden')) {

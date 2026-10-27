@@ -41,16 +41,16 @@ class Glow {
         this.applyPalette();
     }
 
-    // вызывается при смене hue / RGB-режима
+
     applyPalette() {
         const root = getComputedStyle(document.documentElement);
 
-        // базовый hue (из hue-слайдера или из rgb-hue в RGB-режиме)
+
         let baseHue = parseInt(root.getPropertyValue('--rgb-hue')) || 0;
         const rgbMode = document.body.classList.contains('rgb-mode');
 
         if (!rgbMode) {
-            // берём hue из --accent (в HSL), но проще — из data
+
             baseHue = this.app.data.hue ?? 220;
         }
 
@@ -63,7 +63,7 @@ class Glow {
         });
     }
 
-    // в RGB-режиме крутим hue в реальном времени
+
     startRgbLoop() {
         if (this.rgbLoop) return;
         this.rgbLoop = setInterval(() => this.applyPalette(), 200);

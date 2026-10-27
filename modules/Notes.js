@@ -8,11 +8,11 @@ class Notes {
         this.saveTimers = new Map();
         this.emptyNoteIds = new Set();
 
-        // Drag карточек
+
         this.draggingId = null;
         this.dragEl = null;
 
-        // Флаг: mousedown был внутри панели/кнопки
+
         this._downInside = false;
     }
 
@@ -35,7 +35,7 @@ class Notes {
             this.dropEmptyNotes();
         });
 
-        // Enter — создать новую заметку
+
         this.list.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 const ta = e.target.closest('.note-text');
@@ -43,12 +43,12 @@ class Notes {
                     e.preventDefault();
                     const id = ta.closest('.note-card')?.dataset.id;
                     if (id) this.updateNoteText(id, ta.value);
-                    this.addNote();
+                    ta.blur();
                 }
             }
         });
 
-        // Drag через делегирование
+
         this.list.addEventListener('mousedown', (e) => {
             if (e.target.closest('.note-action')) return;
             const header = e.target.closest('.note-card-header');
@@ -67,7 +67,7 @@ class Notes {
             this.startDrag(card.dataset.id, e.touches[0], card);
         }, { passive: false });
 
-        // === Закрытие: только если mousedown и mouseup оба вне ===
+
         document.addEventListener('mousedown', (e) => {
             if (!this.visible) return;
             const el = e.target;
@@ -84,7 +84,7 @@ class Notes {
                 el.closest('#notesPanel') ||
                 el.closest('#notesBtn')
             ));
-            // Если drag только что закончился — не закрываем
+
             if (this._justDragged) {
                 this._justDragged = false;
                 return;
@@ -100,7 +100,7 @@ class Notes {
         this.updateIndicator();
     }
 
-    // ============ NOTES ============
+
 
     getNotes() {
         if (!Array.isArray(this.app.data.notes)) {
@@ -348,7 +348,7 @@ class Notes {
         });
     }
 
-    // ============ DRAG ============
+
 
     startDrag(id, e, card) {
         if (!e) return;
@@ -400,18 +400,18 @@ class Notes {
         document.removeEventListener('touchmove', this._moveHandler);
         document.removeEventListener('touchend', this._endHandler);
 
-        // Собираем актуальный порядок из DOM
+
         const cards = [...this.list.querySelectorAll('.note-card')];
         const ids = cards.map(c => c.dataset.id);
 
-        // Определяем, где сейчас перетаскиваемая
+
         const draggedPos = ids.indexOf(draggedId);
 
-        // Если карточка закреплена и оказалась НИЖЕ любой незакреплённой — снимаем пин
+
         const notes = this.getNotes();
         const draggedNote = notes.find(n => n.id === draggedId);
         if (draggedNote && draggedNote.pinned) {
-            // Есть ли ниже неё незакреплённые?
+
             let hasUnpinnedBelow = false;
             for (let i = draggedPos + 1; i < ids.length; i++) {
                 const n = notes.find(x => x.id === ids[i]);
@@ -423,7 +423,7 @@ class Notes {
             }
         }
 
-        // Сохраняем order для всех, как в DOM
+
         ids.forEach((id, idx) => {
             const n = notes.find(x => x.id === id);
             if (n) n.order = idx;
@@ -431,7 +431,7 @@ class Notes {
 
         this.app.storage.save();
 
-        // Перерисовываем, чтобы сортировка применилась
+
         this.render();
 
         this._justDragged = true;
@@ -479,6 +479,8 @@ class Notes {
         this.render();
         this.panel.classList.add('visible');
         this.visible = true;
+        const overlay = document.getElementById('mobileHudOverlay');
+        if (overlay) overlay.classList.add('visible');
     }
 
     hide() {
@@ -486,6 +488,8 @@ class Notes {
         this.render();
         this.panel.classList.remove('visible');
         this.visible = false;
+        const overlay = document.getElementById('mobileHudOverlay');
+        if (overlay) overlay.classList.remove('visible');
     }
 }
 

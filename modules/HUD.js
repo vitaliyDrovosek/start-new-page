@@ -34,7 +34,7 @@ class HUD {
     init() {
         const h = this.boundHandlers;
 
-        // Активность
+
         document.addEventListener('mousemove', h.handleMouseMove);
         document.addEventListener('mousedown', h.handleMouseDown);
         document.addEventListener('keydown', h.handleKeyDown);
@@ -47,7 +47,7 @@ class HUD {
         window.addEventListener('blur', h.handleWindowBlur);
         window.addEventListener('focus', h.handleWindowFocus);
 
-        // === Закрытие дропдауна: mousedown + mouseup оба вне ===
+
         let _downInside = false;
         document.addEventListener('mousedown', (e) => {
             const menu = document.getElementById('dropdownMenu');
@@ -72,7 +72,7 @@ class HUD {
 
         this.startClock();
 
-        // Начальное состояние индикаторов
+
         this.updateSleepModeIndicator();
         this.updateAutoSleepIndicator();
         this.updateGroupsLockIndicator();
@@ -80,7 +80,7 @@ class HUD {
         this.updateBlurIndicator();
     }
 
-    // ============ АКТИВНОСТЬ ============
+
 
     handleMouseMove(e) {
         if (!this.tabVisible) return;
@@ -158,7 +158,7 @@ class HUD {
         this.clearSleepTimer();
     }
 
-    // ============ ЧАСЫ ============
+
 
     startClock() {
         this.updateClock();
@@ -183,7 +183,7 @@ class HUD {
         }
     }
 
-    // ============ HUD ============
+
 
     show() {
         document.body.classList.remove('hud-hidden');
@@ -221,7 +221,7 @@ class HUD {
         }
     }
 
-    // ============ ИНДИКАТОРЫ ============
+
 
     toggleSleepMode() {
         this.app.data.sleepModeEnabled = !this.app.data.sleepModeEnabled;
@@ -279,6 +279,7 @@ class HUD {
         this.updateBlurIndicator();
         document.body.classList.toggle('blur-enabled', this.app.data.blurEnabled);
         document.body.classList.toggle('blur-disabled', !this.app.data.blurEnabled);
+        this.app.sleepToggles?.update();
         this.app.storage.save();
     }
 
@@ -287,13 +288,46 @@ class HUD {
         if (indicator) indicator.classList.toggle('off', !this.app.data.blurEnabled);
     }
 
+    toggleSleepGrain() {
+        this.app.data.sleepGrainEnabled = !(this.app.data.sleepGrainEnabled !== false);
+        this.updateSleepGrainIndicator();
+        this.applySleepStyles();
+        this.app.storage.save();
+    }
+
+    updateSleepGrainIndicator() {
+        const indicator = document.getElementById('sleepGrainIndicator');
+        if (indicator) indicator.classList.toggle('off', this.app.data.sleepGrainEnabled === false);
+    }
+
+    toggleSleepBlur() {
+        this.app.data.sleepBlurEnabled = !(this.app.data.sleepBlurEnabled !== false);
+        this.updateSleepBlurIndicator();
+        this.applySleepStyles();
+        this.app.storage.save();
+    }
+
+    updateSleepBlurIndicator() {
+        const indicator = document.getElementById('sleepBlurIndicator');
+        if (indicator) indicator.classList.toggle('off', this.app.data.sleepBlurEnabled === false);
+    }
+
+    applySleepStyles() {
+        const hideGrain = this.app.data.sleepGrainEnabled === false;
+        const hideBlur = this.app.data.sleepBlurEnabled === false;
+
+        document.body.classList.toggle('sleep-no-grain', hideGrain);
+        document.body.classList.toggle('sleep-no-blur', hideBlur);
+    }
+
     toggleGameIcons() { this.app.gameIcons?.toggle(); }
 
-    // ============ DROPDOWN ============
+
 
     toggleDropdown() {
         const menu = document.getElementById("dropdownMenu");
         const particlesPanel = document.getElementById("particlesSettingsPanel");
+        const overlay = document.getElementById("mobileHudOverlay");
 
         if (menu.classList.contains("show") && particlesPanel?.classList.contains("visible")) {
             particlesPanel.classList.remove("visible");
@@ -304,9 +338,11 @@ class HUD {
 
         if (menu.classList.contains("show")) {
             document.body.classList.add('dropdown-open');
+            if (overlay) overlay.classList.add('visible');
         } else {
             document.body.classList.remove('dropdown-open');
             menu.classList.remove('panel-open');
+            if (overlay) overlay.classList.remove('visible');
         }
 
         this.resetTimer();
@@ -314,8 +350,10 @@ class HUD {
 
     hideDropdown() {
         const menu = document.getElementById("dropdownMenu");
+        const overlay = document.getElementById("mobileHudOverlay");
         if (menu) menu.classList.remove("show");
         document.body.classList.remove('dropdown-open');
+        if (overlay) overlay.classList.remove('visible');
     }
 
     toggleGrain() { this.app.grain?.toggle(); }

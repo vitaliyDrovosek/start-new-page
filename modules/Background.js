@@ -143,7 +143,7 @@ class Background {
                             func: 'setVolume',
                             args: [this.app.data.volume]
                         }), '*');
-                    } catch { /* Игнорируем ошибки YouTube API */ }
+                    } catch {  }
                 }
             }
         }

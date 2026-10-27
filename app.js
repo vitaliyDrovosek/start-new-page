@@ -6,6 +6,7 @@ import HUD from './modules/HUD.js';
 import Weather from './modules/Weather.js';
 import Background from './modules/Background.js';
 import History from './modules/History.js';
+import CalculatorUI from './modules/CalculatorUI.js';
 import Search from './modules/Search.js';
 import Groups from './modules/Group.js';
 import Glow from './modules/Glow.js';
@@ -17,6 +18,9 @@ import GameIcons from './modules/GameIcons.js';
 import TimeWidget from './modules/TimeWidget.js';
 import Notes from './modules/Notes.js';
 import Grain from './modules/Grain.js';
+import StickyNotes from './modules/StickyNotes.js';
+import Countdown from './modules/Countdown.js';
+import SleepToggles from './modules/SleepToggles.js';
 
 class App {
     constructor() {
@@ -36,6 +40,7 @@ class App {
         this.audio = new Audio(this);
         this.weather = new Weather(this);
         this.history = new History(this);
+        this.calculatorUI = new CalculatorUI(this);
         this.search = new Search(this);
         this.groups = new Groups(this);
         this.background = new Background(this);
@@ -49,6 +54,9 @@ class App {
         this.timeWidget = new TimeWidget(this);
         this.notes = new Notes(this);
         this.grain = new Grain(this);
+        this.stickyNotes = new StickyNotes(this);
+        this.countdown = new Countdown(this);
+        this.sleepToggles = new SleepToggles(this);
 
         this.glowEnabled = this.data.glowEnabled !== false;
         document.body.classList.toggle('glow-enabled', this.glowEnabled);
@@ -74,11 +82,12 @@ class App {
         return window.__dragActive === true;
     }
 
-init() {
+    init() {
         this.hud.init();
         this.audio.init();
         this.weather.init();
         this.history.init();
+        this.calculatorUI.init();
         this.search.updateUI();
         this.background.apply();
         this.groups.render();
@@ -98,6 +107,9 @@ init() {
         this.timeWidget.init();
         this.notes.init();
         this.grain.init();
+        this.stickyNotes.init();
+        this.countdown.init();
+        this.sleepToggles.init();
 
         this.search.loadReplaceTab();
         this.setupEventListeners();
@@ -105,7 +117,7 @@ init() {
     }
 
     setupEventListeners() {
-        // зарезервировано
+
     }
 
     startVideoTimeSave() {
@@ -116,9 +128,7 @@ init() {
             }
         }, 5000);
     }
-
-    
-    }
+}
 
 const app = new App();
 

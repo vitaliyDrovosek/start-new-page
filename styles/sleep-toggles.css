@@ -1,0 +1,78 @@
+/* ============================================ */
+/* SLEEP QUICK TOGGLES (шум + размытие)         */
+/* ============================================ */
+
+.sleep-quick-toggles {
+    position: fixed;
+    bottom: calc(24px + var(--safe-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 150;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+/* Показываем только когда HUD скрыт */
+body.hud-hidden .sleep-quick-toggles {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sleep-toggle-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(var(--accent-soft-rgb), 0.35);
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    touch-action: manipulation;
+}
+
+.sleep-toggle-btn .iconify {
+    width: 20px;
+    height: 20px;
+    color: var(--text-primary);
+    transition: color 0.2s ease;
+}
+
+.sleep-toggle-btn:hover {
+    transform: translateY(-2px) scale(1.06);
+    border-color: var(--accent-bright);
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(var(--accent-rgb), 0.5);
+}
+
+.sleep-toggle-btn:hover .iconify {
+    color: var(--accent-bright);
+}
+
+.sleep-toggle-btn.off {
+    opacity: 0.45;
+}
+
+.sleep-toggle-btn.off .iconify {
+    color: var(--text-secondary);
+}
+
+/* На мобилках — чуть выше, чтобы не перекрывать кнопку меню */
+@media (max-width: 768px) {
+    .sleep-quick-toggles {
+        bottom: calc(90px + var(--safe-bottom));
+    }
+    .sleep-toggle-btn {
+        width: 42px;
+        height: 42px;
+    }
+}

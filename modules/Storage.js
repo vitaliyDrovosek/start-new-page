@@ -38,12 +38,21 @@ class Storage {
             replaceTab: savedData.replaceTab ?? true,
             glowEnabled: savedData.glowEnabled ?? true,
             grainEnabled: savedData.grainEnabled ?? false,
+            sleepGrainEnabled: savedData.sleepGrainEnabled ?? true,
+            sleepBlurEnabled: savedData.sleepBlurEnabled ?? true,
+            stickyNotesEnabled: savedData.stickyNotesEnabled ?? false,
+            stickyNotes: savedData.stickyNotes || [],
+            stickyNotesDefaultColor: savedData.stickyNotesDefaultColor || 'yellow',
+            countdownEnabled: savedData.countdownEnabled ?? false,
+            countdownEvents: savedData.countdownEvents || [],
+            countdownPinned: savedData.countdownPinned ?? false,
             grainOpacity: Math.min(30, Math.max(0, savedData.grainOpacity ?? 5.5)),
 
             gameIconsEnabled: savedData.gameIconsEnabled ?? false,
             timeWidgetEnabled: savedData.timeWidgetEnabled ?? false,
             timeWidgetPos: savedData.timeWidgetPos ?? null,
             timeAutoSleepEnabled: savedData.timeAutoSleepEnabled ?? true,
+            timeCenterInSleepEnabled: savedData.timeCenterInSleepEnabled ?? true,
             timeWidgetState: savedData.timeWidgetState ?? null,
 
             groupsLocked: savedData.groupsLocked ?? false,
@@ -188,15 +197,17 @@ class Storage {
             this.app.grain.apply();
         }
 
-        if (this.app.notes) {
+        if (this.app.stickyNotes) {
+            this.app.stickyNotes.enabled = this.app.data.stickyNotesEnabled === true;
+            this.app.stickyNotes.updateVisibility();
+            this.app.stickyNotes.updateIndicator();
+            this.app.stickyNotes.render();
+        }
+
+                if (this.app.notes) {
             this.app.notes.updateVisibility();
             this.app.notes.updateIndicator();
             this.app.notes.render();
-        }
-
-        if (this.app.notes) {
-            const ta = document.getElementById('notesTextarea');
-            if (ta) ta.value = this.app.data.notes || '';
         }
 
         if (this.app.hud) {

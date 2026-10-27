@@ -19,6 +19,11 @@ class History {
                 this.show();
             });
 
+            this.input.addEventListener("input", () => {
+                this.render();
+                this.show();
+            });
+
             this.input.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowDown' && this.container?.classList.contains('show')) {
                     e.preventDefault();
@@ -28,11 +33,25 @@ class History {
             });
         }
 
-        document.addEventListener('click', (e) => {
-            if (!this.input?.contains(e.target) && !this.container?.contains(e.target)) {
+        let _downInside = false;
+        document.addEventListener('mousedown', (e) => {
+            _downInside = !!(
+                this.input?.contains(e.target) ||
+                this.container?.contains(e.target) ||
+                document.getElementById('calcResult')?.contains(e.target)
+            );
+        }, true);
+
+        document.addEventListener('mouseup', (e) => {
+            const isInside = !!(
+                this.input?.contains(e.target) ||
+                this.container?.contains(e.target) ||
+                document.getElementById('calcResult')?.contains(e.target)
+            );
+            if (!_downInside && !isInside) {
                 this.hide();
             }
-        });
+        }, true);
     }
 
     init() {
@@ -126,6 +145,7 @@ class History {
         if (this.container) {
             this.container.classList.remove('show');
         }
+        document.getElementById('calcResult')?.classList.remove('visible');
     }
 
     performSearch(query) {

@@ -143,7 +143,7 @@ class Hue {
         root.style.setProperty('--accent-muted', accentMuted);
         root.style.setProperty('--accent-muted-rgb', accentMutedRgb);
 
-        // Инвертированный акцент
+
         const invertHue = (hue + 180) % 360;
         const accentInvert = this.hsl(invertHue, 70, 60 * bFactor);
         const accentInvertRgb = this.hslToRgbStr(invertHue, 70, 60 * bFactor);

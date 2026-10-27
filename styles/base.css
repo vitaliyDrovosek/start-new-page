@@ -1,14 +1,11 @@
-/* ============================================ */
-/* BASE */
-/* ============================================ */
+
 
 :root {
-    /* базовые */
+
     --accent: #3b82f6;
     --accent-hover: #60a5fa;
     --accent-rgb: 59, 130, 246;
 
-    /* вариации — управляются через Hue.js */
     --accent-soft: #7ba7dd;
     --accent-soft-rgb: 123, 167, 221;
 
@@ -24,22 +21,18 @@
     --accent-muted: #6e88a8;
     --accent-muted-rgb: 110, 136, 168;
 
-    /* инвертированный акцент — для выключенных индикаторов */
     --accent-invert: #ff8a3d;
     --accent-invert-rgb: 255, 138, 61;
 
-    /* UI настройки */
     --ui-brightness: 0.6;
     --ui-opacity: 1;
 
-    /* стекло и текст */
     --glass: rgba(255, 255, 255, 0.12);
     --glass-hover: rgba(255, 255, 255, 0.2);
     --text-primary: #ffffff;
     --text-secondary: #e2e8f0;
     --history-bg: rgba(20, 20, 30, 0.85);
 
-    /* safe-area для iPhone */
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-left: env(safe-area-inset-left, 0px);

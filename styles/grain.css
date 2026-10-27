@@ -1,5 +1,5 @@
 /* ============================================ */
-/* NOISE OVERLAY — original                     */
+/* GRAIN / NOISE OVERLAY                        */
 /* ============================================ */
 
 .grain-overlay {
@@ -41,154 +41,14 @@ body.grain-enabled .grain-overlay {
     }
 }
 
-/* ============================================ */
-/* GRAIN SLIDER — точная копия .volume-slider   */
-/* ============================================ */
-
-/* Обёртка — как .volume-control */
-.grain-opacity-control {
-    padding: 12px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background: rgba(var(--accent-dark-rgb), 0.3);
-    border-radius: 15px;
-    margin-top: 4px;
-    border: 1px solid rgba(var(--accent-muted-rgb), 0.25);
-}
-
-.grain-opacity-control label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-.grain-opacity-control label span:last-child {
-    background: none;
-    box-shadow: none;
-    padding: 0;
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    font-weight: 500;
-    min-width: auto;
-}
-
-/* Сам слайдер — 1:1 как .volume-slider */
-#grainOpacity,
-#grainOpacity.grain-slider,
-.hue-control #grainOpacity,
-body.rgb-mode #grainOpacity {
-    -webkit-appearance: none !important;
-    appearance: none !important;
-    width: 100% !important;
-    height: 4px !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    background-image: none !important;
-    border-radius: 10px !important;
-    outline: none !important;
-    cursor: pointer !important;
-    box-shadow: none !important;
-    border: none !important;
-    animation: none !important;
-    filter: none !important;
-}
-
-/* Thumb — 1:1 как .volume-slider */
-#grainOpacity::-webkit-slider-thumb,
-#grainOpacity.grain-slider::-webkit-slider-thumb,
-.hue-control #grainOpacity::-webkit-slider-thumb,
-body.rgb-mode #grainOpacity::-webkit-slider-thumb {
-    -webkit-appearance: none !important;
-    appearance: none !important;
-    width: 16px !important;
-    height: 16px !important;
-    border-radius: 50% !important;
-    background: var(--accent) !important;
-    background-image: none !important;
-    border: 2px solid white !important;
-    box-shadow:
-        0 2px 10px rgba(0, 0, 0, 0.3),
-        0 0 12px rgba(var(--accent-rgb), 0.5) !important;
-    cursor: pointer !important;
-    animation: none !important;
-    transition: all 0.2s ease !important;
-}
-
-#grainOpacity::-webkit-slider-thumb:hover,
-#grainOpacity.grain-slider::-webkit-slider-thumb:hover,
-.hue-control #grainOpacity::-webkit-slider-thumb:hover {
-    transform: scale(1.2) !important;
-    background: var(--accent-hover) !important;
-    box-shadow: 0 2px 15px rgba(var(--accent-rgb), 0.6) !important;
-}
-
-#grainOpacity::-moz-range-thumb,
-#grainOpacity.grain-slider::-moz-range-thumb,
-.hue-control #grainOpacity::-moz-range-thumb {
-    width: 16px !important;
-    height: 16px !important;
-    border-radius: 50% !important;
-    background: var(--accent) !important;
-    border: 2px solid white !important;
-    box-shadow:
-        0 2px 10px rgba(0, 0, 0, 0.3),
-        0 0 12px rgba(var(--accent-rgb), 0.5) !important;
-    cursor: pointer !important;
-    animation: none !important;
-}
-
-#grainOpacity::-moz-range-track,
-#grainOpacity.grain-slider::-moz-range-track {
-    background: rgba(255, 255, 255, 0.2) !important;
-    height: 4px !important;
-    border-radius: 10px !important;
-    border: none !important;
-}
-
-/* ============================================ */
-/* GRAIN-OPACITY-CONTROL — карточка как volume  */
-/* ============================================ */
-
-.grain-opacity-control {
-    padding: 12px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background: rgba(var(--accent-dark-rgb), 0.3);
-    border-radius: 15px;
-    margin-top: 4px;
-    border: 1px solid rgba(var(--accent-muted-rgb), 0.25);
-}
-
-.grain-opacity-control label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-.grain-opacity-control label span:last-child {
-    background: none;
-    box-shadow: none;
-    padding: 0;
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    font-weight: 500;
-    min-width: auto;
-}
-
-/* ============================================ */
-/* HUD HIDDEN — шум скрывается вместе с HUD     */
-/* ============================================ */
-
 body.hud-hidden .grain-overlay {
     opacity: 0 !important;
     animation: none !important;
     pointer-events: none !important;
     transition: opacity 0.4s ease;
 }
+
+/* ============================================ */
+/* GRAIN OPACITY SLIDER — единый стиль          */
+/* ============================================ */
+
