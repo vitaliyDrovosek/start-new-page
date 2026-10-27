@@ -33,6 +33,7 @@ class Grain {
     toggle() {
         this.app.data.grainEnabled = !(this.app.data.grainEnabled === true);
         this.apply();
+        this.app.sleepToggles?.update();
         this.app.storage.save();
     }
 

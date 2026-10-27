@@ -1,0 +1,41 @@
+
+
+.mobile-hud-overlay {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-hud-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 999; 
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    .mobile-hud-overlay.visible {
+        display: block;
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* ============================================ */
+/* SLEEP MODE OVERRIDES                         */
+/* ============================================ */
+
+/* Если шум отключен в спящем режиме */
+body.hud-hidden.sleep-no-grain .grain-overlay {
+    opacity: 0 !important;
+    animation: none !important;
+}
+
+/* Если размытие отключено в спящем режиме */
+body.hud-hidden.sleep-no-blur #bgVideo,
+body.hud-hidden.sleep-no-blur .youtube-wrapper iframe {
+    filter: blur(0) !important;
+}

@@ -1,6 +1,6 @@
-/* ============================================ */
-/* GROUPS */
-/* ============================================ */
+
+
+
 
 .groups {
     display: flex;
@@ -33,7 +33,7 @@
     overflow: hidden;
 }
 
-/* Градиент в правом верхнем углу группы */
+
 .group::before {
     content: '';
     position: absolute;
@@ -85,6 +85,7 @@
     min-height: 28px;
 }
 
+
 .group-title span:first-child {
     cursor: pointer;
     flex-grow: 1;
@@ -96,6 +97,7 @@
     font-size: 1rem;
 }
 
+
 .group.locked .group-title {
     justify-content: center;
 }
@@ -106,6 +108,7 @@
     font-size: 1.1rem;
     cursor: default;
 }
+
 
 .group-title span:last-child {
     color: rgba(255, 255, 255, 0.6);
@@ -119,6 +122,19 @@
     color: #ff6b6b;
     transform: scale(1.1);
 }
+
+
+.group:not(.locked) .group-title span:first-child:hover {
+    color: var(--accent-bright);
+    text-shadow: 0 0 12px rgba(var(--accent-bright-rgb), 0.6);
+}
+
+
+.group.locked .group-title span:first-child:hover {
+    color: var(--accent-bright);
+    text-shadow: 0 0 12px rgba(var(--accent-bright-rgb), 0.6);
+}
+
 
 .link {
     display: flex;
@@ -189,3 +205,8 @@
 .group.locked {
     cursor: default;
 }
+
+
+
+
+

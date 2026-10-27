@@ -1,22 +1,28 @@
-/* ============================================ */
-/* RESPONSIVE */
-/* ============================================ */
 
-/* ============================================ */
-/* МОБИЛЬНАЯ АДАПТАЦИЯ */
-/* ============================================ */
 
-/* Планшеты: 769px – 1024px */
-@media (max-width: 1024px) {
+
+
+
+
+
+
+
+@media (max-width: 1200px) {
     .dropdown-columns {
-        grid-template-columns: repeat(2, minmax(220px, 1fr));
+        grid-template-columns: repeat(3, minmax(200px, 1fr));
     }
 }
 
-/* Телефоны: до 768px */
+@media (max-width: 1024px) {
+    .dropdown-columns {
+        grid-template-columns: repeat(2, minmax(200px, 1fr));
+    }
+}
+
+
 @media (max-width: 768px) {
 
-    /* Часы */
+    
     .clock {
         font-size: clamp(2rem, 10vw, 3rem);
         top: calc(20px + var(--safe-top));
@@ -29,7 +35,7 @@
         padding: 6px 12px;
     }
 
-    /* Поиск */
+    
     .search-input {
         padding: 14px 22px;
         font-size: 1rem;
@@ -41,7 +47,7 @@
         max-height: 280px;
     }
 
-    /* Группы */
+    
     .groups {
         gap: 12px;
         padding: 10px;
@@ -64,7 +70,7 @@
         min-height: 44px;
     }
 
-    /* Дропдаун */
+    
     .dropdown-container {
         bottom: calc(20px + var(--safe-bottom));
         right: calc(20px + var(--safe-right));
@@ -107,7 +113,7 @@
         height: 100%;
     }
 
-    /* Заголовок дропдауна с крестиком — sticky сверху */
+    
     .dropdown-header {
         display: flex;
         align-items: center;
@@ -159,7 +165,7 @@
         transform: scale(0.95);
     }
 
-    /* Скроллируемая область */
+    
     .dropdown-columns {
         grid-template-columns: 1fr;
         gap: 10px;
@@ -176,7 +182,7 @@
         gap: 6px;
     }
 
-    /* Обычные заголовки колонок внутри */
+    
     .dropdown-column-title {
         position: static;
         background: transparent;
@@ -215,7 +221,7 @@
         margin: 4px 0;
     }
 
-    /* Настройки частиц */
+    
     .particles-settings-panel {
         position: fixed;
         inset: 0;
@@ -254,7 +260,7 @@
         min-height: 48px;
     }
 
-    /* Громкость и hue */
+    
     .volume-control {
         padding: 14px 18px;
     }
@@ -292,7 +298,7 @@
         min-height: 44px;
     }
 
-    /* Погода */
+    
     .weather-widget {
         top: calc(10px + var(--safe-top));
         right: calc(10px + var(--safe-right));
@@ -327,7 +333,7 @@
         font-size: 0.9rem;
     }
 
-    /* Иконки игр */
+    
     .game-icons {
         top: calc(12px + var(--safe-top));
         left: calc(12px + var(--safe-left));
@@ -339,7 +345,7 @@
         font-size: 1.2rem;
     }
 
-    /* Виджет времени */
+    
     .time-widget {
         min-width: 200px;
         padding: 12px 14px;
@@ -370,7 +376,7 @@
         width: 60px;
     }
 
-    /* Игры — Aim */
+    
     .aim-overlay {
         padding: 12px;
         padding-top: calc(60px + var(--safe-top));
@@ -452,7 +458,7 @@
         min-height: 44px;
     }
 
-    /* Игры — Typing */
+    
     .typing-field {
         gap: 20px;
         padding: 20px 12px;
@@ -469,7 +475,7 @@
         letter-spacing: 2px;
     }
 
-    /* Toast достижений */
+    
     .achievement-toast {
         width: calc(100% - 24px - var(--safe-left) - var(--safe-right));
         left: calc(-100% - 24px);
@@ -487,7 +493,7 @@
         font-size: 0.8rem;
     }
 
-    /* Модалка достижений */
+    
     .achievements-modal {
         padding: calc(20px + var(--safe-top)) 12px calc(20px + var(--safe-bottom));
     }
@@ -525,7 +531,7 @@
         font-size: 0.8rem;
     }
 
-    /* Центр времени */
+    
     .time-center {
         gap: 16px;
     }
@@ -539,7 +545,7 @@
         font-size: clamp(1rem, 6vw, 1.6rem);
     }
 
-    /* Glow */
+    
     .glow-ball,
     .glow-ball-small,
     .glow-ball-bottom {
@@ -547,7 +553,7 @@
     }
 }
 
-/* Узкие телефоны: до 480px */
+
 @media (max-width: 480px) {
     .clock {
         font-size: clamp(1.8rem, 11vw, 2.5rem);
@@ -629,7 +635,7 @@
     }
 }
 
-/* Ландшафт на телефоне */
+
 @media (max-height: 500px) and (orientation: landscape) {
     .top {
         min-height: 20vh;
@@ -700,7 +706,7 @@
     }
 }
 
-/* Тач-устройства: убираем hover-эффекты, оставляем active */
+
 @media (hover: none) and (pointer: coarse) {
 
     .dropdown-item:hover,
@@ -731,14 +737,14 @@
         transition: transform 0.1s ease;
     }
 
-    /* Увеличиваем зону тапа у крестика удаления группы */
+    
     .group-title span:last-child {
         padding: 8px 12px;
         margin: -8px -12px -8px 0;
     }
 }
 
-/* Шапка дропдауна — только на мобилке */
+
 .dropdown-header {
     display: none;
 }
@@ -750,18 +756,18 @@
     }
 }
 
-/* ============================================ */
-/* GROUPS — только мобилка (десктоп не трогаем)  */
-/* ============================================ */
+
+
+
 
 @media (max-width: 768px) {
 
-    /* Группы под поиском — на всю ширину, с отступами */
+    
     .groups {
         padding: 0 12px;
         margin: 8px auto 100px;
         gap: 12px;
-        flex-wrap: nowrap;            /* отключаем перенос */
+        flex-wrap: nowrap;            
         justify-content: flex-start;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
@@ -774,7 +780,7 @@
         display: none;
     }
 
-    /* Группа — карточка на весь экран (свайпом переключаются) */
+    
     .group {
         flex: 0 0 calc(100% - 24px);
         width: calc(100% - 24px);
@@ -784,14 +790,14 @@
         border-radius: 16px;
     }
 
-    /* Ссылки — крупнее для пальца */
+    
     .link {
         padding: 12px 14px;
         font-size: 0.95rem;
         min-height: 44px;
     }
 
-    /* Дропдаун — свайп работает всегда */
+    
     .dropdown-columns {
         min-height: 60vh;
         touch-action: pan-y;
@@ -799,9 +805,9 @@
     }
 }
 
-/* ============================================ */
-/* DROPDOWN SWIPE FIX — только мобилка           */
-/* ============================================ */
+
+
+
 
 @media (max-width: 768px) {
     .dropdown-menu {
@@ -810,9 +816,9 @@
     }
 }
 
-/* ============================================ */
-/* VOLUME — фикс мобилки (текст в рамке)         */
-/* ============================================ */
+
+
+
 
 @media (max-width: 768px) {
     .volume-control {
@@ -830,7 +836,7 @@
     .volume-slider {
         flex-grow: 1;
         flex-shrink: 1;
-        min-width: 0;         /* ← ключ: не даёт вылезать */
+        min-width: 0;         
     }
 
     .volume-value {
@@ -842,7 +848,7 @@
     }
 }
 
-/* На самых узких экранах — ещё компактнее */
+
 @media (max-width: 380px) {
     .volume-control {
         padding: 8px 10px;
@@ -853,5 +859,18 @@
         font-size: 0.75rem;
         min-width: 34px;
         max-width: 34px;
+    }
+}
+
+
+
+
+
+@media (max-width: 768px) {
+    body:has(.mobile-hud-overlay.visible) {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
     }
 }

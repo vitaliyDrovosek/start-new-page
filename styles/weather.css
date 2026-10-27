@@ -1,9 +1,7 @@
-/* ============================================ */
-/* WEATHER — в стиле time-widget                 */
-/* ============================================ */
+
 
 .weather-widget {
-    /* наследует базовые стили .time-widget */
+
     min-width: 220px !important;
     max-width: 260px !important;
 }
@@ -33,7 +31,6 @@
     margin: 4px 0 2px;
 }
 
-/* Сетка параметров */
 .weather-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -64,7 +61,6 @@
     color: var(--text-primary);
 }
 
-/* Кнопка обновления — как .tw-btn-primary */
 .weather-widget .tw-controls {
     margin-top: 6px;
 }
@@ -95,7 +91,6 @@
     transform: translateY(-1px);
 }
 
-/* Мобилки */
 @media (max-width: 768px) {
     .weather-widget {
         min-width: 200px !important;
@@ -108,5 +103,4 @@
         font-size: 0.8rem;
     }
 }
-
 

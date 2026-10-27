@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 
-    <title>Вкус детства / new tab</title>
+    <title>main page</title>
 
-    <!-- Фавикон и иконки -->
+    
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="shortcut icon" type="image/png" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -15,26 +15,102 @@
     <link rel="stylesheet" href="styles.css">
 
     <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style id="grain-slider-hard-fix">
+/* ============================================ */
+/* GRAIN SLIDER — как остальные слайдеры (Chrome) */
+/* ============================================ */
+#grainOpacity {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    display: block !important;
+    width: 100% !important;
+    height: 4px !important;
+    border-radius: 10px !important;
+    outline: none !important;
+    cursor: pointer !important;
+    border: none !important;
+    background: rgba(255, 255, 255, 0.2) !important; /* Серый фон, как у яркости */
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Трек для Chrome/Safari */
+#grainOpacity::-webkit-slider-runnable-track {
+    height: 4px !important;
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: none !important;
+}
+
+/* Бегунок для Chrome/Safari */
+#grainOpacity::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, var(--accent-bright) 0%, var(--accent) 100%) !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), 0 0 12px rgba(var(--accent-rgb), 0.5) !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    margin-top: -6px !important; /* Центровка бегунка относительно трека */
+}
+
+#grainOpacity::-webkit-slider-thumb:hover {
+    transform: scale(1.2) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), 0 2px 15px rgba(var(--accent-rgb), 0.6) !important;
+}
+
+/* Трек для Firefox */
+#grainOpacity::-moz-range-track {
+    background: rgba(255, 255, 255, 0.2) !important;
+    height: 4px !important;
+    border-radius: 10px !important;
+    border: none !important;
+}
+
+/* Бегунок для Firefox */
+#grainOpacity::-moz-range-thumb {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    background: var(--accent) !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), 0 0 12px rgba(var(--accent-rgb), 0.5) !important;
+    cursor: pointer !important;
+}
+</style>
 </head>
 
 <body class="blur-enabled">
+    <div class="mobile-hud-overlay" id="mobileHudOverlay"></div>
     <video id="bgVideo" autoplay muted loop playsinline style="display:none;"></video>
     <img id="bgImage" style="display:none;">
     <div id="youtubeWrapper" class="youtube-wrapper" style="display:none;"></div>
     <canvas id="particles"></canvas>
     <div class="grain-overlay"></div>
     <div class="overlay"></div>
+    <div class="sleep-quick-toggles" id="sleepQuickToggles">
+        <button class="sleep-toggle-btn" id="sleepGrainBtn" title="Шум">
+            <span class="iconify" data-icon="mdi:grain"></span>
+        </button>
+        <button class="sleep-toggle-btn" id="sleepBlurBtn" title="Размытие">
+            <span class="iconify" data-icon="mdi:blur"></span>
+        </button>
+    </div>
 
-    <!-- ИКОНКИ ИГР СЛЕВА СВЕРХУ -->
+    
     <div class="game-icons" id="gameIcons">
         <button class="game-icon" id="gameIconAim" title="Aim Trainer"><span class="iconify" data-icon="mdi:target"></span></button>
         <button class="game-icon" id="gameIconTyping" title="Typing Speed"><span class="iconify" data-icon="mdi:keyboard-outline"></span></button>
     </div>
 
-    <!-- КНОПКА ЗАМЕТОК -->
+    
     <button class="notes-btn" id="notesBtn" title="Заметки"><span class="iconify" data-icon="mdi:notebook-outline"></span></button>
 
-    <!-- ПАНЕЛЬ ЗАМЕТОК -->
+    
     <div class="notes-panel" id="notesPanel">
         <div class="notes-header">
             <span class="notes-title">Заметки</span>
@@ -44,7 +120,7 @@
         <div class="notes-list" id="notesList"></div>
     </div>
 
-    <!-- ВИДЖЕТ ВРЕМЕНИ -->
+    
     <div class="time-widget" id="timeWidget">
         <div class="tw-drag" id="timeWidgetDrag" title="Перетащить">⠿</div>
 
@@ -76,7 +152,7 @@
         </div>
     </div>
 
-    <!-- ЦЕНТР ЭКРАНА — цифры при sleep -->
+    
     <div class="time-center" id="timeCenter">
         <div class="time-center-item" id="timeCenterSw">00:00.00</div>
         <div class="time-center-sep" id="timeCenterSep">|</div>
@@ -122,6 +198,7 @@
         <div class="clock" id="clock"></div>
         <div class="search-container">
             <input id="searchInput" class="search-input" placeholder="Поиск..." autocomplete="off">
+            <div id="calcResult" class="calc-result-container"></div>
             <div id="searchHistory" class="search-history"></div>
         </div>
     </div>
@@ -136,7 +213,7 @@
 
             <div class="dropdown-columns">
 
-                <!-- КОЛОНКА 1: ИГРЫ -->
+                
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Игры</div>
 
@@ -157,6 +234,16 @@
 
                     <div class="dropdown-divider"></div>
 
+                    <button class="dropdown-item" onclick="app.hud.toggleGameIcons()" id="gameIconsToggleBtn">
+                        <span>Иконки игр</span>
+                        <span id="gameIconsIndicator" class="toggle-indicator"></span>
+                    </button>
+                </div>
+
+                
+                <div class="dropdown-column">
+                    <div class="dropdown-column-title">Время и события</div>
+
                     <button class="dropdown-item" onclick="app.timeWidget.toggle()" id="timeWidgetToggleBtn">
                         <span>Виджет времени</span>
                         <span id="timeWidgetIndicator" class="toggle-indicator"></span>
@@ -167,21 +254,31 @@
                         <span id="timeAutoSleepIndicator" class="toggle-indicator"></span>
                     </button>
 
-                    <button class="dropdown-item" onclick="app.hud.toggleGameIcons()" id="gameIconsToggleBtn">
-                        <span>Иконки игр</span>
-                        <span id="gameIconsIndicator" class="toggle-indicator"></span>
+                    <button class="dropdown-item" onclick="app.timeWidget.toggleSleepDisplay()" id="timeCenterSleepToggleBtn">
+                        <span>Таймер/секундомер в sleep</span>
+                        <span id="timeCenterSleepIndicator" class="toggle-indicator"></span>
                     </button>
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.hud.forceHide(); app.hud.hideDropdown()">
-                        <span>Скрыть HUD</span>
+                    <button class="dropdown-item" onclick="app.countdown.toggle()" id="countdownToggleBtn">
+                        <span>Счётчик дней</span>
+                        <span id="countdownIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.countdown.addEvent(); app.hud.hideDropdown()">
+                        <span>Добавить событие</span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.countdown.togglePin()" id="countdownPinToggleBtn">
+                        <span>Закрепить отсчёты</span>
+                        <span id="countdownPinIndicator" class="toggle-indicator"></span>
                     </button>
                 </div>
 
-                <!-- КОЛОНКА 2: ВНЕШНИЙ ВИД -->
+                
                 <div class="dropdown-column">
-                    <div class="dropdown-column-title">Внешний вид</div>
+                    <div class="dropdown-column-title">Оформление</div>
 
                     <button class="dropdown-item" onclick="app.background.set(); app.hud.hideDropdown()">
                         <span>Установить фон</span>
@@ -204,22 +301,22 @@
                             <span>Яркость</span>
                             <span id="brightnessValue">60%</span>
                         </label>
-                        <input type="range" id="brightnessSlider" class="hue-slider" min="10" max="100" value="60"
-                            step="1">
+                        <input type="range" id="brightnessSlider" class="hue-slider" min="10" max="100" value="60" step="1">
 
                         <label for="opacitySlider">
                             <span>Прозрачность</span>
                             <span id="opacityValue">100%</span>
                         </label>
-                        <input type="range" id="opacitySlider" class="hue-slider" min="20" max="100" value="100"
-                            step="1">
+                        <input type="range" id="opacitySlider" class="hue-slider" min="20" max="100" value="100" step="1">
 
                         <button id="rgbModeBtn" class="rgb-mode-btn">RGB</button>
                     </div>
+                </div>
 
-                    <div class="dropdown-divider"></div>
+                
+                <div class="dropdown-column">
+                    <div class="dropdown-column-title">Эффекты</div>
 
-                    
                     <button class="dropdown-item" onclick="app.hud.toggleGrain()" id="grainToggleBtn">
                         <span>Зернистый шум</span>
                         <span id="grainIndicator" class="toggle-indicator"></span>
@@ -230,12 +327,11 @@
                             <span>Интенсивность шума</span>
                             <span id="grainOpacityValue">5.5%</span>
                         </label>
-                        <input type="range" id="grainOpacity" class="grain-slider" min="0" max="30" value="5.5" step="1">
+                        <input type="range" id="grainOpacity"  min="0" max="30" value="5.5" step="1">
                     </div>
 
-<button class="dropdown-item" onclick="app.hud.toggleGlow()" id="glowToggleBtn">
-                        <span>Эффект свечения
-                        </span>
+                    <button class="dropdown-item" onclick="app.hud.toggleGlow()" id="glowToggleBtn">
+                        <span>Эффект свечения</span>
                         <span id="glowIndicator" class="toggle-indicator"></span>
                     </button>
 
@@ -280,13 +376,11 @@
                                 <input type="range" id="lineDistance" min="50" max="300" value="150" step="5">
                             </div>
                             <div class="settings-group">
-                                <label>Мин. расстояние между частицами: <span
-                                        id="overlapDistanceValue">5</span></label>
+                                <label>Мин. расстояние между частицами: <span id="overlapDistanceValue">5</span></label>
                                 <input type="range" id="overlapDistance" min="0" max="50" value="5" step="1">
                             </div>
                             <div class="settings-group">
-                                <label>Сила отталкивания частиц: <span
-                                        id="particleRepelForceValue">0.01</span></label>
+                                <label>Сила отталкивания частиц: <span id="particleRepelForceValue">0.01</span></label>
                                 <input type="range" id="particleRepelForce" min="0" max="0.1" value="0.01" step="0.001">
                             </div>
                             <div class="settings-group">
@@ -301,32 +395,31 @@
                     </div>
                 </div>
 
-                <!-- КОЛОНКА 3: ПОИСК И СИСТЕМА -->
+                
                 <div class="dropdown-column">
-                    <div class="dropdown-column-title">Поиск и система</div>
+                    <div class="dropdown-column-title">Поиск и интерфейс</div>
 
-                    <button class="dropdown-item" onclick="app.groups.add(); app.hud.hideDropdown()">Добавить
-                        группу</button>
+                    <button class="dropdown-item" onclick="app.groups.add(); app.hud.hideDropdown()">Добавить группу</button>
 
                     <button class="dropdown-item" onclick="app.hud.toggleGroupsLock()" id="groupsLockToggleBtn">
                         <span>Блокировка групп</span>
                         <span id="groupsLockIndicator" class="toggle-indicator"></span>
                     </button>
+
                     <button class="dropdown-item" onclick="app.notes.toggleButton()" id="notesToggleBtn">
                         <span>Кнопка заметок</span>
                         <span id="notesIndicator" class="toggle-indicator"></span>
                     </button>
 
+                    <div class="dropdown-divider"></div>
 
                     <button class="dropdown-item" onclick="app.search.toggleOpenMethod()" id="openMethodToggleBtn">
                         <span>Заменять вкладку</span>
                         <span id="openMethodIndicator" class="toggle-indicator"></span>
                     </button>
 
-                    <button class="dropdown-item" onclick="app.search.setEngine('yandex'); app.hud.hideDropdown()"
-                        id="engineYandex">Яндекс</button>
-                    <button class="dropdown-item" onclick="app.search.setEngine('google'); app.hud.hideDropdown()"
-                        id="engineGoogle">Google</button>
+                    <button class="dropdown-item" onclick="app.search.setEngine('yandex'); app.hud.hideDropdown()" id="engineYandex">Яндекс</button>
+                    <button class="dropdown-item" onclick="app.search.setEngine('google'); app.hud.hideDropdown()" id="engineGoogle">Google</button>
 
                     <div class="dropdown-divider"></div>
 
@@ -346,8 +439,22 @@
                         <span>История поиска</span>
                         <span id="historyIndicator" class="toggle-indicator"></span>
                     </button>
-                    <button class="dropdown-item" onclick="app.history.clear(); app.hud.hideDropdown()">Очистить
-                        историю</button>
+
+                    <button class="dropdown-item" onclick="app.history.clear(); app.hud.hideDropdown()">Очистить историю</button>
+                </div>
+
+                
+                <div class="dropdown-column">
+                    <div class="dropdown-column-title">Стикеры и конфиг</div>
+
+                    <button class="dropdown-item" onclick="app.stickyNotes.toggle()" id="stickyNotesToggleBtn">
+                        <span>Стикеры на странице</span>
+                        <span id="stickyNotesIndicator" class="toggle-indicator"></span>
+                    </button>
+
+                    <button class="dropdown-item" onclick="app.stickyNotes.addNote(); app.hud.hideDropdown()">
+                        <span>Добавить стикер</span>
+                    </button>
 
                     <div class="dropdown-divider"></div>
 
@@ -359,8 +466,16 @@
                         <span>Вставить конфигурацию</span>
                     </button>
 
+                    <div class="dropdown-divider"></div>
+
                     <button class="dropdown-item" onclick="app.storage.resetConfig()" style="color: #ff6b6b;">
                         <span>Удалить текущую конфигурацию</span>
+                    </button>
+
+                    <div class="dropdown-divider"></div>
+
+                    <button class="dropdown-item" onclick="app.hud.forceHide(); app.hud.hideDropdown()">
+                        <span>Скрыть HUD</span>
                     </button>
                 </div>
 
@@ -370,7 +485,9 @@
 
     <div class="groups" id="groups"></div>
 
-    <!-- AIM TRAINER -->
+    <div class="countdown-widget" id="countdownWidget"></div>
+
+    
     <div class="aim-overlay" id="aimOverlay">
         <button class="aim-close" id="aimCloseBtn" title="Закрыть (Esc)">✕</button>
 
@@ -417,7 +534,7 @@
         </div>
     </div>
 
-    <!-- TYPING SPEED -->
+    
     <div class="aim-overlay" id="typingOverlay">
         <button class="aim-close" id="typingCloseBtn" title="Закрыть (Esc)">✕</button>
 
@@ -480,7 +597,7 @@
         </div>
     </div>
 
-    <!-- TOAST ДОСТИЖЕНИЯ -->
+    
     <div class="achievement-toast" id="achievementToast">
         <div class="achievement-toast-header">Достижение получено</div>
         <div class="achievement-toast-body">
@@ -490,7 +607,7 @@
         <div class="achievement-toast-progress"></div>
     </div>
 
-    <!-- МОДАЛКА ДОСТИЖЕНИЙ -->
+    
     <div class="achievements-modal" id="achievementsModal">
         <button class="aim-close" id="achievementsCloseBtn" title="Закрыть (Esc)">✕</button>
 
@@ -502,9 +619,11 @@
         <div class="achievements-grid"></div>
     </div>
 
+    <div id="stickyNotesContainer" class="sticky-notes-container"></div>
+
     <script type="module" src="app.js"></script>
 
-    <!-- GLOW ШАРИКИ -->
+    
     <div class="glow-ball"></div>
     <div class="glow-ball-small"></div>
     <div class="glow-ball-bottom"></div>

@@ -296,7 +296,7 @@ class Achievements {
             osc.start(ctx.currentTime);
             osc.stop(ctx.currentTime + 0.4);
         } catch {
-            // звук опционален
+
         }
     }
 

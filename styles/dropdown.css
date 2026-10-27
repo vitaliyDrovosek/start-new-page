@@ -1,6 +1,6 @@
-/* ============================================ */
-/* DROPDOWN */
-/* ============================================ */
+
+
+
 
 .dropdown-container {
     position: fixed;
@@ -80,8 +80,8 @@
 
 .dropdown-columns {
     display: grid;
-    grid-template-columns: repeat(3, minmax(230px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(6, minmax(180px, 1fr));
+    gap: 8px;
 }
 
 .dropdown-column {
@@ -127,16 +127,7 @@
 .dropdown-item.active {
     background: var(--accent);
     position: relative;
-    padding-left: 35px;
-}
-
-.dropdown-item.active::before {
-    content: "✓";
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-}
+    }
 
 .dropdown-menu::-webkit-scrollbar {
     width: 4px;

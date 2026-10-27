@@ -1,8 +1,8 @@
-/* ============================================ */
-/* HUE */
-/* ============================================ */
 
-/* HUE-СЛАЙДЕР */
+
+
+
+
 .hue-control {
     padding: 10px 16px;
     display: flex;
@@ -95,7 +95,7 @@
     cursor: pointer;
 }
 
-/* RGB-КНОПКА */
+
 .rgb-mode-btn {
     margin-top: 8px;
     padding: 8px 14px;
@@ -127,7 +127,7 @@
         0 0 25px rgba(var(--accent-bright-rgb), 0.3);
 }
 
-/* RGB-РЕЖИМ */
+
 @property --rgb-hue {
     syntax: '<number>';
     inherits: true;
@@ -283,12 +283,7 @@ body.rgb-mode .hue-slider::-webkit-slider-thumb {
         background-position: 0% 50%;
     }
 }
-/* ============================================ */
-/* HUE SLIDERS — нейтральный трек               */
-/* (оттенок / яркость / прозрачность)           */
-/* ============================================ */
 
-/* Трек — серый, как у .volume-slider и #grainOpacity */
 .hue-control input.hue-slider[type="range"],
 #hueSlider,
 #brightnessSlider,
@@ -312,7 +307,6 @@ body.rgb-mode #opacitySlider {
     filter: none !important;
 }
 
-/* Firefox */
 #hueSlider::-moz-range-track,
 #brightnessSlider::-moz-range-track,
 #opacitySlider::-moz-range-track {
@@ -322,7 +316,6 @@ body.rgb-mode #opacitySlider {
     border: none !important;
 }
 
-/* Thumb — оставляем акцентный градиент как в hue.css, но с белой обводкой */
 .hue-control input.hue-slider[type="range"]::-webkit-slider-thumb,
 #hueSlider::-webkit-slider-thumb,
 #brightnessSlider::-webkit-slider-thumb,
@@ -351,7 +344,6 @@ body.rgb-mode .hue-control input.hue-slider[type="range"]::-webkit-slider-thumb 
     box-shadow: 0 2px 15px rgba(var(--accent-rgb), 0.6) !important;
 }
 
-/* Firefox thumb */
 #hueSlider::-moz-range-thumb,
 #brightnessSlider::-moz-range-thumb,
 #opacitySlider::-moz-range-thumb {
@@ -367,10 +359,6 @@ body.rgb-mode .hue-control input.hue-slider[type="range"]::-webkit-slider-thumb 
     animation: none !important;
 }
 
-/* ============================================ */
-/* HUE-CONTROL — карточка как .volume-control   */
-/* ============================================ */
-
 .hue-control {
     padding: 12px 20px;
     display: flex;
@@ -382,7 +370,6 @@ body.rgb-mode .hue-control input.hue-slider[type="range"]::-webkit-slider-thumb 
     border: 1px solid rgba(var(--accent-muted-rgb), 0.25);
 }
 
-/* Внутренние подписи — как в .volume-control */
 .hue-control label {
     display: flex;
     justify-content: space-between;
@@ -392,7 +379,6 @@ body.rgb-mode .hue-control input.hue-slider[type="range"]::-webkit-slider-thumb 
     margin: 0;
 }
 
-/* Бейдж со значением — сбросить «пилюлю» из hue.css, чтобы совпадало с volume-value */
 .hue-control label span:last-child {
     background: none;
     box-shadow: none;

@@ -21,11 +21,9 @@ class Weather {
         this.dragHandle = document.getElementById('weatherDrag');
         this.body = document.getElementById('weatherBody');
 
-        // drag
         this.dragHandle?.addEventListener('mousedown', (e) => this.onDragStart(e));
         this.dragHandle?.addEventListener('touchstart', (e) => this.onDragStart(e.touches[0]), { passive: false });
 
-        // обновление
         document.getElementById('weatherRefreshBtn')?.addEventListener('click', () => this.fetch());
 
         this.restorePosition();
@@ -85,8 +83,6 @@ class Weather {
         }
         this.app.storage.save();
     }
-
-    // ============ DRAG ============
 
     onDragStart(e) {
         if (!e) return;

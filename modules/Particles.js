@@ -13,7 +13,7 @@ class Particles {
 
         this.loadSettings(savedSettings);
 
-        // Автоснижение на мобилке
+
         const isMobile = window.matchMedia('(max-width: 768px)').matches;
         if (isMobile) {
             if (this.STAR_COUNT > 30) {
@@ -89,7 +89,7 @@ class Particles {
         document.addEventListener('touchmove', (e) => {
             if (!this.enabled || !e.touches.length) return;
 
-            // Не блокируем скролл в скроллируемых зонах
+
             const target = e.target;
             const scrollable = target.closest(
                 '.dropdown-menu, .search-history, .particles-settings-content, ' +

@@ -100,7 +100,7 @@ class Audio {
                         func: this.app.data.isMuted ? 'mute' : 'unMute',
                         args: []
                     }), '*');
-                } catch { /* Игнорируем ошибки YouTube API */ }
+                } catch {  }
             }
         }
     }
