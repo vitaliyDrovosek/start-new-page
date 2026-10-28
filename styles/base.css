@@ -1,7 +1,4 @@
-
-
 :root {
-
     --accent: #3b82f6;
     --accent-hover: #60a5fa;
     --accent-rgb: 59, 130, 246;
@@ -47,17 +44,95 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-html,
-body {
+/* Формы наследуют шрифт, а не сбрасывают */
+input, button, textarea, select {
+    font-family: inherit;
+}
+
+html, body {
     overscroll-behavior: none;
     -webkit-text-size-adjust: 100%;
 }
 
 body {
-    min-height: 100vh;
     min-height: 100dvh;
     background: #0f0f1a;
     color: var(--text-primary);
     overflow-x: hidden;
-    transition: background 0.5s ease;
+}
+
+/* ============================================ */
+/* DYNAMIC SHRINK под высоту вьюпорта           */
+/* ============================================ */
+
+.top {
+    padding-top: clamp(40px, 12vh, 90px);
+    min-height: clamp(20vh, 30vh, 30vh);
+    padding-bottom: clamp(10px, 2vh, 30px);
+}
+
+.search-input {
+    padding: clamp(10px, 2vh, 16px) clamp(18px, 3vw, 28px);
+    font-size: clamp(0.95rem, 1.6vh, 1.2rem);
+    margin-top: clamp(0.5rem, 2vh, 1rem);
+}
+
+.groups {
+    gap: clamp(6px, 1.5vh, 15px);
+    padding: clamp(4px, 1vh, 15px);
+    margin: clamp(4px, 1.5vh, 15px) auto clamp(10px, 3vh, 70px);
+}
+
+.group {
+    padding: clamp(8px, 1.8vh, 15px);
+    border-radius: clamp(12px, 2vh, 18px);
+}
+
+.group-title {
+    font-size: clamp(0.8rem, 1.5vh, 1rem);
+    margin-bottom: clamp(4px, 1vh, 10px);
+    padding-bottom: clamp(4px, 1vh, 8px);
+    min-height: 0;
+}
+
+.link {
+    padding: clamp(4px, 1.1vh, 8px) clamp(8px, 1.6vw, 12px);
+    font-size: clamp(0.75rem, 1.4vh, 0.9rem);
+    margin-bottom: clamp(2px, 0.8vh, 6px);
+    border-radius: clamp(8px, 1.5vh, 12px);
+    min-height: 0;
+}
+
+.link-favicon {
+    width: clamp(12px, 1.8vh, 16px);
+    height: clamp(12px, 1.8vh, 16px);
+}
+
+.countdown-widget {
+    max-height: clamp(15vh, 30vh, 40vh);
+    margin-bottom: clamp(110px, 14vh, 130px);  /* над кнопкой ☰ */
+}
+
+.countdown-item {
+    padding: clamp(8px, 1.6vh, 12px) clamp(10px, 2vw, 16px);
+}
+
+@media (max-width: 768px) {
+    .top {
+        padding-top: clamp(30px, 10vh, 90px);
+        min-height: clamp(15vh, 25vh, 30vh);
+    }
+    .groups {
+        margin-bottom: clamp(80px, 12vh, 100px);
+        gap: clamp(6px, 1.5vh, 12px);
+    }
+    .countdown-widget {
+        margin-bottom: clamp(96px, 14vh, 120px);
+    }
+}
+
+@media (max-height: 500px) {
+    .countdown-widget {
+        margin-bottom: clamp(90px, 18vh, 110px);
+    }
 }

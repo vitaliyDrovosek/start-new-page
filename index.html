@@ -7,7 +7,6 @@
 
     <title>main page</title>
 
-    
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="shortcut icon" type="image/png" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -16,9 +15,6 @@
 
     <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
 <style id="grain-slider-hard-fix">
-/* ============================================ */
-/* GRAIN SLIDER — как остальные слайдеры (Chrome) */
-/* ============================================ */
 #grainOpacity {
     -webkit-appearance: none !important;
     appearance: none !important;
@@ -29,21 +25,17 @@
     outline: none !important;
     cursor: pointer !important;
     border: none !important;
-    background: rgba(255, 255, 255, 0.2) !important; /* Серый фон, как у яркости */
+    background: rgba(255, 255, 255, 0.2) !important;
     box-shadow: none !important;
     padding: 0 !important;
     margin: 0 !important;
 }
-
-/* Трек для Chrome/Safari */
 #grainOpacity::-webkit-slider-runnable-track {
     height: 4px !important;
     border-radius: 10px !important;
     background: rgba(255, 255, 255, 0.2) !important;
     border: none !important;
 }
-
-/* Бегунок для Chrome/Safari */
 #grainOpacity::-webkit-slider-thumb {
     -webkit-appearance: none !important;
     appearance: none !important;
@@ -55,23 +47,18 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), 0 0 12px rgba(var(--accent-rgb), 0.5) !important;
     cursor: pointer !important;
     transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-    margin-top: -6px !important; /* Центровка бегунка относительно трека */
+    margin-top: -6px !important;
 }
-
 #grainOpacity::-webkit-slider-thumb:hover {
     transform: scale(1.2) !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), 0 2px 15px rgba(var(--accent-rgb), 0.6) !important;
 }
-
-/* Трек для Firefox */
 #grainOpacity::-moz-range-track {
     background: rgba(255, 255, 255, 0.2) !important;
     height: 4px !important;
     border-radius: 10px !important;
     border: none !important;
 }
-
-/* Бегунок для Firefox */
 #grainOpacity::-moz-range-thumb {
     width: 16px !important;
     height: 16px !important;
@@ -92,25 +79,14 @@
     <canvas id="particles"></canvas>
     <div class="grain-overlay"></div>
     <div class="overlay"></div>
-    <div class="sleep-quick-toggles" id="sleepQuickToggles">
-        <button class="sleep-toggle-btn" id="sleepGrainBtn" title="Шум">
-            <span class="iconify" data-icon="mdi:grain"></span>
-        </button>
-        <button class="sleep-toggle-btn" id="sleepBlurBtn" title="Размытие">
-            <span class="iconify" data-icon="mdi:blur"></span>
-        </button>
-    </div>
 
-    
     <div class="game-icons" id="gameIcons">
         <button class="game-icon" id="gameIconAim" title="Aim Trainer"><span class="iconify" data-icon="mdi:target"></span></button>
         <button class="game-icon" id="gameIconTyping" title="Typing Speed"><span class="iconify" data-icon="mdi:keyboard-outline"></span></button>
     </div>
 
-    
     <button class="notes-btn" id="notesBtn" title="Заметки"><span class="iconify" data-icon="mdi:notebook-outline"></span></button>
 
-    
     <div class="notes-panel" id="notesPanel">
         <div class="notes-header">
             <span class="notes-title">Заметки</span>
@@ -120,7 +96,6 @@
         <div class="notes-list" id="notesList"></div>
     </div>
 
-    
     <div class="time-widget" id="timeWidget">
         <div class="tw-drag" id="timeWidgetDrag" title="Перетащить">⠿</div>
 
@@ -152,7 +127,6 @@
         </div>
     </div>
 
-    
     <div class="time-center" id="timeCenter">
         <div class="time-center-item" id="timeCenterSw">00:00.00</div>
         <div class="time-center-sep" id="timeCenterSep">|</div>
@@ -213,7 +187,6 @@
 
             <div class="dropdown-columns">
 
-                
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Игры</div>
 
@@ -240,7 +213,6 @@
                     </button>
                 </div>
 
-                
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Время и события</div>
 
@@ -276,7 +248,6 @@
                     </button>
                 </div>
 
-                
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Оформление</div>
 
@@ -313,7 +284,6 @@
                     </div>
                 </div>
 
-                
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Эффекты</div>
 
@@ -395,16 +365,17 @@
                     </div>
                 </div>
 
-                
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Поиск и интерфейс</div>
-
-                    <button class="dropdown-item" onclick="app.groups.add(); app.hud.hideDropdown()">Добавить группу</button>
 
                     <button class="dropdown-item" onclick="app.hud.toggleGroupsLock()" id="groupsLockToggleBtn">
                         <span>Блокировка групп</span>
                         <span id="groupsLockIndicator" class="toggle-indicator"></span>
                     </button>
+
+                    <button class="dropdown-item" onclick="app.groups.add(); app.hud.hideDropdown()">Добавить группу</button>
+
+                    <div class="dropdown-divider"></div>
 
                     <button class="dropdown-item" onclick="app.notes.toggleButton()" id="notesToggleBtn">
                         <span>Кнопка заметок</span>
@@ -428,10 +399,20 @@
                         <span id="weatherIndicator" class="toggle-indicator"></span>
                     </button>
 
+                    <div class="dropdown-divider"></div>
+
                     <button class="dropdown-item" onclick="app.hud.toggleSleepMode()" id="sleepModeToggleBtn">
                         <span>Режим ожидания</span>
                         <span id="sleepModeIndicator" class="toggle-indicator"></span>
                     </button>
+
+                    <div class="hue-control sleep-timeout-control" id="sleepTimeoutControl">
+                        <label for="sleepTimeout">
+                            <span>Таймаут (сек)</span>
+                            <span id="sleepTimeoutValue">15</span>
+                        </label>
+                        <input type="range" id="sleepTimeout" class="hue-slider" min="5" max="120" value="15" step="5">
+                    </div>
 
                     <div class="dropdown-divider"></div>
 
@@ -443,7 +424,6 @@
                     <button class="dropdown-item" onclick="app.history.clear(); app.hud.hideDropdown()">Очистить историю</button>
                 </div>
 
-                
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Стикеры и конфиг</div>
 
@@ -452,9 +432,7 @@
                         <span id="stickyNotesIndicator" class="toggle-indicator"></span>
                     </button>
 
-                    <button class="dropdown-item" onclick="app.stickyNotes.addNote(); app.hud.hideDropdown()">
-                        <span>Добавить стикер</span>
-                    </button>
+                    <button class="dropdown-item" onclick="app.stickyNotes.addNote(); app.hud.hideDropdown()">Добавить стикер</button>
 
                     <div class="dropdown-divider"></div>
 
@@ -487,7 +465,6 @@
 
     <div class="countdown-widget" id="countdownWidget"></div>
 
-    
     <div class="aim-overlay" id="aimOverlay">
         <button class="aim-close" id="aimCloseBtn" title="Закрыть (Esc)">✕</button>
 
@@ -534,7 +511,6 @@
         </div>
     </div>
 
-    
     <div class="aim-overlay" id="typingOverlay">
         <button class="aim-close" id="typingCloseBtn" title="Закрыть (Esc)">✕</button>
 
@@ -597,7 +573,6 @@
         </div>
     </div>
 
-    
     <div class="achievement-toast" id="achievementToast">
         <div class="achievement-toast-header">Достижение получено</div>
         <div class="achievement-toast-body">
@@ -607,7 +582,6 @@
         <div class="achievement-toast-progress"></div>
     </div>
 
-    
     <div class="achievements-modal" id="achievementsModal">
         <button class="aim-close" id="achievementsCloseBtn" title="Закрыть (Esc)">✕</button>
 
@@ -623,13 +597,11 @@
 
     <script type="module" src="app.js"></script>
 
-    
     <div class="glow-ball"></div>
     <div class="glow-ball-small"></div>
     <div class="glow-ball-bottom"></div>
 
     <script>
-    // Привязка слайдера интенсивности зерна к логике
     document.addEventListener('DOMContentLoaded', () => {
         const setupGrainSlider = () => {
             const slider = document.getElementById('grainOpacity');
@@ -648,7 +620,6 @@
             });
         };
         setupGrainSlider();
-        // если HUD инициализируется позже — попробовать ещё раз
         setTimeout(setupGrainSlider, 500);
     });
     </script>

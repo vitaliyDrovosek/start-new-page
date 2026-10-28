@@ -1,61 +1,68 @@
 class History {
     constructor(app) {
         this.app = app;
+        this.input = null;
+        this.container = null;
+        this.indicator = null;
+
+        this._boundDocMouseDown = this._onDocMouseDown.bind(this);
+        this._boundDocMouseUp = this._onDocMouseUp.bind(this);
+    }
+
+    init() {
         this.input = document.getElementById('searchInput');
         this.container = document.getElementById('searchHistory');
         this.indicator = document.getElementById('historyIndicator');
 
         this.setupEventListeners();
+        this.updateIndicator();
     }
 
     setupEventListeners() {
         if (this.input) {
-            this.input.addEventListener("keydown", (e) => {
-                if (e.key === "Enter") this.performSearch(e.target.value);
-            });
-
-            this.input.addEventListener("focus", () => {
-                this.render();
-                this.show();
-            });
-
-            this.input.addEventListener("input", () => {
-                this.render();
-                this.show();
-            });
-
             this.input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    this.performSearch(e.target.value);
+                    return;
+                }
                 if (e.key === 'ArrowDown' && this.container?.classList.contains('show')) {
                     e.preventDefault();
-                    const items = this.container.querySelectorAll('.history-item');
-                    if (items.length > 0) items[0].focus();
+                    const first = this.container.querySelector('.history-item');
+                    if (first) first.focus();
                 }
+            });
+
+            this.input.addEventListener('focus', () => {
+                this.render();
+                this.show();
+            });
+
+            this.input.addEventListener('input', () => {
+                this.render();
+                this.show();
             });
         }
 
-        let _downInside = false;
-        document.addEventListener('mousedown', (e) => {
-            _downInside = !!(
-                this.input?.contains(e.target) ||
-                this.container?.contains(e.target) ||
-                document.getElementById('calcResult')?.contains(e.target)
-            );
-        }, true);
-
-        document.addEventListener('mouseup', (e) => {
-            const isInside = !!(
-                this.input?.contains(e.target) ||
-                this.container?.contains(e.target) ||
-                document.getElementById('calcResult')?.contains(e.target)
-            );
-            if (!_downInside && !isInside) {
-                this.hide();
-            }
-        }, true);
+        document.addEventListener('mousedown', this._boundDocMouseDown, true);
+        document.addEventListener('mouseup', this._boundDocMouseUp, true);
     }
 
-    init() {
-        this.updateIndicator();
+    _isInside(target) {
+        return !!(
+            this.input?.contains(target) ||
+            this.container?.contains(target) ||
+            document.getElementById('calcResult')?.contains(target)
+        );
+    }
+
+    _onDocMouseDown(e) {
+        this._downInside = this._isInside(e.target);
+    }
+
+    _onDocMouseUp(e) {
+        if (!this._downInside && !this._isInside(e.target)) {
+            this.hide();
+        }
     }
 
     updateIndicator() {
@@ -72,19 +79,30 @@ class History {
     }
 
     add(query) {
-        if (!this.app.data.historyEnabled || !query.trim()) return;
+        if (!this.app.data.historyEnabled) return;
+        const q = query?.trim();
+        if (!q) return;
 
-        this.app.data.searchHistory = this.app.data.searchHistory.filter(item => item.query !== query);
-        this.app.data.searchHistory.unshift({ query, timestamp: Date.now() });
-        if (this.app.data.searchHistory.length > 20) this.app.data.searchHistory.pop();
+        const list = Array.isArray(this.app.data.searchHistory)
+            ? this.app.data.searchHistory
+            : (this.app.data.searchHistory = []);
 
+        // Убираем дубликаты
+        const filtered = list.filter(item => item?.query !== q);
+        filtered.unshift({ query: q, timestamp: Date.now() });
+        if (filtered.length > 20) filtered.length = 20;
+
+        this.app.data.searchHistory = filtered;
         this.app.storage.save();
         this.render();
     }
 
-    remove(index, event) {
-        event.stopPropagation();
-        this.app.data.searchHistory.splice(index, 1);
+    remove(item) {
+        const list = this.app.data.searchHistory;
+        if (!Array.isArray(list)) return;
+        const idx = list.indexOf(item);
+        if (idx === -1) return;
+        list.splice(idx, 1);
         this.app.storage.save();
         this.render();
     }
@@ -99,34 +117,62 @@ class History {
     render() {
         if (!this.container) return;
 
-        if (!this.app.data.searchHistory?.length) {
-            this.container.innerHTML = '';
+        const list = this.app.data.searchHistory;
+        if (!Array.isArray(list) || list.length === 0) {
+            this.container.replaceChildren();
             return;
         }
 
-        let html = '';
+        const fragment = document.createDocumentFragment();
 
-        this.app.data.searchHistory.forEach((item, index) => {
-            if (!item?.query) return;
+        for (const item of list) {
+            if (!item?.query) continue;
 
             const date = new Date(item.timestamp || Date.now());
-            const timeStr = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-            const escapedQuery = item.query.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            const hh = String(date.getHours()).padStart(2, '0');
+            const mm = String(date.getMinutes()).padStart(2, '0');
 
-            html += `
-                <div class="history-item" onclick="app.history.use('${escapedQuery}')">
-                    <span class="history-text">${item.query}</span>
-                    <span class="history-time">${timeStr}</span>
-                    <span class="history-delete" onclick="app.history.remove(${index}, event)">✕</span>
-                </div>
-            `;
-        });
+            const row = document.createElement('div');
+            row.className = 'history-item';
+            row.tabIndex = -1;  // чтобы работал focus() по ArrowDown
 
-        if (this.app.data.searchHistory.length > 0) {
-            html += `<div class="history-clear" onclick="app.history.clear()">Очистить историю</div>`;
+            const text = document.createElement('span');
+            text.className = 'history-text';
+            text.textContent = item.query;
+
+            const time = document.createElement('span');
+            time.className = 'history-time';
+            time.textContent = `${hh}:${mm}`;
+
+            const del = document.createElement('span');
+            del.className = 'history-delete';
+            del.textContent = '✕';
+
+            row.append(text, time, del);
+
+            // Клик по строке — использовать запрос
+            row.addEventListener('click', (e) => {
+                if (e.target === del) return; // не перехватываем кнопку удаления
+                this.use(item.query);
+            });
+
+            // Клик по ✕ — удалить
+            del.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.remove(item);
+            });
+
+            fragment.appendChild(row);
         }
 
-        this.container.innerHTML = html;
+        // Кнопка «Очистить историю»
+        const clearBtn = document.createElement('div');
+        clearBtn.className = 'history-clear';
+        clearBtn.textContent = 'Очистить историю';
+        clearBtn.addEventListener('click', () => this.clear());
+        fragment.appendChild(clearBtn);
+
+        this.container.replaceChildren(fragment);
     }
 
     use(query) {
@@ -142,9 +188,7 @@ class History {
     }
 
     hide() {
-        if (this.container) {
-            this.container.classList.remove('show');
-        }
+        if (this.container) this.container.classList.remove('show');
         document.getElementById('calcResult')?.classList.remove('visible');
     }
 
@@ -154,4 +198,5 @@ class History {
         this.app.search.search(query);
     }
 }
+
 export default History;

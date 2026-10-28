@@ -1,4 +1,6 @@
-
+/* ============================================ */
+/* TYPING SPEED                                 */
+/* ============================================ */
 
 .typing-field {
     flex-grow: 1;
@@ -26,19 +28,9 @@
 }
 
 @keyframes typingShake {
-
-    0%,
-    100% {
-        transform: translateX(0);
-    }
-
-    25% {
-        transform: translateX(-8px);
-    }
-
-    75% {
-        transform: translateX(8px);
-    }
+    0%, 100% { transform: translateX(0); }
+    25%      { transform: translateX(-8px); }
+    75%      { transform: translateX(8px); }
 }
 
 .typing-char {
@@ -75,15 +67,8 @@
 }
 
 @keyframes typingCursorBlink {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.3;
-    }
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.3; }
 }
 
 .typing-input {
@@ -92,14 +77,15 @@
     border-radius: 50px;
     border: 2px solid rgba(var(--accent-soft-rgb), 0.4);
     background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: var(--text-primary);
     font-size: 1.4rem;
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
     letter-spacing: 3px;
     text-align: center;
     outline: none;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
     box-shadow:
         0 4px 20px rgba(0, 0, 0, 0.4),
         0 0 25px rgba(var(--accent-deep-rgb), 0.2);

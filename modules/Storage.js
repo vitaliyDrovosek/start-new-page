@@ -1,11 +1,22 @@
 class Storage {
     constructor(app) {
         this.app = app;
-        this.STORAGE_KEY = "startV2";
+        this.STORAGE_KEY = 'startV2';
     }
 
     load() {
-        const savedData = JSON.parse(localStorage.getItem(this.STORAGE_KEY)) || {};
+        let savedData = {};
+        try {
+            const raw = localStorage.getItem(this.STORAGE_KEY);
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+                    savedData = parsed;
+                }
+            }
+        } catch (err) {
+            console.warn('[Storage] Failed to parse localStorage, using defaults:', err);
+        }
 
         const defaultParticlesSettings = {
             STAR_COUNT: 50,
@@ -19,19 +30,22 @@ class Storage {
             PARTICLE_REPEL_RADIUS: 60
         };
 
+        const arr = (v) => Array.isArray(v) ? v : [];
+
         return {
-            groups: savedData.groups || [],
+            groups: arr(savedData.groups),
             background: savedData.background || null,
             youtubeId: savedData.youtubeId || null,
             youtubePlaylistId: savedData.youtubePlaylistId || null,
             isMuted: savedData.isMuted ?? true,
             volume: savedData.volume ?? 50,
             searchEngine: savedData.searchEngine || 'yandex',
-            searchHistory: savedData.searchHistory || [],
+            searchHistory: arr(savedData.searchHistory),
             historyEnabled: savedData.historyEnabled ?? true,
             weatherEnabled: savedData.weatherEnabled ?? false,
             weatherPos: savedData.weatherPos ?? null,
             sleepModeEnabled: savedData.sleepModeEnabled ?? true,
+            sleepTimeout: savedData.sleepTimeout ?? 15,
             blurEnabled: savedData.blurEnabled ?? true,
             particlesEnabled: savedData.particlesEnabled ?? true,
             videoCurrentTime: savedData.videoCurrentTime || 0,
@@ -41,10 +55,10 @@ class Storage {
             sleepGrainEnabled: savedData.sleepGrainEnabled ?? true,
             sleepBlurEnabled: savedData.sleepBlurEnabled ?? true,
             stickyNotesEnabled: savedData.stickyNotesEnabled ?? false,
-            stickyNotes: savedData.stickyNotes || [],
+            stickyNotes: arr(savedData.stickyNotes),
             stickyNotesDefaultColor: savedData.stickyNotesDefaultColor || 'yellow',
             countdownEnabled: savedData.countdownEnabled ?? false,
-            countdownEvents: savedData.countdownEvents || [],
+            countdownEvents: arr(savedData.countdownEvents),
             countdownPinned: savedData.countdownPinned ?? false,
             grainOpacity: Math.min(30, Math.max(0, savedData.grainOpacity ?? 5.5)),
 
@@ -68,7 +82,7 @@ class Storage {
             typingBestWpm: savedData.typingBestWpm ?? null,
             typingGames: savedData.typingGames ?? 0,
 
-            achievements: savedData.achievements || [],
+            achievements: arr(savedData.achievements),
             visitsCount: savedData.visitsCount ?? 0,
             visitStreak: savedData.visitStreak ?? 0,
             lastVisitDate: savedData.lastVisitDate ?? null,
@@ -87,36 +101,37 @@ class Storage {
             particlesSettings: savedData.particlesSettings || defaultParticlesSettings
         };
     }
+
     syncParticlesFromState() {
-        if (this.app.particles) {
-            this.app.data.particlesEnabled = this.app.particles.enabled;
-            this.app.data.particlesSettings = {
-                STAR_COUNT: this.app.particles.STAR_COUNT,
-                REPEL_FORCE: this.app.particles.REPEL_FORCE,
-                REPEL_RADIUS: this.app.particles.REPEL_RADIUS,
-                BASE_SPEED: this.app.particles.BASE_SPEED,
-                BOUNCE: this.app.particles.BOUNCE,
-                LINE_DISTANCE: this.app.particles.LINE_DISTANCE,
-                OVERLAP_DISTANCE: this.app.particles.OVERLAP_DISTANCE,
-                PARTICLE_REPEL_FORCE: this.app.particles.PARTICLE_REPEL_FORCE,
-                PARTICLE_REPEL_RADIUS: this.app.particles.PARTICLE_REPEL_RADIUS
-            };
-        }
+        const p = this.app.particles;
+        if (!p) return;
+        this.app.data.particlesEnabled = p.enabled;
+        this.app.data.particlesSettings = {
+            STAR_COUNT: p.STAR_COUNT,
+            REPEL_FORCE: p.REPEL_FORCE,
+            REPEL_RADIUS: p.REPEL_RADIUS,
+            BASE_SPEED: p.BASE_SPEED,
+            BOUNCE: p.BOUNCE,
+            LINE_DISTANCE: p.LINE_DISTANCE,
+            OVERLAP_DISTANCE: p.OVERLAP_DISTANCE,
+            PARTICLE_REPEL_FORCE: p.PARTICLE_REPEL_FORCE,
+            PARTICLE_REPEL_RADIUS: p.PARTICLE_REPEL_RADIUS
+        };
     }
 
-
-
     save() {
-        this.syncParticlesFromState();
-
-        this.app.data.glowEnabled = this.app.glowEnabled;
-
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.app.data));
+        try {
+            this.syncParticlesFromState();
+            this.app.data.glowEnabled = this.app.glowEnabled;
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.app.data));
+        } catch (err) {
+            console.error('[Storage] save failed:', err);
+        }
     }
 
     saveBeforeUnload() {
         const video = document.getElementById('bgVideo');
-        if (video.style.display !== 'none') {
+        if (video && video.style.display !== 'none') {
             this.app.data.videoCurrentTime = video.currentTime;
         }
         this.save();
@@ -125,171 +140,191 @@ class Storage {
     copyConfig() {
         this.syncParticlesFromState();
         const config = JSON.stringify(this.app.data, null, 2);
-        navigator.clipboard.writeText(config)
-            .then(() => alert("Конфигурация скопирована в буфер обмена"))
-            .catch(this.fallbackCopy.bind(this, config));
+        if (navigator.clipboard?.writeText) {
+            navigator.clipboard.writeText(config)
+                .then(() => alert('Конфигурация скопирована в буфер обмена'))
+                .catch(() => this.fallbackCopy(config));
+        } else {
+            this.fallbackCopy(config);
+        }
     }
 
     fallbackCopy(text) {
         const textarea = document.createElement('textarea');
         textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.top = '0';
+        textarea.style.left = '0';
+        textarea.style.opacity = '0';
         document.body.appendChild(textarea);
+        textarea.focus();
         textarea.select();
-        document.execCommand('copy');
+        try { document.execCommand('copy'); } catch { /* ignore */ }
         document.body.removeChild(textarea);
-        alert("Конфигурация скопирована в буфер обмена");
+        alert('Конфигурация скопирована в буфер обмена');
     }
 
     pasteConfig() {
+        if (!navigator.clipboard?.readText) {
+            alert('Буфер обмена недоступен');
+            return;
+        }
         navigator.clipboard.readText()
             .then(text => this.applyConfig(text))
-            .catch(() => alert("Не удалось прочитать буфер обмена"));
+            .catch(() => alert('Не удалось прочитать буфер обмена'));
     }
 
     applyConfig(text) {
+        let newConfig;
         try {
-            const newConfig = JSON.parse(text);
+            newConfig = JSON.parse(text);
+            if (!newConfig || typeof newConfig !== 'object' || Array.isArray(newConfig)) {
+                throw new Error('not an object');
+            }
+        } catch (err) {
+            console.error('[Storage] applyConfig parse failed:', err);
+            alert('Неверный формат конфигурации');
+            return;
+        }
+
+        try {
             Object.assign(this.app.data, newConfig);
 
-            if (this.app.particles && newConfig.particlesSettings) {
-                this.app.particles.updateSettings(newConfig.particlesSettings);
-            }
-            if (this.app.particles && newConfig.particlesEnabled !== undefined) {
-                this.app.particles.enabled = !!newConfig.particlesEnabled;
-                const indicator = document.getElementById('particlesIndicator');
-                if (indicator) {
-                    indicator.classList.toggle('off', !this.app.particles.enabled);
+            if (this.app.particles) {
+                if (newConfig.particlesSettings) {
+                    this.app.particles.updateSettings(newConfig.particlesSettings);
+                }
+                if (newConfig.particlesEnabled !== undefined) {
+                    const wasEnabled = this.app.particles.enabled;
+                    this.app.particles.enabled = !!newConfig.particlesEnabled;
+                    if (this.app.particles.enabled && !wasEnabled) this.app.particles.startLoop?.();
+                    if (!this.app.particles.enabled && wasEnabled) this.app.particles.stopLoop?.();
+                    const indicator = document.getElementById('particlesIndicator');
+                    if (indicator) indicator.classList.toggle('off', !this.app.particles.enabled);
                 }
             }
 
             this.save();
             this.applyChanges();
-            alert("Конфигурация применена");
-        } catch {
-            alert("Неверный формат конфигурации");
+            alert('Конфигурация применена');
+        } catch (err) {
+            console.error('[Storage] applyConfig apply failed:', err);
+            alert('Не удалось применить конфигурацию');
         }
     }
 
     applyChanges() {
-        this.app.background.apply();
-        this.app.groups.render();
-        this.app.search.updateUI();
-        this.app.history.render();
-        this.app.audio.updateIcon(this.app.data.volume, this.app.data.isMuted);
+        const a = this.app;
 
-        document.body.classList.toggle('glow-enabled', this.app.data.glowEnabled !== false);
-        document.body.classList.toggle('glow-disabled', this.app.data.glowEnabled === false);
-        if (this.app.hud) this.app.hud.updateGlowIndicator();
+        a.background?.apply();
+        a.groups?.render();
+        a.search?.updateUI();
+        a.history?.render();
+        a.audio?.updateIcon?.(a.data.volume, a.data.isMuted);
 
-        if (this.app.gameIcons) {
-            this.app.gameIcons.updateVisibility();
-            this.app.gameIcons.updateIndicator();
+        document.body.classList.toggle('glow-enabled', a.data.glowEnabled !== false);
+        document.body.classList.toggle('glow-disabled', a.data.glowEnabled === false);
+        a.hud?.updateGlowIndicator?.();
+
+        if (a.gameIcons) {
+            a.gameIcons.updateVisibility();
+            a.gameIcons.updateIndicator();
         }
 
-        if (this.app.timeWidget) {
-            this.app.timeWidget.updateVisibility();
-            this.app.timeWidget.updateIndicator();
-            this.app.timeWidget.restorePosition();
-            this.app.timeWidget.restoreState();
+        if (a.timeWidget) {
+            a.timeWidget.updateVisibility();
+            a.timeWidget.updateIndicator();
+            a.timeWidget.restorePosition?.();
+            a.timeWidget.restoreState?.();
         }
 
-        if (this.app.grain) {
-            this.app.grain.apply();
+        if (a.grain) a.grain.apply();
+
+        if (a.stickyNotes) {
+            a.stickyNotes.enabled = a.data.stickyNotesEnabled === true;
+            a.stickyNotes.updateVisibility();
+            a.stickyNotes.updateIndicator();
+            a.stickyNotes.render();
         }
 
-        if (this.app.stickyNotes) {
-            this.app.stickyNotes.enabled = this.app.data.stickyNotesEnabled === true;
-            this.app.stickyNotes.updateVisibility();
-            this.app.stickyNotes.updateIndicator();
-            this.app.stickyNotes.render();
+        if (a.notes) {
+            a.notes.updateVisibility?.();
+            a.notes.updateIndicator?.();
+            a.notes.render?.();
         }
 
-                if (this.app.notes) {
-            this.app.notes.updateVisibility();
-            this.app.notes.updateIndicator();
-            this.app.notes.render();
+        if (a.hud) {
+            a.hud.updateAutoSleepIndicator();
+            a.hud.updateGroupsLockIndicator();
+            a.hud.updateSleepModeIndicator?.();
         }
 
-        if (this.app.hud) {
-            this.app.hud.updateAutoSleepIndicator();
-            this.app.hud.updateGroupsLockIndicator();
-        }
+        if (a.hue) {
+            const hue = a.data.hue ?? 220;
+            const rgbMode = a.data.rgbMode ?? false;
+            const brightness = a.data.brightness ?? 60;
+            const uiOpacity = a.data.uiOpacity ?? 100;
 
-        if (this.app.hue) {
-            const hue = this.app.data.hue ?? 220;
-            const rgbMode = this.app.data.rgbMode ?? false;
-            const brightness = this.app.data.brightness ?? 60;
-            const uiOpacity = this.app.data.uiOpacity ?? 100;
+            if (a.hue.slider) a.hue.slider.value = hue;
+            if (a.hue.brightnessSlider) a.hue.brightnessSlider.value = brightness;
+            if (a.hue.opacitySlider) a.hue.opacitySlider.value = uiOpacity;
 
-            if (this.app.hue.slider) this.app.hue.slider.value = hue;
-            if (this.app.hue.brightnessSlider) this.app.hue.brightnessSlider.value = brightness;
-            if (this.app.hue.opacitySlider) this.app.hue.opacitySlider.value = uiOpacity;
+            a.hue.applyBrightness(brightness);
+            a.hue.applyOpacity(uiOpacity);
+            a.hue.apply(hue);
 
-            this.app.hue.applyBrightness(brightness);
-            this.app.hue.applyOpacity(uiOpacity);
-            this.app.hue.apply(hue);
-
-            if (rgbMode !== this.app.hue.rgbMode) {
-                this.app.hue.toggleRgbMode();
+            if (rgbMode !== a.hue.rgbMode) {
+                a.hue.toggleRgbMode();
             } else {
-                this.app.hue.updateRgbButton();
+                a.hue.updateRgbButton();
             }
         }
 
-        if (this.app.aim) {
-            this.app.aim.updateDropdownBest();
+        a.aim?.updateDropdownBest?.();
+        a.typing?.updateDropdownBest?.();
+        a.achievements?.updateDropdownCounter?.();
+
+        if (a.weather?.widget) {
+            a.weather.widget.classList.toggle('visible', a.data.weatherEnabled);
+            if (a.data.weatherEnabled) a.weather.fetch();
         }
 
-        if (this.app.typing) {
-            this.app.typing.updateDropdownBest();
-        }
-
-        if (this.app.achievements) {
-            this.app.achievements.updateDropdownCounter();
-        }
-
-        if (this.app.weather.widget) {
-            this.app.weather.widget.classList.toggle('visible', this.app.data.weatherEnabled);
-            if (this.app.data.weatherEnabled) this.app.weather.fetch();
-        }
+        // Погода/курс/итог — ок
     }
 
     resetConfig() {
-        if (confirm("Вы уверены, что хотите сбросить все настройки?")) {
+        if (!confirm('Вы уверены, что хотите сбросить все настройки?')) return;
+
+        try {
             localStorage.removeItem(this.STORAGE_KEY);
             this.app.data = this.load();
 
-            if (this.app.particles && this.app.data.particlesSettings) {
-                this.app.particles.updateSettings(this.app.data.particlesSettings);
+            if (this.app.particles) {
+                if (this.app.data.particlesSettings) {
+                    this.app.particles.updateSettings(this.app.data.particlesSettings);
+                }
+                const enabled = this.app.data.particlesEnabled;
+                const wasEnabled = this.app.particles.enabled;
+                this.app.particles.enabled = !!enabled;
+
+                if (this.app.particles.enabled && !wasEnabled) this.app.particles.startLoop?.();
+                if (!this.app.particles.enabled && wasEnabled) this.app.particles.stopLoop?.();
+
+                const indicator = document.getElementById('particlesIndicator');
+                if (indicator) indicator.classList.toggle('off', !this.app.particles.enabled);
             }
 
             this.applyChanges();
 
-            if (this.app.weather.widget) {
+            if (this.app.weather?.widget) {
                 this.app.weather.widget.classList.remove('visible');
             }
 
-            if (this.app.particles) {
-                this.app.particles.enabled = this.app.data.particlesEnabled;
-                const indicator = document.getElementById('particlesIndicator');
-                if (indicator) {
-                    indicator.classList.toggle('off', !this.app.particles.enabled);
-                }
-            }
-
-            if (this.app.aim) {
-                this.app.aim.updateDropdownBest();
-            }
-
-            if (this.app.typing) {
-                this.app.typing.updateDropdownBest();
-            }
-
-            if (this.app.achievements) {
-                this.app.achievements.updateDropdownCounter();
-            }
-
-            alert("Конфигурация сброшена");
+            alert('Конфигурация сброшена');
+        } catch (err) {
+            console.error('[Storage] resetConfig failed:', err);
+            alert('Не удалось сбросить конфигурацию');
         }
     }
 }

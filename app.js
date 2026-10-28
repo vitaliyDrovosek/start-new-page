@@ -20,7 +20,6 @@ import Notes from './modules/Notes.js';
 import Grain from './modules/Grain.js';
 import StickyNotes from './modules/StickyNotes.js';
 import Countdown from './modules/Countdown.js';
-import SleepToggles from './modules/SleepToggles.js';
 
 class App {
     constructor() {
@@ -56,7 +55,6 @@ class App {
         this.grain = new Grain(this);
         this.stickyNotes = new StickyNotes(this);
         this.countdown = new Countdown(this);
-        this.sleepToggles = new SleepToggles(this);
 
         this.glowEnabled = this.data.glowEnabled !== false;
         document.body.classList.toggle('glow-enabled', this.glowEnabled);
@@ -89,11 +87,20 @@ class App {
         this.history.init();
         this.calculatorUI.init();
         this.search.updateUI();
+        this.background.init?.();
         this.background.apply();
         this.groups.render();
 
+        // Синхронизация Particles с сохранённым состоянием
         if (this.data.particlesEnabled === false) {
-            this.particles.toggle();
+            this.particles.enabled = false;
+            this.particles.stopLoop?.();
+            const indicator = document.getElementById('particlesIndicator');
+            if (indicator) indicator.classList.add('off');
+            document.body.classList.remove('particles-enabled');
+        } else {
+            this.particles.enabled = true;
+            document.body.classList.add('particles-enabled');
         }
 
         this.glow.randomize();
@@ -109,29 +116,20 @@ class App {
         this.grain.init();
         this.stickyNotes.init();
         this.countdown.init();
-        this.sleepToggles.init();
 
         this.search.loadReplaceTab();
-        this.setupEventListeners();
-        this.startVideoTimeSave();
-    }
-
-    setupEventListeners() {
-
-    }
-
-    startVideoTimeSave() {
-        setInterval(() => {
-            const video = document.getElementById('bgVideo');
-            if (video && video.style.display !== 'none') {
-                this.data.videoCurrentTime = video.currentTime;
-            }
-        }, 5000);
     }
 }
 
-const app = new App();
+let app;
+try {
+    app = new App();
+} catch (err) {
+    console.error('[App] initialization failed:', err);
+}
 
 window.addEventListener('beforeunload', () => {
-    app.storage.saveBeforeUnload();
+    try { app?.storage?.saveBeforeUnload?.(); } catch (err) {
+        console.error('[App] saveBeforeUnload failed:', err);
+    }
 });

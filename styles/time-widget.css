@@ -1,4 +1,6 @@
-
+/* ============================================ */
+/* TIME WIDGET + TIME CENTER                    */
+/* ============================================ */
 
 .time-widget {
     position: fixed;
@@ -12,13 +14,13 @@
     padding: 14px 16px;
     border-radius: 20px;
     background: var(--glass);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(var(--accent-muted-rgb), 0.4);
     box-shadow:
         0 10px 30px rgba(0, 0, 0, 0.4),
         0 0 25px rgba(var(--accent-deep-rgb), 0.25);
-    transition: opacity 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+    transition: opacity 0.3s ease, background 0.3s ease;
     user-select: none;
 }
 
@@ -46,7 +48,7 @@
     letter-spacing: 2px;
     padding: 2px 10px;
     border-radius: 10px;
-    transition: all 0.2s ease;
+    transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease;
     line-height: 1;
 }
 
@@ -95,13 +97,8 @@
 }
 
 @keyframes cdFlash {
-    from {
-        opacity: 1;
-    }
-
-    to {
-        opacity: 0.4;
-    }
+    from { opacity: 1; }
+    to   { opacity: 0.4; }
 }
 
 .tw-controls {
@@ -119,7 +116,7 @@
     color: var(--text-primary);
     font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     min-width: 38px;
     touch-action: manipulation;
 }
@@ -206,7 +203,7 @@
     color: var(--text-primary);
     font-size: 0.7rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease;
     touch-action: manipulation;
 }
 
@@ -239,8 +236,10 @@ body.hud-hidden .time-widget {
 }
 
 body.hud-hidden .time-widget .tw-display {
-    display: none !important;
+    display: none;
 }
+
+/* ---------- Таймер/секундомер в центре (sleep) ---------- */
 
 .time-center {
     position: fixed;
@@ -263,15 +262,8 @@ body.hud-hidden .time-widget .tw-display {
 }
 
 @keyframes timeCenterFade {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+    to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 
 .time-center-item {
@@ -306,22 +298,14 @@ body.hud-hidden .time-widget .tw-display {
 }
 
 .time-center-sep:has(+ .time-center-item.hidden),
-.time-center-item.hidden+.time-center-sep {
+.time-center-item.hidden + .time-center-sep {
     display: none;
 }
 
-/* ============================================ */
-/* TIME CENTER — инверсия фона под цифрами      */
-/* (только при скрытом HUD)                     */
-/* ============================================ */
-
+/* Инверсия фона под цифрами (только при скрытом HUD) */
 body.hud-hidden .time-center.visible {
     backdrop-filter: invert(1);
     -webkit-backdrop-filter: invert(1);
-}
-
-/* Чтобы инверсия была аккуратной — скругление и отступы */
-body.hud-hidden .time-center.visible {
     padding: 20px 40px;
     border-radius: 30px;
 }

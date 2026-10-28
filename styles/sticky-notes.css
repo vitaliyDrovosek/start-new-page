@@ -1,4 +1,7 @@
-
+/* ============================================ */
+/* STICKY NOTES — финальная версия              */
+/* Минимум 200×200, невидимые ручки resize      */
+/* ============================================ */
 
 .sticky-notes-container {
     position: fixed;
@@ -12,9 +15,15 @@
     display: block;
 }
 
+/* ---------- Стикер ---------- */
+
 .sticky-note {
     position: fixed;
     width: 240px;
+    min-width: 200px;
+    min-height: 200px;
+    height: auto;
+    max-height: 80vh;
     padding: 10px 12px 12px;
     border-radius: 18px;
     display: flex;
@@ -22,46 +31,16 @@
     gap: 8px;
     pointer-events: auto;
     background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
     border: 1px solid rgba(var(--sticky-accent-rgb), 0.45);
     box-shadow:
         0 5px 20px rgba(0, 0, 0, 0.3),
         0 0 20px rgba(var(--accent-deep-rgb), 0.2);
-    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, border-color 0.3s ease;
     user-select: none;
-    overflow: visible;
-    max-height: 80vh;
-    height: auto;
+    overflow: hidden;
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-}
-
-.sticky-note::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    background: radial-gradient(
-        circle at top right,
-        rgba(var(--accent-bright-rgb), 0.45) 0%,
-        rgba(var(--accent-rgb), 0.25) 35%,
-        transparent 70%
-    );
-    pointer-events: none;
-    opacity: 0.7;
-    transition: opacity 0.35s ease, transform 0.35s ease;
-    transform: translate(20%, -20%);
-    z-index: 0;
-}
-
-.sticky-note:hover::before {
-    opacity: 1;
-    transform: translate(10%, -10%) scale(1.15);
 }
 
 .sticky-note:hover {
@@ -89,24 +68,14 @@
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
+/* Цвета */
 .sticky-note.color-yellow { --sticky-accent: #facc15; --sticky-accent-rgb: 250, 204, 21; }
 .sticky-note.color-pink   { --sticky-accent: #f472b6; --sticky-accent-rgb: 244, 114, 182; }
 .sticky-note.color-blue   { --sticky-accent: #38bdf8; --sticky-accent-rgb: 56, 189, 248; }
 .sticky-note.color-green  { --sticky-accent: #22c55e; --sticky-accent-rgb: 34, 197, 94; }
 .sticky-note.color-purple { --sticky-accent: #a78bfa; --sticky-accent-rgb: 167, 139, 250; }
 
-.sticky-note.color-yellow::before,
-.sticky-note.color-pink::before,
-.sticky-note.color-blue::before,
-.sticky-note.color-green::before,
-.sticky-note.color-purple::before {
-    background: radial-gradient(
-        circle at top right,
-        rgba(var(--sticky-accent-rgb), 0.5) 0%,
-        rgba(var(--sticky-accent-rgb), 0.25) 35%,
-        transparent 70%
-    );
-}
+/* ---------- Шапка ---------- */
 
 .sticky-header {
     display: flex;
@@ -119,6 +88,7 @@
     position: relative;
     z-index: 2;
     min-height: 24px;
+    flex-shrink: 0;
 }
 
 .sticky-drag-handle {
@@ -133,7 +103,7 @@
     letter-spacing: 2px;
     padding: 2px 10px;
     border-radius: 10px;
-    transition: all 0.2s ease;
+    transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease;
     line-height: 1;
     z-index: 3;
     user-select: none;
@@ -143,18 +113,20 @@
 
 .sticky-drag-handle:hover {
     opacity: 0.9;
-    color: var(--accent-bright);
-    background: rgba(var(--accent-deep-rgb), 0.3);
+    color: var(--sticky-accent);
+    background: rgba(var(--sticky-accent-rgb), 0.25);
 }
 
 .sticky-drag-handle:active {
     cursor: grabbing;
 }
 
+/* ---------- Кнопка меню ---------- */
+
 .sticky-menu-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(var(--accent-soft-rgb), 0.25);
-    color: var(--text-secondary);
+    background: rgba(var(--sticky-accent-rgb), 0.15);
+    border: 1px solid rgba(var(--sticky-accent-rgb), 0.45);
+    color: var(--sticky-accent);
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
@@ -166,24 +138,26 @@
     justify-content: center;
     line-height: 1;
     padding: 0 0 4px;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease,
+                border-color 0.2s ease, transform 0.2s ease;
 }
 
 .sticky-menu-btn:hover {
-    background: rgba(var(--accent-deep-rgb), 0.4);
-    border-color: var(--accent-bright);
-    color: var(--accent-bright);
+    background: var(--sticky-accent);
+    color: #1a1a1a;
+    border-color: var(--sticky-accent);
     transform: scale(1.1);
+    box-shadow: 0 0 16px rgba(var(--sticky-accent-rgb), 0.5);
 }
+
+/* ---------- Меню стикера ---------- */
 
 .sticky-menu {
     position: absolute;
     top: 32px;
     right: 0;
     background: rgba(20, 20, 30, 0.96);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: 1px solid rgba(var(--accent-muted-rgb), 0.4);
+    border: 1px solid rgba(var(--sticky-menu-accent-rgb, var(--accent-muted-rgb)), 0.5);
     border-radius: 14px;
     padding: 8px;
     display: none;
@@ -192,7 +166,7 @@
     z-index: 10001;
     box-shadow:
         0 10px 30px rgba(0, 0, 0, 0.5),
-        0 0 25px rgba(var(--accent-deep-rgb), 0.3);
+        0 0 25px rgba(var(--sticky-menu-accent-rgb, var(--accent-deep-rgb)), 0.4);
     min-width: 140px;
 }
 
@@ -205,6 +179,12 @@
     from { opacity: 0; transform: translateY(-6px) scale(0.95); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+.sticky-note.color-yellow .sticky-menu { --sticky-menu-accent-rgb: 250, 204, 21; }
+.sticky-note.color-pink   .sticky-menu { --sticky-menu-accent-rgb: 244, 114, 182; }
+.sticky-note.color-blue   .sticky-menu { --sticky-menu-accent-rgb: 56, 189, 248; }
+.sticky-note.color-green  .sticky-menu { --sticky-menu-accent-rgb: 34, 197, 94; }
+.sticky-note.color-purple .sticky-menu { --sticky-menu-accent-rgb: 167, 139, 250; }
 
 .sticky-menu-colors {
     display: flex;
@@ -235,6 +215,17 @@
 .sticky-color-btn.color-green  { background: #22c55e; }
 .sticky-color-btn.color-purple { background: #a78bfa; }
 
+.sticky-note.color-yellow .sticky-color-btn.color-yellow,
+.sticky-note.color-pink   .sticky-color-btn.color-pink,
+.sticky-note.color-blue   .sticky-color-btn.color-blue,
+.sticky-note.color-green  .sticky-color-btn.color-green,
+.sticky-note.color-purple .sticky-color-btn.color-purple {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+    transform: scale(1.15);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+}
+
 .sticky-menu-delete {
     background: rgba(255, 85, 85, 0.15);
     border: 1px solid rgba(255, 85, 85, 0.35);
@@ -244,7 +235,8 @@
     padding: 7px 12px;
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease,
+                color 0.2s ease, transform 0.2s ease;
     text-align: center;
 }
 
@@ -255,19 +247,23 @@
     transform: translateY(-1px);
 }
 
+/* ---------- Body + textarea ---------- */
+
 .sticky-body {
     position: relative;
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
     min-height: 0;
-    overflow: visible;
+    overflow: hidden;
 }
 
 .sticky-text {
     width: 100%;
-    min-height: 40px;
-    max-height: 120px;
+    min-height: 80px;
+    height: auto;
+    flex: 1 1 auto;
+    box-sizing: border-box;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(var(--accent-soft-rgb), 0.1);
     border-radius: 10px;
@@ -282,11 +278,11 @@
     position: relative;
     z-index: 1;
     overflow-y: auto;
-    transition: border-color 0.2s ease, background 0.2s ease, max-height 0.3s ease;
+    transition: border-color 0.2s ease, background 0.2s ease;
     word-wrap: break-word;
     white-space: pre-wrap;
     field-sizing: content;
-    height: auto;
+    resize: none;
     scrollbar-width: thin;
     scrollbar-color: rgba(var(--sticky-accent-rgb), 0.5) transparent;
 }
@@ -299,34 +295,18 @@
     box-shadow: 0 0 10px rgba(var(--sticky-accent-rgb), 0.2);
 }
 
-.sticky-text:empty::before {
-    content: attr(data-placeholder);
-    color: rgba(255, 255, 255, 0.3);
-    font-style: italic;
-    pointer-events: none;
-}
-
 .sticky-text::-webkit-scrollbar { width: 6px; }
-.sticky-text::-webkit-scrollbar-track { background: transparent; margin: 6px 0; border-radius: 10px; }
+.sticky-text::-webkit-scrollbar-track { background: transparent; margin: 6px 0; }
 .sticky-text::-webkit-scrollbar-thumb {
     background: rgba(var(--sticky-accent-rgb), 0.45);
     border-radius: 10px;
-    border: none;
-    transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 .sticky-text::-webkit-scrollbar-thumb:hover {
     background: var(--sticky-accent);
     box-shadow: 0 0 10px rgba(var(--sticky-accent-rgb), 0.6);
 }
 
-.sticky-menu::-webkit-scrollbar { width: 5px; }
-.sticky-menu::-webkit-scrollbar-track { background: transparent; margin: 6px 0; }
-.sticky-menu::-webkit-scrollbar-thumb {
-    background: rgba(var(--sticky-accent-rgb), 0.45);
-    border-radius: 10px;
-}
-.sticky-menu::-webkit-scrollbar-thumb:hover { background: var(--sticky-accent); }
-.sticky-menu { scrollbar-width: thin; scrollbar-color: rgba(var(--sticky-accent-rgb), 0.5) transparent; }
+/* ---------- Кнопки копирования / развернуть ---------- */
 
 .sticky-actions {
     position: absolute;
@@ -335,6 +315,11 @@
     display: flex;
     gap: 6px;
     z-index: 3;
+    pointer-events: none;
+}
+
+.sticky-actions > * {
+    pointer-events: auto;
 }
 
 .sticky-copy,
@@ -351,7 +336,8 @@
     letter-spacing: 0.5px;
     color: var(--sticky-accent);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease,
+                color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     font-family: inherit;
     pointer-events: auto;
     min-height: 24px;
@@ -397,48 +383,28 @@
     50% { transform: scale(1.15); }
 }
 
+/* ---------- Ручки resize (невидимые, но рабочие) ---------- */
+
 .sticky-resize-right,
 .sticky-resize-bottom,
 .sticky-resize-corner {
     position: absolute;
-    z-index: 4;
-    background: transparent !important;
-    border: none !important;
-    opacity: 0 !important;
+    z-index: 10;
+    background: transparent;
+    border: none;
+    opacity: 0;
     pointer-events: auto;
-    touch-action: none;
 }
 
-.sticky-resize-right {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 8px;
-    cursor: ew-resize;
-}
-
-.sticky-resize-bottom {
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 8px;
-    cursor: ns-resize;
-}
-
-.sticky-resize-corner {
-    right: 0;
-    bottom: 0;
-    width: 14px;
-    height: 14px;
-    cursor: nwse-resize;
-    z-index: 5;
-}
+.sticky-resize-right  { top: 0;   right: 0;   bottom: 0;  width: 8px;   cursor: ew-resize; }
+.sticky-resize-bottom { left: 0;  right: 0;   bottom: 0;  height: 8px;  cursor: ns-resize; }
+.sticky-resize-corner { right: 0; bottom: 0;  width: 16px; height: 16px; cursor: nwse-resize; }
 
 .sticky-note.resizing {
-    transition: none !important;
+    transition: none;
     box-shadow:
         0 15px 40px rgba(0, 0, 0, 0.5),
-        0 0 35px rgba(var(--accent-rgb), 0.5) !important;
+        0 0 35px rgba(var(--accent-rgb), 0.5);
     user-select: none;
     will-change: transform, width, height;
     transform: translateZ(0);
@@ -446,20 +412,30 @@
 
 .sticky-note.resizing:hover { transform: translateZ(0); }
 
+/* ---------- Sleep HUD ---------- */
+
 body.hud-hidden .sticky-notes-container {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
+/* ---------- Мобилка ---------- */
+
 @media (max-width: 768px) {
-    .sticky-note { width: 200px; padding: 8px 10px 10px; }
-    .sticky-text { font-size: 0.85rem; min-height: 80px; max-height: 80px; }
-    .sticky-note.expanded .sticky-text { min-height: 80px; max-height: 50vh; }
+    .sticky-note {
+        width: 240px;
+        min-width: 200px;
+        min-height: 200px;
+        padding: 8px 10px 10px;
+    }
+    .sticky-text {
+        font-size: 0.85rem;
+        min-height: 80px;
+    }
     .sticky-menu { min-width: 130px; }
     .sticky-color-btn { width: 18px; height: 18px; }
     .sticky-resize-right,
     .sticky-resize-bottom { width: 14px; height: 14px; }
     .sticky-resize-corner { width: 20px; height: 20px; }
-    .sticky-resize-handle { opacity: 0.6; }
 }

@@ -2,27 +2,41 @@ class GameIcons {
     constructor(app) {
         this.app = app;
         this.panel = null;
+        this._initialized = false;
+    }
+
+    _isEnabled() {
+        return this.app.data.gameIconsEnabled === true;
     }
 
     init() {
         this.panel = document.getElementById('gameIcons');
         if (!this.panel) return;
 
+        // Защита от двойного init (двойные обработчики на кнопках)
+        if (this._initialized) {
+            this.updateVisibility();
+            this.updateIndicator();
+            return;
+        }
+        this._initialized = true;
+
         this.updateVisibility();
+        this.updateIndicator(); // <-- раньше не вызывалось
 
         document.getElementById('gameIconAim')
-            ?.addEventListener('click', () => this.app.aim.open());
+            ?.addEventListener('click', () => this.app.aim?.open());
         document.getElementById('gameIconTyping')
-            ?.addEventListener('click', () => this.app.typing.open());
+            ?.addEventListener('click', () => this.app.typing?.open());
     }
 
     updateVisibility() {
         if (!this.panel) return;
-        this.panel.classList.toggle('visible', this.app.data.gameIconsEnabled === true);
+        this.panel.classList.toggle('visible', this._isEnabled());
     }
 
     toggle() {
-        this.app.data.gameIconsEnabled = !this.app.data.gameIconsEnabled;
+        this.app.data.gameIconsEnabled = !this._isEnabled();
         this.updateVisibility();
         this.updateIndicator();
         this.app.storage.save();
@@ -30,9 +44,7 @@ class GameIcons {
 
     updateIndicator() {
         const indicator = document.getElementById('gameIconsIndicator');
-        if (indicator) {
-            indicator.classList.toggle('off', !this.app.data.gameIconsEnabled);
-        }
+        if (indicator) indicator.classList.toggle('off', !this._isEnabled());
     }
 }
 
