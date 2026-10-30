@@ -23,4 +23,9 @@
 @import url('styles/sticky-notes.css');
 @import url('styles/countdown.css');
 @import url('styles/calculator.css');
-@import url('styles/sleep-toggles.css');
+@import url('styles/sleep-timeout.css');
+
+@import url('styles/dropdown-visibility.css');
+@import url('styles/sliders.css');
+
+@import url('styles/grain-slider-hard-fix.css');

@@ -1,12 +1,10 @@
-
-
 .aim-overlay {
     position: fixed;
     inset: 0;
     z-index: 100000;
-    background: rgba(0, 0, 0, 0.92);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     display: none;
     flex-direction: column;
     padding: 20px;
@@ -19,13 +17,8 @@
 }
 
 @keyframes aimFadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 .aim-close {
@@ -40,7 +33,8 @@
     color: var(--text-primary);
     font-size: 18px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease,
+                background 0.2s ease, border-color 0.2s ease;
     z-index: 10;
     display: flex;
     align-items: center;
@@ -62,9 +56,7 @@
     z-index: 5;
 }
 
-.aim-hud.visible {
-    display: flex;
-}
+.aim-hud.visible { display: flex; }
 
 .aim-hud-item {
     display: flex;
@@ -124,6 +116,7 @@
     cursor: pointer;
     animation: aimTargetAppear 0.15s ease-out;
     transition: transform 0.15s ease, opacity 0.15s ease;
+    will-change: transform;
 }
 
 .aim-target::after {
@@ -144,22 +137,12 @@
 }
 
 @keyframes aimTargetAppear {
-    from {
-        transform: scale(0.3);
-        opacity: 0;
-    }
-
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+    from { transform: scale(0.3); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
 }
 
 @keyframes aimTargetHit {
-    to {
-        transform: scale(1.6);
-        opacity: 0;
-    }
+    to { transform: scale(1.6); opacity: 0; }
 }
 
 .aim-miss-flash {
@@ -172,18 +155,12 @@
     transform: translate(-50%, -50%);
     animation: aimMissFlash 0.4s ease-out forwards;
     z-index: 100001;
+    will-change: transform, opacity;
 }
 
 @keyframes aimMissFlash {
-    from {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(0.5);
-    }
-
-    to {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(2);
-    }
+    from { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+    to   { opacity: 0; transform: translate(-50%, -50%) scale(2);   }
 }
 
 .aim-result {
@@ -194,15 +171,14 @@
     align-items: center;
     justify-content: center;
     padding: 40px;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(20px);
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 20;
     animation: aimFadeIn 0.3s ease;
 }
 
-.aim-result.visible {
-    display: flex;
-}
+.aim-result.visible { display: flex; }
 
 .aim-result-title {
     font-size: 1.8rem;
@@ -261,20 +237,15 @@
     animation: aimRecordPulse 1.5s ease-in-out infinite;
 }
 
-.aim-record-badge.visible {
-    display: block;
-}
+.aim-record-badge.visible { display: block; }
 
 @keyframes aimRecordPulse {
-
-    0%,
-    100% {
+    0%, 100% {
         transform: scale(1);
         box-shadow:
             0 0 25px rgba(var(--accent-rgb), 0.6),
             0 0 50px rgba(var(--accent-bright-rgb), 0.3);
     }
-
     50% {
         transform: scale(1.05);
         box-shadow:
@@ -297,7 +268,8 @@
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease, background 0.2s ease,
+                border-color 0.2s ease, box-shadow 0.2s ease;
     letter-spacing: 0.5px;
 }
 

@@ -6,7 +6,7 @@
     margin: 0 auto;
     position: relative;
     transition: opacity 0.5s ease;
-    z-index: 10000 !important;
+    z-index: 10000;
 }
 
 .search-input {
@@ -16,10 +16,11 @@
     border: 2px solid rgba(var(--accent-soft-rgb), 0.4);
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     color: var(--text-primary);
     font-size: 1.2rem;
     outline: none;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
     box-shadow:
         0 4px 20px rgba(0, 0, 0, 0.4),
         0 0 25px rgba(var(--accent-deep-rgb), 0.2);
@@ -55,7 +56,7 @@
     max-height: 350px;
     overflow-y: auto;
     display: none;
-    z-index: 10001 !important;
+    z-index: 10001;
     padding: 8px;
 }
 
@@ -65,15 +66,8 @@
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-5px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-5px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .history-item {
@@ -81,7 +75,7 @@
     align-items: center;
     padding: 8px 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     border-radius: 14px;
     margin-bottom: 2px;
     background: rgba(255, 255, 255, 0.02);
@@ -110,7 +104,7 @@
 
 .history-delete {
     opacity: 0.3;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease;
     font-size: 0.7rem;
     width: 16px;
     height: 16px;
@@ -173,7 +167,7 @@
     box-shadow:
         0 0 10px rgba(var(--accent-bright-rgb), 0.8),
         0 0 20px rgba(var(--accent-rgb), 0.5);
-    transition: all 0.3s ease;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .toggle-indicator.off {

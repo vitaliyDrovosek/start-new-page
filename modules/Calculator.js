@@ -3,38 +3,38 @@ class Calculator {
         if (!str || !str.trim()) return false;
         const s = str.trim().toLowerCase();
 
-        if (this.hasPercentPhrase(s)) return true;
+        
+        if (this.hasPercentPhrase(s) && /\d/.test(s)) return true;
 
-        return /^[\d\s\+\-\*\/\(\)\.\%]+$/.test(s) && /[\d]/.test(s);
+        
+        
+        const hasOperator = /[+\-*/()%]/.test(s);
+        const onlyDigits = /^[\d\s.]+$/.test(s);
+        if (onlyDigits) return false;
+
+        return /^[\d\s+\-*/().%]+$/.test(s) && /\d/.test(s) && hasOperator;
     }
 
     static hasPercentPhrase(str) {
-        return /процент/i.test(str) && /от/i.test(str) || /%\s*от/i.test(str);
+        
+        return (/процент/i.test(str) && /\bот\b/i.test(str)) || /%\s*от/i.test(str);
     }
 
     static calculate(str) {
         if (!str) return null;
         const s = str.trim().toLowerCase();
 
+        
         const phraseResult = this.parsePercentPhrase(s);
         if (phraseResult !== null) return phraseResult;
 
-        try {
-            const tokens = this.tokenize(s);
-            if (!tokens.length) return null;
-            const parser = new Parser(tokens);
-            const result = parser.parseExpression();
-            if (!parser.isEnd()) return null;
-            if (!isFinite(result)) return null;
-            return result;
-        } catch {
-            return null;
-        }
+        
+        return this._parse(s);
     }
 
     static parsePercentPhrase(str) {
-
-        let s = str.replace(/сколько\s+будет/gi, '').trim();
+        
+        const s = str.replace(/^сколько\s+будет\s+/i, '').trim();
 
         let match = s.match(/^(.+?)\s+процент(?:а|ов)?\s+от\s+(.+)$/i);
         if (!match) {
@@ -42,11 +42,8 @@ class Calculator {
         }
         if (!match) return null;
 
-        const leftExpr = match[1].trim();
-        const rightExpr = match[2].trim();
-
-        const n = this.evalSimple(leftExpr);
-        const total = this.evalSimple(rightExpr);
+        const n = this.evalSimple(match[1].trim());
+        const total = this.evalSimple(match[2].trim());
 
         if (n === null || total === null) return null;
 
@@ -55,13 +52,19 @@ class Calculator {
 
     static evalSimple(str) {
         if (!str) return null;
+        return this._parse(str);
+    }
+
+    
+    static _parse(str) {
+        if (!str) return null;
         try {
             const tokens = this.tokenize(str);
             if (!tokens.length) return null;
-            const parser = new Parser(tokens);
+            const parser = new _Parser(tokens);
             const result = parser.parseExpression();
             if (!parser.isEnd()) return null;
-            if (!isFinite(result)) return null;
+            if (!Number.isFinite(result)) return null;
             return result;
         } catch {
             return null;
@@ -72,15 +75,27 @@ class Calculator {
         const tokens = [];
         let i = 0;
         const s = str.replace(/\s+/g, '');
+        const isDigit = (ch) => ch >= '0' && ch <= '9';
+
         while (i < s.length) {
             const ch = s[i];
-            if (/\d/.test(ch) || ch === '.') {
+
+            if (isDigit(ch) || ch === '.') {
                 let num = '';
-                while (i < s.length && /[\d\.]/.test(s[i])) {
+                let dotCount = 0;
+                while (i < s.length && (isDigit(s[i]) || s[i] === '.')) {
+                    if (s[i] === '.') dotCount++;
                     num += s[i];
                     i++;
                 }
-                tokens.push({ type: 'num', value: parseFloat(num) });
+                if (dotCount > 1 || num === '.') {
+                    throw new Error('Invalid number: ' + num);
+                }
+                const value = parseFloat(num);
+                if (!Number.isFinite(value)) {
+                    throw new Error('Invalid number: ' + num);
+                }
+                tokens.push({ type: 'num', value });
             } else if ('+-*/()%'.includes(ch)) {
                 tokens.push({ type: 'op', value: ch });
                 i++;
@@ -92,7 +107,7 @@ class Calculator {
     }
 }
 
-class Parser {
+class _Parser {
     constructor(tokens) {
         this.tokens = tokens;
         this.pos = 0;
@@ -112,7 +127,7 @@ class Parser {
 
     parseExpression() {
         let left = this.parseTerm();
-        while (this.peek() && this.peek().type === 'op' && (this.peek().value === '+' || this.peek().value === '-')) {
+        while (this.peek()?.type === 'op' && (this.peek().value === '+' || this.peek().value === '-')) {
             const op = this.next().value;
             const right = this.parseTerm();
             left = op === '+' ? left + right : left - right;
@@ -122,7 +137,7 @@ class Parser {
 
     parseTerm() {
         let left = this.parseFactor();
-        while (this.peek() && this.peek().type === 'op' && (this.peek().value === '*' || this.peek().value === '/')) {
+        while (this.peek()?.type === 'op' && (this.peek().value === '*' || this.peek().value === '/')) {
             const op = this.next().value;
             const right = this.parseFactor();
             left = op === '*' ? left * right : left / right;
@@ -145,7 +160,7 @@ class Parser {
         if (token.type === 'op' && token.value === '(') {
             this.next();
             const val = this.parseExpression();
-            if (!this.peek() || this.peek().value !== ')') throw new Error('Missing )');
+            if (this.peek()?.value !== ')') throw new Error('Missing )');
             this.next();
             return this.parsePostfix(val);
         }
@@ -157,7 +172,7 @@ class Parser {
     }
 
     parsePostfix(val) {
-        while (this.peek() && this.peek().type === 'op' && this.peek().value === '%') {
+        while (this.peek()?.type === 'op' && this.peek().value === '%') {
             this.next();
             val = val / 100;
         }

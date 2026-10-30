@@ -1,16 +1,17 @@
 
 
-
-
 .countdown-widget {
-    max-width: 1000px;
-    margin: 0 auto 30px;
+    max-width: min(900px, calc(100vw - 120px));
+    margin: 8px auto clamp(80px, 10vh, 100px);
     padding: 0 15px;
     display: none;
+    box-sizing: border-box;
+    overflow: visible;
 }
 
 .countdown-widget.visible {
-    display: block;
+    display: flex;
+    flex-direction: column;
     animation: fade 0.4s ease;
 }
 
@@ -22,6 +23,7 @@
     padding: 0 8px 10px;
     font-weight: 600;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .countdown-list {
@@ -29,7 +31,8 @@
     flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    padding: 20px;
 }
 
 .countdown-item {
@@ -42,24 +45,26 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(var(--accent-muted-rgb), 0.4);
-    box-shadow:
-        0 5px 20px rgba(0, 0, 0, 0.25),
-        0 0 15px rgba(var(--accent-deep-rgb), 0.15);
-    transition: all 0.25s ease;
+
+    filter:
+        drop-shadow(0 5px 20px rgba(0, 0, 0, 0.25))
+        drop-shadow(0 0 15px rgba(var(--accent-deep-rgb), 0.15));
+
+    transition: transform 0.25s ease, border-color 0.25s ease, filter 0.25s ease;
     position: relative;
     min-width: 240px;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
 }
 
 .countdown-item:hover {
     transform: translateY(-2px);
     border-color: rgba(var(--accent-bright-rgb), 0.6);
-    box-shadow:
-        0 8px 30px rgba(0, 0, 0, 0.35),
-        0 0 25px rgba(var(--accent-rgb), 0.35);
-}
-
-.countdown-item.past {
-    opacity: 1;
+    filter:
+        drop-shadow(0 8px 30px rgba(0, 0, 0, 0.35))
+        drop-shadow(0 0 25px rgba(var(--accent-rgb), 0.35));
+    z-index: 5;
 }
 
 .countdown-item-info {
@@ -92,6 +97,7 @@
     position: relative;
     z-index: 1;
     min-width: 50px;
+    flex-shrink: 0;
 }
 
 .countdown-days-num {
@@ -99,11 +105,6 @@
     font-weight: 300;
     color: var(--accent-bright);
     line-height: 1;
-    text-shadow: 0 0 12px rgba(var(--accent-bright-rgb), 0.5);
-}
-
-.countdown-item.past .countdown-days-num {
-    color: var(--accent-bright);
     text-shadow: 0 0 12px rgba(var(--accent-bright-rgb), 0.5);
 }
 
@@ -128,16 +129,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
     position: relative;
     z-index: 1;
     padding: 0;
     opacity: 0;
+    flex-shrink: 0;
 }
 
-.countdown-item:hover .countdown-delete {
-    opacity: 1;
-}
+.countdown-item:hover .countdown-delete { opacity: 1; }
 
 .countdown-delete:hover {
     background: rgba(255, 85, 85, 0.25);
@@ -155,28 +155,48 @@
     line-height: 1.5;
 }
 
-
 body.hud-hidden .countdown-widget {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s ease;
 }
 
-
 @media (max-width: 768px) {
     .countdown-widget {
         padding: 0 10px;
-        margin-bottom: 100px;
+        max-width: calc(100vw - 100px);
     }
     .countdown-list {
         flex-direction: column;
         align-items: stretch;
+        padding: 16px;
     }
     .countdown-item {
         min-width: 0;
         width: 100%;
     }
-    .countdown-delete {
-        opacity: 1;
+    .countdown-delete { opacity: 1; }
+}
+
+@media (max-height: 800px) and (min-width: 769px) {
+    .countdown-widget {
+        margin: 4px auto 80px;
+    }
+    .countdown-list {
+        gap: 8px;
+        padding: 16px;
+    }
+    .countdown-item {
+        padding: 10px 14px;
+        min-width: 220px;
+    }
+}
+
+@media (max-height: 700px) and (min-width: 769px) {
+    .countdown-widget {
+        margin: 4px auto 80px;
+    }
+    .countdown-list {
+        padding: 14px;
     }
 }

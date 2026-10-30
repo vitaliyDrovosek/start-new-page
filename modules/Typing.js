@@ -9,6 +9,7 @@ class Typing {
         this.wpmEl = null;
         this.accuracyEl = null;
         this.resultScreen = null;
+        this.dropdownBestEl = null;
 
         this.DURATION = 60;
         this.WORDS = [
@@ -46,10 +47,16 @@ class Typing {
         this.timerInterval = null;
         this.startTime = 0;
 
+        this._flashTimeout = null;
+        this._initialized = false;
+
         this.boundKeyHandler = this.handleKey.bind(this);
     }
 
     init() {
+        if (this._initialized) return;
+        this._initialized = true;
+
         this.overlay = document.getElementById('typingOverlay');
         this.wordEl = document.getElementById('typingWord');
         this.input = document.getElementById('typingInput');
@@ -58,6 +65,7 @@ class Typing {
         this.wpmEl = document.getElementById('typingWpmLive');
         this.accuracyEl = document.getElementById('typingAccuracyLive');
         this.resultScreen = document.getElementById('typingResult');
+        this.dropdownBestEl = document.getElementById('typingBestIndicator');
 
         if (!this.overlay) return;
 
@@ -92,9 +100,7 @@ class Typing {
     }
 
     handleKey(e) {
-        if (e.key === 'Escape') {
-            this.close();
-        }
+        if (e.key === 'Escape') this.close();
     }
 
     start() {
@@ -107,7 +113,7 @@ class Typing {
         this.errors = 0;
         this.typed = "";
         this.timeLeft = this.DURATION;
-        this.startTime = performance.now();
+        this.startTime = Date.now();
 
         this.resultScreen?.classList.remove('visible');
 
@@ -115,7 +121,7 @@ class Typing {
             this.input.value = "";
             this.input.disabled = false;
             setTimeout(() => {
-                this.input.focus();
+                this.input?.focus();
                 if (window.matchMedia('(max-width: 768px)').matches) {
                     setTimeout(() => {
                         this.input?.scrollIntoView({ block: 'center', behavior: 'smooth' });
@@ -127,23 +133,34 @@ class Typing {
         this.nextWord();
         this.updateHud();
 
-        this.timerInterval = setInterval(() => {
-            this.timeLeft--;
-            this.updateHud();
-            if (this.timeLeft <= 0) {
-                this.finish();
-            }
-        }, 1000);
+        this.timerInterval = setInterval(() => this._tickTimer(), 500);
+    }
+
+    _tickTimer() {
+        if (!this.active) return;
+        const elapsed = (Date.now() - this.startTime) / 1000;
+        this.timeLeft = Math.max(0, this.DURATION - elapsed);
+        this.updateHud();
+        if (this.timeLeft <= 0) this.finish();
     }
 
     stop() {
         this.active = false;
-        clearInterval(this.timerInterval);
-        this.timerInterval = null;
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
         if (this.input) this.input.disabled = true;
     }
 
     nextWord() {
+        if (this.WORDS.length < 2) {
+            this.currentWord = this.WORDS[0] || '';
+            this.typed = "";
+            this.renderWord();
+            return;
+        }
+
         let word;
         do {
             word = this.WORDS[Math.floor(Math.random() * this.WORDS.length)];
@@ -156,22 +173,24 @@ class Typing {
 
     renderWord() {
         if (!this.wordEl) return;
+        const word = this.currentWord;
+        const typed = this.typed;
 
-        let html = '';
-        for (let i = 0; i < this.currentWord.length; i++) {
-            const char = this.currentWord[i];
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < word.length; i++) {
+            const span = document.createElement('span');
             let cls = 'typing-char';
 
-            if (i < this.typed.length) {
-                cls += this.typed[i] === char ? ' correct' : ' wrong';
-            } else if (i === this.typed.length) {
+            if (i < typed.length) {
+                cls += typed[i] === word[i] ? ' correct' : ' wrong';
+            } else if (i === typed.length) {
                 cls += ' current';
             }
-
-            html += `<span class="${cls}">${char}</span>`;
+            span.className = cls;
+            span.textContent = word[i];
+            fragment.appendChild(span);
         }
-
-        this.wordEl.innerHTML = html;
+        this.wordEl.replaceChildren(fragment);
     }
 
     handleInput() {
@@ -199,6 +218,7 @@ class Typing {
             this.input.value = this.typed;
             this.flashWrong();
             this.renderWord();
+            this.updateHud();
             return;
         }
 
@@ -209,24 +229,24 @@ class Typing {
             this.input.value = "";
             this.typed = "";
             this.nextWord();
-            this.updateHud();
-        } else {
-            this.updateHud();
         }
+        this.updateHud();
     }
 
     flashWrong() {
-        if (this.wordEl) {
-            this.wordEl.classList.add('shake');
-            setTimeout(() => this.wordEl.classList.remove('shake'), 200);
-        }
+        if (!this.wordEl) return;
+        this.wordEl.classList.add('shake');
+        clearTimeout(this._flashTimeout);
+        this._flashTimeout = setTimeout(() => {
+            this.wordEl?.classList.remove('shake');
+        }, 200);
     }
 
     updateHud() {
-        if (this.timerEl) this.timerEl.textContent = this.timeLeft + 'с';
+        if (this.timerEl) this.timerEl.textContent = Math.ceil(this.timeLeft) + 'с';
         if (this.scoreEl) this.scoreEl.textContent = this.correctWords;
 
-        const elapsed = (performance.now() - this.startTime) / 1000;
+        const elapsed = (Date.now() - this.startTime) / 1000;
         const wpm = elapsed > 0 ? Math.round((this.correctWords / elapsed) * 60) : 0;
         if (this.wpmEl) this.wpmEl.textContent = wpm;
 
@@ -238,9 +258,8 @@ class Typing {
 
     finish() {
         this.stop();
-        this.active = false;
 
-        const elapsed = this.DURATION;
+        const elapsed = (Date.now() - this.startTime) / 1000 || this.DURATION;
         const wpm = Math.round((this.correctWords / elapsed) * 60);
         const accuracy = this.totalChars > 0
             ? Math.round((this.correctChars / this.totalChars) * 100)
@@ -253,12 +272,12 @@ class Typing {
             this.app.data.typingBestWpm = wpm;
         }
 
-        this.app.data.typingGames = (this.app.data.typingGames ?? 0) + 1;
+        // Счётчик игр НЕ увеличиваем здесь — это делает Achievements.trackTypingGame(),
+        // чтобы не было двойного инкремента.
+
         if (this.app.storage) this.app.storage.save();
 
-        if (this.app.achievements) {
-            this.app.achievements.trackTypingGame({ wpm, accuracy });
-        }
+        this.app.achievements?.trackTypingGame({ wpm, accuracy });
 
         const wpmEl = document.getElementById('typingWpmResult');
         const accEl = document.getElementById('typingAccuracyResult');
@@ -273,19 +292,16 @@ class Typing {
         if (errEl) errEl.textContent = this.errors;
         if (bestEl) bestEl.textContent = (this.app.data.typingBestWpm ?? 0) + ' WPM';
 
-        if (recordEl) {
-            recordEl.classList.toggle('visible', isNewRecord);
-        }
+        if (recordEl) recordEl.classList.toggle('visible', isNewRecord);
 
         this.resultScreen?.classList.add('visible');
         this.updateDropdownBest();
     }
 
     updateDropdownBest() {
-        const el = document.getElementById('typingBestIndicator');
-        if (!el) return;
+        if (!this.dropdownBestEl) return;
         const best = this.app.data.typingBestWpm;
-        el.textContent = best ? best + ' WPM' : '—';
+        this.dropdownBestEl.textContent = best ? best + ' WPM' : '—';
     }
 }
 

@@ -1,13 +1,12 @@
 
 
 .weather-widget {
-
-    min-width: 220px !important;
-    max-width: 260px !important;
+    min-width: 220px;
+    max-width: 260px;
 }
 
 .weather-widget.visible {
-    display: flex !important;
+    display: flex;
 }
 
 .weather-widget .tw-header {
@@ -26,8 +25,8 @@
 }
 
 .weather-widget .tw-display {
-    font-size: 2.2rem !important;
-    letter-spacing: 0 !important;
+    font-size: 2.2rem;
+    letter-spacing: 0;
     margin: 4px 0 2px;
 }
 
@@ -74,7 +73,8 @@
     color: var(--text-primary);
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease,
+                box-shadow 0.2s ease, transform 0.2s ease;
     touch-action: manipulation;
 }
 
@@ -93,14 +93,13 @@
 
 @media (max-width: 768px) {
     .weather-widget {
-        min-width: 200px !important;
-        max-width: 240px !important;
+        min-width: 200px;
+        max-width: 240px;
     }
     .weather-widget .tw-display {
-        font-size: 1.9rem !important;
+        font-size: 1.9rem;
     }
     .weather-cell-value {
         font-size: 0.8rem;
     }
 }
-

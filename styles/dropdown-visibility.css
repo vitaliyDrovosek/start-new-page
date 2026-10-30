@@ -1,0 +1,5 @@
+
+
+body:not(.blur-enabled) #blurToggleBtn {
+    opacity: 0.6;
+}

@@ -1,5 +1,3 @@
-
-
 .glow-ball,
 .glow-ball-small,
 .glow-ball-bottom {
@@ -11,6 +9,7 @@
     z-index: 0;
     opacity: 0;
     filter: blur(40px);
+    will-change: transform, opacity;
 
     --start-x: 50vw;
     --start-y: 30vh;
@@ -50,32 +49,32 @@ body.glow-enabled .glow-ball-small.glow-pulse {
 body.glow-disabled .glow-ball,
 body.glow-disabled .glow-ball-small,
 body.glow-disabled .glow-ball-bottom {
-    opacity: 0 !important;
-    animation: none !important;
+    opacity: 0;
+    animation: none;
 }
 
 @keyframes glowDrift {
     0% {
-        transform: translate(calc(var(--start-x) - 50%),
-                calc(var(--start-y) - 50%)) scale(1);
+        transform: translate(
+            calc(var(--start-x) - 50%),
+            calc(var(--start-y) - 50%)
+        );
     }
 
     100% {
-        transform: translate(calc(var(--start-x) - 50% + var(--drift-x)),
-                calc(var(--start-y) - 50% + var(--drift-y))) scale(1.2);
+        transform: translate(
+            calc(var(--start-x) - 50% + var(--drift-x)),
+            calc(var(--start-y) - 50% + var(--drift-y))
+        );
     }
 }
 
 @keyframes glowPulse {
-
-    0%,
-    100% {
-        opacity: 0.6;
-        filter: blur(40px);
+    0%, 100% {
+        opacity: 0.4;
     }
 
     50% {
         opacity: 1;
-        filter: blur(50px);
     }
 }

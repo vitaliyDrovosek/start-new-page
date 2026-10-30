@@ -1,6 +1,4 @@
-/* ============================================ */
-/* GRAIN / NOISE OVERLAY                        */
-/* ============================================ */
+
 
 .grain-overlay {
     position: fixed;
@@ -13,7 +11,7 @@
     transition: opacity 1s ease;
 
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-    animation: noise-shift 0.18s steps(2) infinite;
+    animation: noise-shift 0.3s steps(2) infinite;
     will-change: transform;
     filter: grayscale(1);
 }
@@ -35,20 +33,15 @@ body.grain-enabled .grain-overlay {
 }
 
 @media (max-width: 768px) {
-    .grain-overlay { animation-duration: 0.24s; }
+    .grain-overlay { animation-duration: 0.4s; }
     body.grain-enabled .grain-overlay {
         opacity: calc(var(--grain-opacity, 0.055) * 0.85);
     }
 }
 
 body.hud-hidden .grain-overlay {
-    opacity: 0 !important;
-    animation: none !important;
-    pointer-events: none !important;
+    opacity: 0;
+    animation: none;
+    pointer-events: none;
     transition: opacity 0.4s ease;
 }
-
-/* ============================================ */
-/* GRAIN OPACITY SLIDER — единый стиль          */
-/* ============================================ */
-

@@ -2,9 +2,24 @@ class Audio {
     constructor(app) {
         this.app = app;
 
+        
+        this.slider = null;
+        this.value = null;
+        this.icon = null;
+
+        
+        this._video = null;
+        this._ytWrapper = null;
+
+        this._keyHandler = null;
+    }
+
+    init() {
         this.slider = document.getElementById('volumeSlider');
-        this.value = document.getElementById('volumeValue');
-        this.icon = document.getElementById('volumeIcon');
+        this.value  = document.getElementById('volumeValue');
+        this.icon   = document.getElementById('volumeIcon');
+        this._video = document.getElementById('bgVideo');
+        this._ytWrapper = document.getElementById('youtubeWrapper');
 
         if (this.slider) {
             this.slider.addEventListener('input', (e) => this.onInput(e));
@@ -12,22 +27,34 @@ class Audio {
         }
 
         this.setupKeyboardShortcuts();
+
+        const vol = this.getVolume();
+        const muted = this.isMuted();
+
+        if (this.slider) this.slider.value = vol;
+        this.updateValue(vol);
+        this.updateIcon(vol, muted);
+    }
+
+    getVolume() {
+        const v = this.app?.data?.volume;
+        return Number.isFinite(v) ? Math.max(0, Math.min(100, v)) : 50;
+    }
+
+    isMuted() {
+        return Boolean(this.app?.data?.isMuted);
     }
 
     setupKeyboardShortcuts() {
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F2') {
-                e.preventDefault();
-                e.stopPropagation();
-                this.toggleMute();
-            }
-        });
-    }
-
-    init() {
-        if (this.slider) this.slider.value = this.app.data.volume;
-        this.updateValue(this.app.data.volume);
-        this.updateIcon(this.app.data.volume, this.app.data.isMuted);
+        if (this._keyHandler) return;
+        this._keyHandler = (e) => {
+            if (e.key !== 'F2') return;
+            if (e.repeat) return; 
+            e.preventDefault();
+            e.stopPropagation();
+            this.toggleMute();
+        };
+        document.addEventListener('keydown', this._keyHandler);
     }
 
     updateValue(vol) {
@@ -35,74 +62,83 @@ class Audio {
     }
 
     updateIcon(vol, muted) {
-        const iconText = (muted || vol === 0) ? '🔇' : (vol < 30) ? '🔈' : (vol < 70) ? '🔉' : '🔊';
+        const iconText = (muted || vol === 0) ? '🔇'
+                       : (vol < 30)           ? '🔈'
+                       : (vol < 70)           ? '🔉'
+                       :                        '🔊';
         if (this.icon) this.icon.textContent = iconText;
     }
 
     onInput(e) {
-        const vol = parseInt(e.target.value);
+        const vol = parseInt(e.target.value, 10) || 0;
         this.updateValue(vol);
-        this.updateIcon(vol, this.app.data.isMuted);
+        this.updateIcon(vol, this.isMuted());
     }
 
     onChange(e) {
-        const vol = parseInt(e.target.value);
+        const vol = parseInt(e.target.value, 10) || 0;
         this.app.data.volume = vol;
 
-        if (vol > 0 && this.app.data.isMuted) {
+        if (vol > 0 && this.isMuted()) {
             this.app.data.isMuted = false;
-        } else if (vol === 0 && !this.app.data.isMuted) {
+        } else if (vol === 0 && !this.isMuted()) {
             this.app.data.isMuted = true;
         }
 
         this.applyToVideo();
-        this.updateIcon(vol, this.app.data.isMuted);
+        this.updateIcon(vol, this.isMuted());
         this.app.storage.save();
     }
 
     toggleMute() {
-        this.app.data.isMuted = !this.app.data.isMuted;
+        this.app.data.isMuted = !this.isMuted();
 
-        if (!this.app.data.isMuted && this.app.data.volume === 0) {
+        if (!this.isMuted() && this.getVolume() === 0) {
             this.app.data.volume = 50;
             if (this.slider) this.slider.value = 50;
             this.updateValue(50);
         }
 
-        this.updateIcon(this.app.data.volume, this.app.data.isMuted);
+        this.updateIcon(this.getVolume(), this.isMuted());
         this.applyToVideo();
         this.app.storage.save();
     }
 
     applyToVideo() {
-        const video = document.getElementById('bgVideo');
-        if (video.style.display !== 'none') {
-            video.muted = this.app.data.isMuted;
-            if (!this.app.data.isMuted) {
-                video.volume = this.app.data.volume / 100;
-                video.play().catch(() => {});
+        
+        const video = this._video || document.getElementById('bgVideo');
+        if (video && video.style.display !== 'none') {
+            video.muted = this.isMuted();
+            if (!this.isMuted()) {
+                video.volume = this.getVolume() / 100;
+                video.play().catch((err) => {
+                    console.debug('[Audio] video.play failed:', err?.message);
+                });
             }
         }
 
-        const wrapper = document.getElementById('youtubeWrapper');
-        if (wrapper.style.display !== 'none') {
+        
+        const wrapper = this._ytWrapper || document.getElementById('youtubeWrapper');
+        if (wrapper && wrapper.style.display !== 'none') {
             const iframe = wrapper.querySelector('iframe');
             if (iframe?.contentWindow) {
-                try {
-                    iframe.contentWindow.postMessage(JSON.stringify({
-                        event: 'command',
-                        func: 'setVolume',
-                        args: [this.app.data.volume]
-                    }), '*');
+                const send = (func, args) => {
+                    try {
+                        iframe.contentWindow.postMessage(JSON.stringify({
+                            event: 'command',
+                            func,
+                            args
+                        }), '*');
+                    } catch (err) {
+                        console.debug('[Audio] YT postMessage failed:', err?.message);
+                    }
+                };
 
-                    iframe.contentWindow.postMessage(JSON.stringify({
-                        event: 'command',
-                        func: this.app.data.isMuted ? 'mute' : 'unMute',
-                        args: []
-                    }), '*');
-                } catch {  }
+                send('setVolume', [this.getVolume()]);
+                send(this.isMuted() ? 'mute' : 'unMute', []);
             }
         }
     }
 }
+
 export default Audio;

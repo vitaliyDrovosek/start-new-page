@@ -2,6 +2,12 @@ class Grain {
     constructor(app) {
         this.app = app;
         this.el = null;
+        this._initialized = false;
+
+        
+        this._indicator = null;
+        this._slider = null;
+        this._valEl = null;
     }
 
     init() {
@@ -11,17 +17,32 @@ class Grain {
             this.el.className = 'grain-overlay';
             document.body.appendChild(this.el);
         }
+
+        this._indicator = document.getElementById('grainIndicator');
+        this._slider    = document.getElementById('grainOpacity');
+        this._valEl     = document.getElementById('grainOpacityValue');
+
         this.apply();
+        // Обработчики ползунка интенсивности шума
+        if (this._slider) {
+            this._slider.addEventListener('input', (e) => {
+                const v = parseInt(e.target.value, 10) || 0;
+                this.app.data.grainOpacity = v;
+                this.apply();
+            });
+            this._slider.addEventListener('change', () => {
+                this.app.storage.save();
+            });
+        }
+
     }
 
-    apply() {
-        const enabled = this.app.data.grainEnabled === true;
-        const opacity = this.clampOpacity(this.app.data.grainOpacity ?? 5.5);
+    _isEnabled() {
+        return this.app.data.grainEnabled === true;
+    }
 
-        document.body.classList.toggle('grain-enabled', enabled);
-        document.documentElement.style.setProperty('--grain-opacity', (opacity / 100).toFixed(3));
-
-        this.updateIndicator();
+    _getOpacity() {
+        return this.clampOpacity(this.app.data.grainOpacity ?? 5.5);
     }
 
     clampOpacity(v) {
@@ -30,10 +51,19 @@ class Grain {
         return Math.min(30, Math.max(0, v));
     }
 
+    apply() {
+        const enabled = this._isEnabled();
+        const opacity = this._getOpacity();
+
+        document.body.classList.toggle('grain-enabled', enabled);
+        document.documentElement.style.setProperty('--grain-opacity', (opacity / 100).toFixed(3));
+
+        this.updateIndicator();
+    }
+
     toggle() {
-        this.app.data.grainEnabled = !(this.app.data.grainEnabled === true);
+        this.app.data.grainEnabled = !this._isEnabled();
         this.apply();
-        this.app.sleepToggles?.update();
         this.app.storage.save();
     }
 
@@ -44,13 +74,20 @@ class Grain {
     }
 
     updateIndicator() {
-        const indicator = document.getElementById('grainIndicator');
-        if (indicator) indicator.classList.toggle('off', this.app.data.grainEnabled !== true);
+        if (this._indicator) {
+            this._indicator.classList.toggle('off', !this._isEnabled());
+        }
 
-        const slider = document.getElementById('grainOpacity');
-        const valEl = document.getElementById('grainOpacityValue');
-        if (slider) slider.value = this.app.data.grainOpacity ?? 5.5;
-        if (valEl) valEl.textContent = (this.app.data.grainOpacity ?? 5.5) + '%';
+        const opacity = this._getOpacity();
+        if (this._slider) {
+            
+            if (document.activeElement !== this._slider) {
+                this._slider.value = opacity;
+            }
+        }
+        if (this._valEl) {
+            this._valEl.textContent = opacity + '%';
+        }
     }
 
     refresh() { this.apply(); }

@@ -8,15 +8,18 @@ class Notes {
         this.saveTimers = new Map();
         this.emptyNoteIds = new Set();
 
-
         this.draggingId = null;
         this.dragEl = null;
-
-
+        this._justDragged = false;
         this._downInside = false;
+
+        this._initialized = false;
     }
 
     init() {
+        if (this._initialized) return;
+        this._initialized = true;
+
         this.btn = document.getElementById('notesBtn');
         this.panel = document.getElementById('notesPanel');
         this.list = document.getElementById('notesList');
@@ -35,7 +38,6 @@ class Notes {
             this.dropEmptyNotes();
         });
 
-
         this.list.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 const ta = e.target.closest('.note-text');
@@ -47,7 +49,6 @@ class Notes {
                 }
             }
         });
-
 
         this.list.addEventListener('mousedown', (e) => {
             if (e.target.closest('.note-action')) return;
@@ -66,7 +67,6 @@ class Notes {
             if (!card) return;
             this.startDrag(card.dataset.id, e.touches[0], card);
         }, { passive: false });
-
 
         document.addEventListener('mousedown', (e) => {
             if (!this.visible) return;
@@ -100,7 +100,7 @@ class Notes {
         this.updateIndicator();
     }
 
-
+    
 
     getNotes() {
         if (!Array.isArray(this.app.data.notes)) {
@@ -110,7 +110,7 @@ class Notes {
             } else {
                 this.app.data.notes = [];
             }
-            this.app.storage.save();
+            this.app.storage?.save();
         }
         let migrated = false;
         for (let i = 0; i < this.app.data.notes.length; i++) {
@@ -118,7 +118,7 @@ class Notes {
             if (typeof n.pinned !== 'boolean') { n.pinned = false; migrated = true; }
             if (typeof n.order !== 'number') { n.order = i; migrated = true; }
         }
-        if (migrated) this.app.storage.save();
+        if (migrated) this.app.storage?.save();
         return this.app.data.notes;
     }
 
@@ -133,9 +133,12 @@ class Notes {
         return 'n_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
     }
 
+    
+
     addNote() {
         const notes = this.getNotes();
-        const minOrder = Math.min(0, ...notes.filter(n => !n.pinned).map(n => n.order ?? 0));
+        const unpinned = notes.filter(n => !n.pinned);
+        const minOrder = unpinned.length ? Math.min(...unpinned.map(n => n.order ?? 0)) : 0;
         const note = {
             id: this.genId(),
             text: '',
@@ -154,9 +157,6 @@ class Notes {
     }
 
     deleteNote(id) {
-        const notes = this.getNotes();
-        const idx = notes.findIndex(n => n.id === id);
-        if (idx === -1) return;
         clearTimeout(this.saveTimers.get(id));
         this.saveTimers.delete(id);
         this.emptyNoteIds.delete(id);
@@ -165,6 +165,9 @@ class Notes {
         if (card) card.classList.add('removing');
 
         setTimeout(() => {
+            const notes = this.getNotes();
+            const idx = notes.findIndex(n => n.id === id);
+            if (idx === -1) { this.render(); return; }
             notes.splice(idx, 1);
             this.app.storage.save();
             this.render();
@@ -203,13 +206,15 @@ class Notes {
 
     dropEmptyNotes() {
         const notes = this.getNotes();
-        const filtered = notes.filter(n => n.text.trim() !== '');
+        const filtered = notes.filter(n => (n.text || '').trim() !== '');
         if (filtered.length !== notes.length) {
             this.app.data.notes = filtered;
             this.app.storage.save();
         }
         this.emptyNoteIds.clear();
     }
+
+    
 
     async copyNote(id) {
         const notes = this.getNotes();
@@ -236,25 +241,18 @@ class Notes {
         const ta = document.createElement('textarea');
         ta.value = text;
         ta.setAttribute('readonly', '');
-        ta.style.position = 'fixed';
-        ta.style.top = '0';
-        ta.style.left = '0';
-        ta.style.width = '1px';
-        ta.style.height = '1px';
-        ta.style.padding = '0';
-        ta.style.border = 'none';
-        ta.style.outline = 'none';
-        ta.style.boxShadow = 'none';
-        ta.style.background = 'transparent';
-        ta.style.opacity = '0';
+        Object.assign(ta.style, {
+            position: 'fixed', top: '0', left: '0',
+            width: '1px', height: '1px',
+            padding: '0', border: 'none', outline: 'none',
+            boxShadow: 'none', background: 'transparent', opacity: '0'
+        });
         document.body.appendChild(ta);
         ta.focus();
         ta.select();
         ta.setSelectionRange(0, text.length);
-
         let ok = false;
         try { ok = document.execCommand('copy'); } catch { ok = false; }
-
         document.body.removeChild(ta);
         if (!ok) throw new Error('copy failed');
     }
@@ -271,6 +269,8 @@ class Notes {
             btn.classList.remove('flash');
         }, 1000);
     }
+
+    
 
     updateNoteText(id, text) {
         const notes = this.getNotes();
@@ -298,57 +298,98 @@ class Notes {
         this.app.storage.save();
     }
 
+    
+
     render() {
         if (!this.list) return;
         const notes = this.getNotes();
         const sorted = this.sortNotes(notes);
 
         if (sorted.length === 0) {
-            this.list.innerHTML = '<div class="notes-empty">Пока нет заметок.<br>Нажмите «+», чтобы создать.</div>';
+            const empty = document.createElement('div');
+            empty.className = 'notes-empty';
+            empty.textContent = 'Пока нет заметок. Нажмите «+», чтобы создать.';
+            this.list.replaceChildren(empty);
             return;
         }
 
-        this.list.innerHTML = sorted.map(n => `
-            <div class="note-card ${n.pinned ? 'pinned' : ''}" data-id="${n.id}">
-                <div class="note-card-header">
-                    <span class="note-date">${this.formatDate(n.createdAt)}</span>
-                    <div class="note-card-actions">
-                        <button class="note-action note-pin ${n.pinned ? 'active' : ''}" title="${n.pinned ? 'Открепить' : 'Закрепить'}"><span class="iconify" data-icon="${n.pinned ? 'mdi:pin' : 'mdi:pin-outline'}"></span></button>
-                        <button class="note-action note-copy" title="Копировать"><span class="iconify" data-icon="mdi:content-copy"></span></button>
-                        <button class="note-action note-delete" title="Удалить"><span class="iconify" data-icon="mdi:trash-can-outline"></span></button>
-                    </div>
-                </div>
-                <textarea class="note-text" placeholder="Текст заметки..." spellcheck="false">${this.escapeHtml(n.text)}</textarea>
-            </div>
-        `).join('');
+        const fragment = document.createDocumentFragment();
 
-        this.list.querySelectorAll('.note-card').forEach(card => {
-            const id = card.dataset.id;
-            const ta = card.querySelector('.note-text');
-            const pinBtn = card.querySelector('.note-pin');
-            const copyBtn = card.querySelector('.note-copy');
-            const delBtn = card.querySelector('.note-delete');
+        for (const n of sorted) {
+            fragment.appendChild(this._renderCard(n));
+        }
 
-            ta?.addEventListener('input', () => this.updateNoteText(id, ta.value));
-            ta?.addEventListener('blur', () => { if (!ta.value.trim()) this.dropIfEmpty(id); });
-
-            pinBtn?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.togglePin(id);
-            });
-            copyBtn?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                this.copyNote(id);
-            });
-            delBtn?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.deleteNote(id);
-            });
-        });
+        this.list.replaceChildren(fragment);
     }
 
+    _renderCard(n) {
+        const card = document.createElement('div');
+        card.className = 'note-card' + (n.pinned ? ' pinned' : '');
+        card.dataset.id = n.id;
 
+        
+        const header = document.createElement('div');
+        header.className = 'note-card-header';
+
+        const dateEl = document.createElement('span');
+        dateEl.className = 'note-date';
+        dateEl.textContent = this.formatDate(n.createdAt);
+
+        const actions = document.createElement('div');
+        actions.className = 'note-card-actions';
+
+        const pinBtn = this._makeButton('note-action note-pin' + (n.pinned ? ' active' : ''),
+            n.pinned ? 'Открепить' : 'Закрепить',
+            n.pinned ? 'mdi:pin' : 'mdi:pin-outline');
+        pinBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.togglePin(n.id);
+        });
+
+        const copyBtn = this._makeButton('note-action note-copy', 'Копировать', 'mdi:content-copy');
+        copyBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            this.copyNote(n.id);
+        });
+
+        const delBtn = this._makeButton('note-action note-delete', 'Удалить', 'mdi:trash-can-outline');
+        delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.deleteNote(n.id);
+        });
+
+        actions.append(pinBtn, copyBtn, delBtn);
+        header.append(dateEl, actions);
+
+        
+        const ta = document.createElement('textarea');
+        ta.className = 'note-text';
+        ta.placeholder = 'Текст заметки...';
+        ta.spellcheck = false;
+        ta.value = n.text || '';
+
+        ta.addEventListener('input', () => this.updateNoteText(n.id, ta.value));
+        ta.addEventListener('blur', () => { if (!ta.value.trim()) this.dropIfEmpty(n.id); });
+
+        card.append(header, ta);
+        return card;
+    }
+
+    _makeButton(className, title, icon) {
+        const btn = document.createElement('button');
+        btn.className = className;
+        btn.title = title;
+
+        const span = document.createElement('span');
+        span.className = 'iconify';
+        span.dataset.icon = icon;
+
+        btn.appendChild(span);
+        return btn;
+    }
+
+    
 
     startDrag(id, e, card) {
         if (!e) return;
@@ -400,18 +441,14 @@ class Notes {
         document.removeEventListener('touchmove', this._moveHandler);
         document.removeEventListener('touchend', this._endHandler);
 
-
         const cards = [...this.list.querySelectorAll('.note-card')];
         const ids = cards.map(c => c.dataset.id);
 
-
         const draggedPos = ids.indexOf(draggedId);
-
 
         const notes = this.getNotes();
         const draggedNote = notes.find(n => n.id === draggedId);
         if (draggedNote && draggedNote.pinned) {
-
             let hasUnpinnedBelow = false;
             for (let i = draggedPos + 1; i < ids.length; i++) {
                 const n = notes.find(x => x.id === ids[i]);
@@ -423,33 +460,25 @@ class Notes {
             }
         }
 
-
         ids.forEach((id, idx) => {
             const n = notes.find(x => x.id === id);
             if (n) n.order = idx;
         });
 
         this.app.storage.save();
-
-
         this.render();
 
         this._justDragged = true;
         setTimeout(() => { this._justDragged = false; }, 50);
     }
 
+    
+
     formatDate(ts) {
         if (!ts) return '';
         const d = new Date(ts);
         const pad = n => String(n).padStart(2, '0');
         return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
-
-    escapeHtml(text) {
-        return String(text || '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
     }
 
     updateVisibility() {
@@ -485,7 +514,7 @@ class Notes {
 
     hide() {
         this.flushSaves();
-        this.render();
+        
         this.panel.classList.remove('visible');
         this.visible = false;
         const overlay = document.getElementById('mobileHudOverlay');

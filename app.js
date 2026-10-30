@@ -3,6 +3,7 @@ import Particles from './modules/Particles.js';
 import Video from './modules/Video.js';
 import Storage from './modules/Storage.js';
 import HUD from './modules/HUD.js';
+import Clock from './modules/Clock.js';
 import Weather from './modules/Weather.js';
 import Background from './modules/Background.js';
 import History from './modules/History.js';
@@ -20,7 +21,7 @@ import Notes from './modules/Notes.js';
 import Grain from './modules/Grain.js';
 import StickyNotes from './modules/StickyNotes.js';
 import Countdown from './modules/Countdown.js';
-import SleepToggles from './modules/SleepToggles.js';
+import DropdownSubgroups from './modules/DropdownSubgroups.js';
 
 class App {
     constructor() {
@@ -36,6 +37,7 @@ class App {
         this.data = this.storage.load();
 
         this.hud = new HUD(this);
+        this.clock = new Clock(this);
         this.video = new Video(this);
         this.audio = new Audio(this);
         this.weather = new Weather(this);
@@ -56,7 +58,8 @@ class App {
         this.grain = new Grain(this);
         this.stickyNotes = new StickyNotes(this);
         this.countdown = new Countdown(this);
-        this.sleepToggles = new SleepToggles(this);
+
+        this.dropdownSubgroups = new DropdownSubgroups(this);
 
         this.glowEnabled = this.data.glowEnabled !== false;
         document.body.classList.toggle('glow-enabled', this.glowEnabled);
@@ -84,16 +87,26 @@ class App {
 
     init() {
         this.hud.init();
+        this.clock.init();
         this.audio.init();
         this.weather.init();
         this.history.init();
         this.calculatorUI.init();
         this.search.updateUI();
+        this.background.init?.();
         this.background.apply();
         this.groups.render();
 
+        
         if (this.data.particlesEnabled === false) {
-            this.particles.toggle();
+            this.particles.enabled = false;
+            this.particles.stopLoop?.();
+            const indicator = document.getElementById('particlesIndicator');
+            if (indicator) indicator.classList.add('off');
+            document.body.classList.remove('particles-enabled');
+        } else {
+            this.particles.enabled = true;
+            document.body.classList.add('particles-enabled');
         }
 
         this.glow.randomize();
@@ -109,29 +122,22 @@ class App {
         this.grain.init();
         this.stickyNotes.init();
         this.countdown.init();
-        this.sleepToggles.init();
+
+        this.dropdownSubgroups.init();
 
         this.search.loadReplaceTab();
-        this.setupEventListeners();
-        this.startVideoTimeSave();
-    }
-
-    setupEventListeners() {
-
-    }
-
-    startVideoTimeSave() {
-        setInterval(() => {
-            const video = document.getElementById('bgVideo');
-            if (video && video.style.display !== 'none') {
-                this.data.videoCurrentTime = video.currentTime;
-            }
-        }, 5000);
     }
 }
 
-const app = new App();
+let app;
+try {
+    app = new App();
+} catch (err) {
+    console.error('[App] initialization failed:', err);
+}
 
 window.addEventListener('beforeunload', () => {
-    app.storage.saveBeforeUnload();
+    try { app?.storage?.saveBeforeUnload?.(); } catch (err) {
+        console.error('[App] saveBeforeUnload failed:', err);
+    }
 });

@@ -1,0 +1,35 @@
+
+
+.sleep-timeout-control {
+    padding: 12px 20px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(var(--accent-dark-rgb), 0.3);
+    border-radius: 15px;
+    margin-top: 4px;
+    border: 1px solid rgba(var(--accent-muted-rgb), 0.25);
+}
+
+.sleep-timeout-control label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.sleep-timeout-control label span:last-child {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    min-width: auto;
+}
+
+body:has(#sleepModeToggleBtn .toggle-indicator:not(.off)) .sleep-timeout-control {
+    display: flex;
+}

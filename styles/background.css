@@ -1,16 +1,15 @@
-/* ============================================ */
-/* BACKGROUND                                   */
-/* ============================================ */
+
 
 body:not(.hud-hidden).blur-enabled #bgVideo,
 body:not(.hud-hidden).blur-enabled .youtube-wrapper iframe {
-    filter: blur(4px) !important;
-    transition: filter 0.5s ease;
+    filter: blur(3px);
+    transition: filter 0.3s ease;
+    will-change: filter;
 }
 
 body.hud-hidden #bgVideo,
 body.hud-hidden .youtube-wrapper iframe,
 body.blur-disabled #bgVideo,
 body.blur-disabled .youtube-wrapper iframe {
-    filter: blur(0) !important;
+    filter: blur(0);
 }
