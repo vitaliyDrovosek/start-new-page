@@ -2,7 +2,7 @@ class Glow {
     constructor(app) {
         this.app = app;
 
-        // Заполняем сразу — randomize() работает без init()
+        
         this.balls = [
             { el: document.querySelector('.glow-ball'),        size: 600, intensity: 0.12, pulse: true,  hueShift: 0   },
             { el: document.querySelector('.glow-ball-small'),  size: 800, intensity: 0.10, pulse: true,  hueShift: 40  },

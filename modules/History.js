@@ -87,7 +87,7 @@ class History {
             ? this.app.data.searchHistory
             : (this.app.data.searchHistory = []);
 
-        // Убираем дубликаты
+        
         const filtered = list.filter(item => item?.query !== q);
         filtered.unshift({ query: q, timestamp: Date.now() });
         if (filtered.length > 20) filtered.length = 20;
@@ -134,7 +134,7 @@ class History {
 
             const row = document.createElement('div');
             row.className = 'history-item';
-            row.tabIndex = -1;  // чтобы работал focus() по ArrowDown
+            row.tabIndex = -1;  
 
             const text = document.createElement('span');
             text.className = 'history-text';
@@ -150,13 +150,13 @@ class History {
 
             row.append(text, time, del);
 
-            // Клик по строке — использовать запрос
+            
             row.addEventListener('click', (e) => {
-                if (e.target === del) return; // не перехватываем кнопку удаления
+                if (e.target === del) return; 
                 this.use(item.query);
             });
 
-            // Клик по ✕ — удалить
+            
             del.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.remove(item);
@@ -165,7 +165,7 @@ class History {
             fragment.appendChild(row);
         }
 
-        // Кнопка «Очистить историю»
+        
         const clearBtn = document.createElement('div');
         clearBtn.className = 'history-clear';
         clearBtn.textContent = 'Очистить историю';

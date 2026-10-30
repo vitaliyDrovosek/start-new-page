@@ -12,7 +12,10 @@ class TimeWidget {
         this.cdDisplay = null; this.cdStartBtn = null; this.cdResetBtn = null;
         this.cdPresetsEl = null;
         this.cdRunning = false; this.cdTotal = 0; this.cdRemaining = 0;
-        this.cdEndTime = 0; this.cdRafId = null; this.cdFinished = false;
+        this.cdEndTime = 0; this.cdRafId = null;
+        this.cdFinished = false;
+        this.cdOvertime = false;
+        this._cdSoundPlayed = false;
 
         this.PRESETS = [1, 5, 10, 15, 25, 60];
 
@@ -22,6 +25,8 @@ class TimeWidget {
 
         this.centerEl = null; this.centerSwEl = null; this.centerCdEl = null;
         this._centerVisible = false;
+
+        this.topSwEl = null; this.topCdEl = null;
 
         this.saveInterval = null;
         this._lastSavedStateJson = '';
@@ -54,6 +59,9 @@ class TimeWidget {
         this.centerEl = document.getElementById('timeCenter');
         this.centerSwEl = document.getElementById('timeCenterSw');
         this.centerCdEl = document.getElementById('timeCenterCd');
+        this.topSwEl = document.getElementById('topSwDisplay');
+        this.topCdEl = document.getElementById('topCdDisplay');
+        this._fixTopWidths();
 
         this.swStartBtn?.addEventListener('click', () => this.swToggle());
         this.swLapBtn?.addEventListener('click', () => this.swLap());
@@ -66,10 +74,13 @@ class TimeWidget {
         this.restoreState();
         this.dragHandle?.addEventListener('mousedown', (e) => this.onDragStart(e));
         this.dragHandle?.addEventListener('touchstart', (e) => this.onDragStart(e.touches[0]), { passive: false });
+        window.addEventListener('resize', () => {
+            this._positionCenterNearClock();
+            this._positionTopDisplay();
+        });
         this.updateVisibility();
         this.updateIndicator();
 
-        // Автосохранение — только когда таймер/секундомер идут
         this._refreshAutoSave();
     }
 
@@ -99,7 +110,8 @@ class TimeWidget {
             cdTotal: this.cdTotal,
             cdRemaining: this.cdRemaining,
             cdEndTimeAbs: this.cdRunning ? Date.now() + this.cdRemaining : 0,
-            cdFinished: this.cdFinished
+            cdFinished: this.cdFinished,
+            cdOvertime: this.cdOvertime
         };
 
         let json;
@@ -137,26 +149,22 @@ class TimeWidget {
         this.cdTotal = num(s.cdTotal, 0);
         if (s.cdRunning && s.cdEndTimeAbs) {
             const remaining = num(s.cdEndTimeAbs, 0) - Date.now();
-            if (remaining > 0) {
-                this.cdRemaining = remaining;
-                this.cdRunning = true;
-                this.cdFinished = false;
-                this.cdEndTime = performance.now() + remaining;
-                this.cdTick();
-            } else {
-                this.cdRemaining = 0;
-                this.cdRunning = false;
-                this.cdFinished = true;
-                this.cdRender();
-            }
+            this.cdRemaining = remaining;
+            this.cdRunning = true;
+            this.cdFinished = false;
+            this.cdOvertime = remaining <= 0;
+            this.cdEndTime = performance.now() + remaining;
+            this.cdTick();
         } else {
             this.cdRemaining = num(s.cdRemaining, 0);
             this.cdRunning = false;
             this.cdFinished = !!s.cdFinished;
+            this.cdOvertime = s.cdOvertime === true || this.cdRemaining <= 0;
             this.cdRender();
         }
         this.cdUpdateButton();
         this.updateCenter();
+        this._syncTopDisplay();
     }
 
     // ---------- Спящий режим ----------
@@ -172,6 +180,26 @@ class TimeWidget {
         }
     }
 
+    toggleClockDisplay() {
+        this.app.data.timeCenterInClockEnabled = !(this.app.data.timeCenterInClockEnabled === true);
+        this.updateClockDisplayIndicator();
+        this.app.storage.save();
+        this._applyNearClockClass();
+        if (document.body.classList.contains('hud-hidden')) {
+            if (this.isActive()) this.renderCenter();
+        }
+    }
+
+    updateClockDisplayIndicator() {
+        const el = document.getElementById('timeCenterClockIndicator');
+        if (el) el.classList.toggle('off', this.app.data.timeCenterInClockEnabled !== true);
+    }
+
+    _applyNearClockClass() {
+        if (!this.centerEl) return;
+        this.centerEl.classList.toggle('near-clock', this.app.data.timeCenterInClockEnabled === true);
+    }
+
     updateSleepDisplayIndicator() {
         const indicator = document.getElementById('timeCenterSleepIndicator');
         if (indicator) {
@@ -180,7 +208,7 @@ class TimeWidget {
     }
 
     isSwActive() { return this.swRunning || this.swElapsed > 0; }
-    isCdActive() { return this.cdRunning || this.cdRemaining > 0 || this.cdFinished; }
+    isCdActive() { return this.cdRunning || this.cdRemaining > 0 || this.cdOvertime || this.cdFinished; }
     isActive() { return this.swRunning || this.cdRunning; }
     isSwRunning() { return this.swRunning; }
     isCdRunning() { return this.cdRunning; }
@@ -195,6 +223,7 @@ class TimeWidget {
         this.updateVisibility();
         this.updateIndicator();
         this._refreshAutoSave();
+        this._syncTopDisplay();
         this.app.storage.save();
     }
 
@@ -203,10 +232,116 @@ class TimeWidget {
         if (indicator) indicator.classList.toggle('off', !this.app.data.timeWidgetEnabled);
     }
 
+    // ---------- Верхний блок ----------
+
+    _fixTopWidths() {
+        const sw = this.topSwEl;
+        const cd = this.topCdEl;
+        if (!sw && !cd) return;
+
+        const measure = (el, samples) => {
+            if (!el) return;
+            const prev = el.textContent;
+            el.style.minWidth = '';
+            el.style.width = '';
+            let max = 0;
+            for (const s of samples) {
+                el.textContent = s;
+                const w = el.offsetWidth;
+                if (w > max) max = w;
+            }
+            el.textContent = prev;
+            if (max > 0) {
+                el.style.width = max + 'px';
+                el.style.minWidth = max + 'px';
+            }
+        };
+
+        const swSamples = [];
+        for (let i = 0; i <= 9; i++) {
+            swSamples.push(`${i}${i}:${i}${i}.${i}${i}`);
+        }
+        measure(sw, swSamples);
+
+        const cdSamples = [];
+        for (let i = 0; i <= 9; i++) {
+            cdSamples.push(`${i}${i}:${i}${i}`);
+        }
+        measure(cd, cdSamples);
+    }
+
+    _syncTopDisplay() {
+        if (!this.topSwEl && !this.topCdEl) return;
+
+        const showSw = this.swRunning || this.swElapsed > 0;
+        const showCd = this.cdRunning || this.cdRemaining !== 0 || this.cdOvertime || this.cdFinished;
+
+        if (this.topSwEl) {
+            this.topSwEl.classList.toggle('hidden', !showSw);
+            if (showSw) this.topSwEl.textContent = this.swFormat(this.swElapsed);
+        }
+        if (this.topCdEl) {
+            this.topCdEl.classList.toggle('hidden', !showCd);
+            if (showCd) {
+                this.topCdEl.textContent = this.cdFormat(this.cdRemaining);
+                this.topCdEl.classList.toggle('finished', this.cdFinished);
+                this.topCdEl.classList.toggle('overtime', this.cdOvertime);
+            }
+        }
+
+        this._positionTopDisplay();
+    }
+
+    _positionTopDisplay() {
+        const clock = document.getElementById('clock');
+        if (!clock) return;
+
+        const clockRect = clock.getBoundingClientRect();
+        const parent = clock.parentElement;
+        const parentRect = parent ? parent.getBoundingClientRect() : { right: window.innerWidth, top: 0 };
+        const gap = 10;
+        const baseRight = parentRect.right - clockRect.left + gap;
+
+        const els = [this.topSwEl, this.topCdEl].filter(el => el && !el.classList.contains('hidden'));
+        let acc = baseRight;
+
+        for (const el of els) {
+            el.style.right = acc + 'px';
+            el.style.left = 'auto';
+            el.style.top = (clockRect.top - (parentRect.top || 0)) + 'px';
+            const w = el.offsetWidth || 0;
+            acc += w + gap;
+        }
+    }
+
     // ---------- Центр (sleep) ----------
+
+    _positionCenterNearClock() {
+        if (!this.centerEl) return;
+        const clock = document.getElementById('clock');
+        if (!clock) return;
+
+        if (!document.body.classList.contains('hud-hidden')) {
+            this.centerEl.style.right = '';
+            this.centerEl.style.left = '';
+            return;
+        }
+
+        const clockRect = clock.getBoundingClientRect();
+        const gap = 12;
+        const rightPx = window.innerWidth - clockRect.left + gap;
+        this.centerEl.style.right = rightPx + 'px';
+        this.centerEl.style.left = 'auto';
+    }
 
     renderCenter() {
         if (!this.centerEl) return;
+        if (document.body.classList.contains('hud-hidden')) {
+            this.centerEl.classList.remove('visible');
+            this._centerVisible = false;
+            return;
+        }
+        this._applyNearClockClass();
         if (this.app.data.timeCenterInSleepEnabled === false) {
             this.centerEl.classList.remove('visible');
             this._centerVisible = false;
@@ -227,13 +362,20 @@ class TimeWidget {
             this.centerCdEl.classList.toggle('hidden', !showCd);
             this.centerCdEl.textContent = this.cdFormat(this.cdRemaining);
             this.centerCdEl.classList.toggle('finished', this.cdFinished);
+            this.centerCdEl.classList.toggle('overtime', this.cdOvertime);
         }
         this.centerEl.classList.add('visible');
         this._centerVisible = true;
+        this._positionCenterNearClock();
     }
 
     updateCenter() {
         if (!this._centerVisible) return;
+        if (document.body.classList.contains('hud-hidden')) {
+            this.centerEl?.classList.remove('visible');
+            this._centerVisible = false;
+            return;
+        }
         if (this.app.data.timeCenterInSleepEnabled === false) {
             this.centerEl.classList.remove('visible');
             this._centerVisible = false;
@@ -244,12 +386,15 @@ class TimeWidget {
         if (this.centerCdEl && !this.centerCdEl.classList.contains('hidden')) {
             this.centerCdEl.textContent = this.cdFormat(this.cdRemaining);
             this.centerCdEl.classList.toggle('finished', this.cdFinished);
+            this.centerCdEl.classList.toggle('overtime', this.cdOvertime);
         }
+        this._positionCenterNearClock();
     }
 
     hideCenter() {
         this.centerEl?.classList.remove('visible');
         this._centerVisible = false;
+        this._applyNearClockClass();
     }
 
     // ---------- Drag ----------
@@ -323,6 +468,7 @@ class TimeWidget {
         this.swTick();
         this.swUpdateButton();
         this.app.hud?.resetTimer();
+        this._syncTopDisplay();
         this._refreshAutoSave();
         this.saveState();
     }
@@ -346,6 +492,7 @@ class TimeWidget {
         this.swRender();
         this.swRenderLaps();
         this.swUpdateButton();
+        this._syncTopDisplay();
         this.updateCenter();
         this.saveState();
     }
@@ -363,6 +510,7 @@ class TimeWidget {
     swTick() {
         this.swElapsed = performance.now() - this.swStartTime;
         this.swRender();
+        this._syncTopDisplay();
         this.updateCenter();
         if (this.swRunning) {
             this.swRafId = requestAnimationFrame(() => this.swTick());
@@ -438,27 +586,31 @@ class TimeWidget {
         this.cdTotal = ms;
         this.cdRemaining = ms;
         this.cdFinished = false;
+        this.cdOvertime = false;
+        this._cdSoundPlayed = false;
         this.cdRender();
         this.cdUpdateButton();
+        this._syncTopDisplay();
         this.updateCenter();
         this.saveState();
     }
 
     cdToggle() {
-        if (this.cdFinished) { this.cdReset(); this.cdStart(); return; }
-        if (this.cdRemaining <= 0) return;
+        if (this.cdOvertime || this.cdFinished) { this.cdReset(); this.cdStart(); return; }
+        if (this.cdRemaining <= 0 && !this.cdRunning) return;
         this.cdRunning ? this.cdPause() : this.cdStart();
     }
 
     cdStart() {
         if (this.cdRunning) return;
-        if (this.cdRemaining <= 0) return;
+        if (this.cdRemaining <= 0 && !this.cdOvertime) return;
         this.cdRunning = true;
         this.cdFinished = false;
         this.cdEndTime = performance.now() + this.cdRemaining;
         this.cdTick();
         this.cdUpdateButton();
         this.app.hud?.resetTimer();
+        this._syncTopDisplay();
         this._refreshAutoSave();
         this.saveState();
     }
@@ -478,54 +630,61 @@ class TimeWidget {
         this.cdPause();
         this.cdRemaining = this.cdTotal;
         this.cdFinished = false;
+        this.cdOvertime = false;
+        this._cdSoundPlayed = false;
         this.cdRender();
         this.cdUpdateButton();
+        this._syncTopDisplay();
         this.updateCenter();
         this.saveState();
     }
 
     cdTick() {
-        this.cdRemaining = Math.max(0, this.cdEndTime - performance.now());
+        this.cdRemaining = this.cdEndTime - performance.now();
+        const overtime = this.cdRemaining <= 0;
+
+        if (overtime && !this.cdOvertime) {
+            this.cdOvertime = true;
+            if (!this._cdSoundPlayed) {
+                this._cdSoundPlayed = true;
+                this.cdPlaySound();
+            }
+        }
+
         this.cdRender();
+        this._syncTopDisplay();
         this.updateCenter();
 
-        if (this.cdRemaining <= 0) {
-            this.cdRunning = false;
-            this.cdFinished = true;
-            this.cdUpdateButton();
-            this.cdPlaySound();
-            this.updateCenter();
-            this._refreshAutoSave();
-            this.saveState();
-            return;
-        }
         if (this.cdRunning) {
             this.cdRafId = requestAnimationFrame(() => this.cdTick());
         }
     }
 
     cdFormat(ms) {
-        const total = Math.ceil(ms / 1000);
+        const negative = ms < 0;
+        const total = Math.ceil(Math.abs(ms) / 1000);
         const m = Math.floor(total / 60);
         const s = total % 60;
-        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        const sign = negative ? '-' : '';
+        return `${sign}${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     }
 
     cdRender() {
         if (this.cdDisplay) {
             this.cdDisplay.textContent = this.cdFormat(this.cdRemaining);
             this.cdDisplay.classList.toggle('finished', this.cdFinished);
+            this.cdDisplay.classList.toggle('overtime', this.cdOvertime);
         }
     }
 
     cdUpdateButton() {
         if (!this.cdStartBtn) return;
-        if (this.cdFinished) this.cdStartBtn.textContent = '↺';
+        if (this.cdOvertime || this.cdFinished) this.cdStartBtn.textContent = '↺';
         else if (this.cdRunning) this.cdStartBtn.textContent = '⏸';
         else this.cdStartBtn.textContent = '▶';
     }
 
-    // ---------- Звук (один AudioContext на модуль) ----------
+    // ---------- Звук ----------
 
     _getAudioCtx() {
         if (this._audioCtx) return this._audioCtx;

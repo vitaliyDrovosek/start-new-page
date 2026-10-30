@@ -7,10 +7,10 @@ class Achievements {
         this.modalEl = null;
         this.boundModalKey = null;
 
-        // Один AudioContext на модуль (lazy init)
+        
         this._audioCtx = null;
 
-        // Константы таймингов тоста
+        
         this.TOAST_DURATION = 5000;
         this.TOAST_GAP = 400;
 
@@ -64,7 +64,7 @@ class Achievements {
         this.updateDropdownCounter();
     }
 
-    // ---------- Утилиты ----------
+    
 
     getUnlocked() {
         if (!Array.isArray(this.app.data.achievements)) {
@@ -81,7 +81,7 @@ class Achievements {
         this.app.storage?.save();
     }
 
-    // ---------- Разблокировка ----------
+    
 
     unlock(id) {
         if (!this.LIST[id]) return;
@@ -92,7 +92,7 @@ class Achievements {
         this.enqueue(id);
         this.updateDropdownCounter();
 
-        // Проверка "все достижения" (не считая самого all_achievements)
+        
         if (id !== 'all_achievements') {
             const totalExcludingSelf = Object.keys(this.LIST).length - 1;
             if (this.getUnlocked().length >= totalExcludingSelf) {
@@ -101,7 +101,7 @@ class Achievements {
         }
     }
 
-    // ---------- Трекеры ----------
+    
 
     trackVisit() {
         const data = this.app.data;
@@ -109,14 +109,14 @@ class Achievements {
         const last = data.lastVisitDate;
         let changed = false;
 
-        // Первый заход вообще
+        
         if (!data.visitsCount) {
             data.visitsCount = 1;
             this.unlock('first_visit');
             changed = true;
         }
 
-        // Новый день — обновляем streak и счётчик
+        
         if (last !== today) {
             const yesterday = new Date(Date.now() - 86400000).toDateString();
 
@@ -133,7 +133,7 @@ class Achievements {
             if (data.visitStreak >= 7)   this.unlock('week_streak');
         }
 
-        // Сохраняем только если что-то менялось
+        
         if (changed) this.save();
     }
 
@@ -149,8 +149,8 @@ class Achievements {
         if (data.searchCount === 1)   this.unlock('first_search');
         if (data.searchCount >= 10)   this.unlock('ten_searches');
         if (data.searchCount >= 100)  this.unlock('hundred_searches');
-        // unlock() сам сохраняет, если что-то разблокировалось.
-        // Если нет — сохраняем счётчик.
+        
+        
         this.save();
     }
 
@@ -158,7 +158,7 @@ class Achievements {
         const data = this.app.data;
         data.hueChanges = (data.hueChanges || 0) + 1;
         if (data.hueChanges >= 1) this.unlock('first_palette');
-        // Не сохраняем здесь — Hue.js сам сохраняет на input.
+        
     }
 
     trackRgbMode() {
@@ -181,7 +181,7 @@ class Achievements {
         if (data.aimGames >= 10)              this.unlock('aim_10');
         if (stats.avgWithPenalty < 0.5)       this.unlock('aim_under_half');
         if (stats.misses === 0)               this.unlock('aim_perfect');
-        // save() вызывается в Aim.js — не дублируем
+        
     }
 
     trackTypingGame(stats) {
@@ -194,7 +194,7 @@ class Achievements {
         if (stats.accuracy >= 90)    this.unlock('typing_90acc');
     }
 
-    // ---------- Очередь тостов ----------
+    
 
     enqueue(id) {
         this.queue.push(id);
@@ -240,7 +240,7 @@ class Achievements {
         }, this.TOAST_DURATION);
     }
 
-    // ---------- Звук ----------
+    
 
     getAudioContext() {
         if (this._audioCtx) return this._audioCtx;
@@ -256,7 +256,7 @@ class Achievements {
         const ctx = this.getAudioContext();
         if (!ctx) return;
 
-        // В некоторых браузерах контекст стартует "suspended"
+        
         if (ctx.state === 'suspended') {
             ctx.resume().catch(() => {});
         }
@@ -278,11 +278,11 @@ class Achievements {
             osc.start(ctx.currentTime);
             osc.stop(ctx.currentTime + 0.4);
         } catch {
-            // тихо игнорируем — не ломаем UI из-за звука
+            
         }
     }
 
-    // ---------- Модалка ----------
+    
 
     openModal() {
         if (!this.modalEl) return;
@@ -318,7 +318,7 @@ class Achievements {
 
         if (counter) counter.textContent = `${unlockedSet.size} / ${total}`;
 
-        // Собираем в фрагмент — меньше reflow, чем appendChild в цикле
+        
         const fragment = document.createDocumentFragment();
 
         for (const [id, data] of Object.entries(this.LIST)) {

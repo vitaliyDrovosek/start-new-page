@@ -10,7 +10,7 @@ class Countdown {
 
     init() {
         if (this._initialized) {
-            // при повторном init просто обновляем состояние
+            
             this.enabled = this.app.data.countdownEnabled === true;
             this.pinned = this.app.data.countdownPinned === true;
             this.updateVisibility();
@@ -40,7 +40,7 @@ class Countdown {
 
         this.updateVisibility();
         this.updateIndicator();
-        this.updatePinIndicator();  // <-- раньше не вызывалось
+        this.updatePinIndicator();  
         this.render();
         this.startTick();
     }
@@ -55,7 +55,7 @@ class Countdown {
         this.app.data.countdownEnabled = this.enabled;
         this.updateVisibility();
         this.updateIndicator();
-        this.render(); // <-- раньше не вызывалось, виджет оставался пустым
+        this.render(); 
         this.app.storage.save();
     }
 
@@ -77,7 +77,7 @@ class Countdown {
         if (indicator) indicator.classList.toggle('off', !this.pinned);
     }
 
-    // ---------- События ----------
+    
 
     getEvents() {
         if (!Array.isArray(this.app.data.countdownEvents)) {
@@ -90,10 +90,7 @@ class Countdown {
         return 'cd_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
     }
 
-    /**
-     * Парсит "ГГГГ-ММ-ДД" как локальную полночь (а не UTC, как new Date(string)).
-     * Возвращает timestamp (ms) или null.
-     */
+    
     parseLocalDate(str) {
         if (!str) return null;
         const m = String(str).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -101,7 +98,7 @@ class Countdown {
         const y = +m[1], mo = +m[2], d = +m[3];
         if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
         const dt = new Date(y, mo - 1, d, 0, 0, 0, 0);
-        // проверка, что дата не «переполнилась» (например, 2026-02-30 → 2 марта)
+        
         if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) {
             return null;
         }
@@ -141,7 +138,7 @@ class Countdown {
         this.render();
     }
 
-    // ---------- Рендер ----------
+    
 
     render() {
         if (!this.container) return;
@@ -231,13 +228,13 @@ class Countdown {
         this.container.replaceChildren(fragment);
     }
 
-    // ---------- Тик ----------
+    
 
     startTick() {
         if (this.interval) clearInterval(this.interval);
 
-        // Проверяем раз в 10 минут — ловим смену дня быстрее, чем раз в час.
-        // При этом не пишем в localStorage — только render().
+        
+        
         this.interval = setInterval(() => {
             if (this.enabled) this.render();
         }, 10 * 60 * 1000);
@@ -250,7 +247,7 @@ class Countdown {
         }
     }
 
-    // ---------- Утилиты ----------
+    
 
     daysUntil(timestamp) {
         const now = new Date();

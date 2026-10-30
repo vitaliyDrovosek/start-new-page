@@ -1,6 +1,4 @@
-/* ============================================ */
-/* SEARCH + HISTORY                             */
-/* ============================================ */
+
 
 .search-container {
     max-width: 600px;
@@ -159,7 +157,6 @@
     background: rgba(var(--accent-rgb), 0.3);
 }
 
-/* Индикатор вкл/выкл */
 .toggle-indicator {
     display: inline-block;
     width: 8px;

@@ -2,12 +2,12 @@ class Audio {
     constructor(app) {
         this.app = app;
 
-        // DOM-узлы ищем в init(), а не в конструкторе
+        
         this.slider = null;
         this.value = null;
         this.icon = null;
 
-        // Кэш для applyToVideo (ищем один раз)
+        
         this._video = null;
         this._ytWrapper = null;
 
@@ -49,7 +49,7 @@ class Audio {
         if (this._keyHandler) return;
         this._keyHandler = (e) => {
             if (e.key !== 'F2') return;
-            if (e.repeat) return; // удержание не спамит
+            if (e.repeat) return; 
             e.preventDefault();
             e.stopPropagation();
             this.toggleMute();
@@ -105,7 +105,7 @@ class Audio {
     }
 
     applyToVideo() {
-        // HTML5 video
+        
         const video = this._video || document.getElementById('bgVideo');
         if (video && video.style.display !== 'none') {
             video.muted = this.isMuted();
@@ -117,7 +117,7 @@ class Audio {
             }
         }
 
-        // YouTube iframe
+        
         const wrapper = this._ytWrapper || document.getElementById('youtubeWrapper');
         if (wrapper && wrapper.style.display !== 'none') {
             const iframe = wrapper.querySelector('iframe');

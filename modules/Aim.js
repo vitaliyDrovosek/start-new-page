@@ -6,7 +6,7 @@ class Aim {
         this.hud = null;
         this.resultScreen = null;
 
-        // Кэш DOM-узлов HUD (найдём один раз в init)
+        
         this.counterEl = null;
         this.missesEl = null;
         this.avgEl = null;
@@ -22,8 +22,8 @@ class Aim {
         this.START_DELAY = 1000;
         this.SPAWN_DELAY = 100;
         this.FINISH_DELAY = 200;
-        this.HIT_ANIM_MS = 200;   // совпадает с CSS-анимацией
-        this.MISS_FLASH_MS = 400; // совпадает с CSS-анимацией
+        this.HIT_ANIM_MS = 200;   
+        this.MISS_FLASH_MS = 400; 
         this.FIELD_PADDING = 20;
 
         this.active = false;
@@ -49,7 +49,7 @@ class Aim {
 
         if (!this.overlay || !this.field) return;
 
-        // Кэш HUD-элементов
+        
         this.counterEl       = document.getElementById('aimCounter');
         this.missesEl        = document.getElementById('aimMisses');
         this.avgEl           = document.getElementById('aimAvg');
@@ -101,7 +101,7 @@ class Aim {
         this.resultScreen?.classList.remove('visible');
         this.hud?.classList.add('visible');
 
-        // Кэш размеров поля и режима — на всё время партии
+        
         this._isMobile = window.matchMedia('(max-width: 768px)').matches;
         this._fieldRect = this.field.getBoundingClientRect();
 
@@ -213,11 +213,11 @@ class Aim {
     handleFieldClick(e) {
         if (!this.active) return;
 
-        // e может быть MouseEvent или Touch. У Touch нет .target — защищаемся.
+        
         const target = e.target;
         if (target && target.classList && target.classList.contains('aim-target')) return;
 
-        // Если есть elementFromPoint — надёжнее на тач
+        
         if (typeof e.clientX === 'number' && typeof e.clientY === 'number') {
             const el = document.elementFromPoint(e.clientX, e.clientY);
             if (el && el.classList.contains('aim-target')) return;
@@ -258,8 +258,8 @@ class Aim {
             this.app.data.aimBest = avgWithPenalty;
         }
 
-        // Счётчик игр НЕ увеличиваем здесь — этим занимается Achievements.trackAimGame(),
-        // чтобы не было двойного инкремента. Просто сохраняем best.
+        
+        
         this.app.storage?.save();
 
         this.app.achievements?.trackAimGame({

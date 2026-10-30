@@ -3,6 +3,7 @@ import Particles from './modules/Particles.js';
 import Video from './modules/Video.js';
 import Storage from './modules/Storage.js';
 import HUD from './modules/HUD.js';
+import Clock from './modules/Clock.js';
 import Weather from './modules/Weather.js';
 import Background from './modules/Background.js';
 import History from './modules/History.js';
@@ -20,6 +21,7 @@ import Notes from './modules/Notes.js';
 import Grain from './modules/Grain.js';
 import StickyNotes from './modules/StickyNotes.js';
 import Countdown from './modules/Countdown.js';
+import DropdownSubgroups from './modules/DropdownSubgroups.js';
 
 class App {
     constructor() {
@@ -35,6 +37,7 @@ class App {
         this.data = this.storage.load();
 
         this.hud = new HUD(this);
+        this.clock = new Clock(this);
         this.video = new Video(this);
         this.audio = new Audio(this);
         this.weather = new Weather(this);
@@ -55,6 +58,8 @@ class App {
         this.grain = new Grain(this);
         this.stickyNotes = new StickyNotes(this);
         this.countdown = new Countdown(this);
+
+        this.dropdownSubgroups = new DropdownSubgroups(this);
 
         this.glowEnabled = this.data.glowEnabled !== false;
         document.body.classList.toggle('glow-enabled', this.glowEnabled);
@@ -82,6 +87,7 @@ class App {
 
     init() {
         this.hud.init();
+        this.clock.init();
         this.audio.init();
         this.weather.init();
         this.history.init();
@@ -91,7 +97,7 @@ class App {
         this.background.apply();
         this.groups.render();
 
-        // Синхронизация Particles с сохранённым состоянием
+        
         if (this.data.particlesEnabled === false) {
             this.particles.enabled = false;
             this.particles.stopLoop?.();
@@ -116,6 +122,8 @@ class App {
         this.grain.init();
         this.stickyNotes.init();
         this.countdown.init();
+
+        this.dropdownSubgroups.init();
 
         this.search.loadReplaceTab();
     }

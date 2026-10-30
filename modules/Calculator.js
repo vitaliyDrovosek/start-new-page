@@ -3,11 +3,11 @@ class Calculator {
         if (!str || !str.trim()) return false;
         const s = str.trim().toLowerCase();
 
-        // Процентная фраза ("X процентов от Y") — только если есть цифры
+        
         if (this.hasPercentPhrase(s) && /\d/.test(s)) return true;
 
-        // Обычное арифметическое выражение — должно содержать
-        // хотя бы один оператор или скобку
+        
+        
         const hasOperator = /[+\-*/()%]/.test(s);
         const onlyDigits = /^[\d\s.]+$/.test(s);
         if (onlyDigits) return false;
@@ -16,7 +16,7 @@ class Calculator {
     }
 
     static hasPercentPhrase(str) {
-        // "процент(ов/а)" + "от"   ИЛИ   "% от"
+        
         return (/процент/i.test(str) && /\bот\b/i.test(str)) || /%\s*от/i.test(str);
     }
 
@@ -24,16 +24,16 @@ class Calculator {
         if (!str) return null;
         const s = str.trim().toLowerCase();
 
-        // Сначала пробуем процентную фразу
+        
         const phraseResult = this.parsePercentPhrase(s);
         if (phraseResult !== null) return phraseResult;
 
-        // Иначе — обычный парсер
+        
         return this._parse(s);
     }
 
     static parsePercentPhrase(str) {
-        // Убираем "сколько будет" только в начале
+        
         const s = str.replace(/^сколько\s+будет\s+/i, '').trim();
 
         let match = s.match(/^(.+?)\s+процент(?:а|ов)?\s+от\s+(.+)$/i);
@@ -55,7 +55,7 @@ class Calculator {
         return this._parse(str);
     }
 
-    // Внутренний парсер: токены + Parser, без percent-phrase
+    
     static _parse(str) {
         if (!str) return null;
         try {

@@ -1,7 +1,4 @@
-/* ============================================ */
-/* STICKY NOTES — финальная версия              */
-/* Минимум 200×200, невидимые ручки resize      */
-/* ============================================ */
+
 
 .sticky-notes-container {
     position: fixed;
@@ -15,13 +12,11 @@
     display: block;
 }
 
-/* ---------- Стикер ---------- */
-
 .sticky-note {
     position: fixed;
     width: 240px;
-    min-width: 200px;
-    min-height: 200px;
+    min-width: 240px;
+    min-height: 240px;
     height: auto;
     max-height: 80vh;
     padding: 10px 12px 12px;
@@ -41,6 +36,7 @@
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    box-sizing: border-box;
 }
 
 .sticky-note:hover {
@@ -68,14 +64,11 @@
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-/* Цвета */
 .sticky-note.color-yellow { --sticky-accent: #facc15; --sticky-accent-rgb: 250, 204, 21; }
 .sticky-note.color-pink   { --sticky-accent: #f472b6; --sticky-accent-rgb: 244, 114, 182; }
 .sticky-note.color-blue   { --sticky-accent: #38bdf8; --sticky-accent-rgb: 56, 189, 248; }
 .sticky-note.color-green  { --sticky-accent: #22c55e; --sticky-accent-rgb: 34, 197, 94; }
 .sticky-note.color-purple { --sticky-accent: #a78bfa; --sticky-accent-rgb: 167, 139, 250; }
-
-/* ---------- Шапка ---------- */
 
 .sticky-header {
     display: flex;
@@ -121,8 +114,6 @@
     cursor: grabbing;
 }
 
-/* ---------- Кнопка меню ---------- */
-
 .sticky-menu-btn {
     background: rgba(var(--sticky-accent-rgb), 0.15);
     border: 1px solid rgba(var(--sticky-accent-rgb), 0.45);
@@ -149,8 +140,6 @@
     transform: scale(1.1);
     box-shadow: 0 0 16px rgba(var(--sticky-accent-rgb), 0.5);
 }
-
-/* ---------- Меню стикера ---------- */
 
 .sticky-menu {
     position: absolute;
@@ -247,8 +236,6 @@
     transform: translateY(-1px);
 }
 
-/* ---------- Body + textarea ---------- */
-
 .sticky-body {
     position: relative;
     display: flex;
@@ -305,8 +292,6 @@
     background: var(--sticky-accent);
     box-shadow: 0 0 10px rgba(var(--sticky-accent-rgb), 0.6);
 }
-
-/* ---------- Кнопки копирования / развернуть ---------- */
 
 .sticky-actions {
     position: absolute;
@@ -383,8 +368,6 @@
     50% { transform: scale(1.15); }
 }
 
-/* ---------- Ручки resize (невидимые, но рабочие) ---------- */
-
 .sticky-resize-right,
 .sticky-resize-bottom,
 .sticky-resize-corner {
@@ -412,21 +395,17 @@
 
 .sticky-note.resizing:hover { transform: translateZ(0); }
 
-/* ---------- Sleep HUD ---------- */
-
 body.hud-hidden .sticky-notes-container {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
-/* ---------- Мобилка ---------- */
-
 @media (max-width: 768px) {
     .sticky-note {
         width: 240px;
-        min-width: 200px;
-        min-height: 200px;
+        min-width: 240px;
+        min-height: 240px;
         padding: 8px 10px 10px;
     }
     .sticky-text {

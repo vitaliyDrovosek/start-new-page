@@ -1,6 +1,4 @@
-/* ============================================ */
-/* SLEEP TIMEOUT CONTROL                        */
-/* ============================================ */
+
 
 .sleep-timeout-control {
     padding: 12px 20px;
@@ -32,7 +30,6 @@
     min-width: auto;
 }
 
-/* Показывается, когда «Режим ожидания» включён */
 body:has(#sleepModeToggleBtn .toggle-indicator:not(.off)) .sleep-timeout-control {
     display: flex;
 }

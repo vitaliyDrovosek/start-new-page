@@ -1,6 +1,4 @@
-/* ============================================ */
-/* BACKGROUND                                   */
-/* ============================================ */
+
 
 body:not(.hud-hidden).blur-enabled #bgVideo,
 body:not(.hud-hidden).blur-enabled .youtube-wrapper iframe {

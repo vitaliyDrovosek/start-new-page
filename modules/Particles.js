@@ -17,7 +17,7 @@ class Particles {
 
         this.loadSettings(savedSettings);
 
-        // Мобилка: ограничиваем нагрузку
+        
         const isMobile = window.matchMedia('(max-width: 768px)').matches;
         this._isMobile = isMobile;
         if (isMobile) {
@@ -31,7 +31,7 @@ class Particles {
         this.bindEvents();
 
         
-        // Класс для CSS: кнопка «Настройки частиц»
+        
         if (this.enabled) document.body.classList.add('particles-enabled');
 window.toggleParticlesSettings = () => this.toggleSettings();
         window.resetParticlesSettings  = () => this.resetSettings();
@@ -52,7 +52,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
         };
         const merged = { ...defaults, ...(savedSettings || {}) };
 
-        // Числовая валидация — на случай импорта конфига
+        
         const num = (v, def) => Number.isFinite(Number(v)) ? Number(v) : def;
 
         this.STAR_COUNT              = Math.max(10, Math.min(1000, num(merged.STAR_COUNT, 50)));
@@ -135,7 +135,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
 
-        // Масштабируем существующие частицы, чтобы не «выпрыгивали»
+        
         if (prevW > 0 && prevH > 0 && this.stars.length) {
             const sx = this.canvas.width / prevW;
             const sy = this.canvas.height / prevH;
@@ -146,7 +146,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
         }
     }
 
-    // ---------- Физика ----------
+    
 
     update() {
         if (!this.enabled) return;
@@ -219,7 +219,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
         }
     }
 
-    // ---------- Рисование ----------
+    
 
     draw() {
         if (!this.ctx || !this.canvas) return;
@@ -231,7 +231,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
 
         ctx.clearRect(0, 0, W, H);
 
-        // --- Линии (без теней — они дорогие) ---
+        
         if (this.LINE_DISTANCE > 0 && this.OVERLAP_DISTANCE < this.LINE_DISTANCE) {
             const lineDist = this.LINE_DISTANCE;
             const overlapDist = this.OVERLAP_DISTANCE;
@@ -241,8 +241,8 @@ window.toggleParticlesSettings = () => this.toggleSettings();
 
             ctx.lineWidth = 1;
 
-            // Группируем линии по альфа-уровню, чтобы реже менять strokeStyle
-            const buckets = new Map(); // alphaKey -> array of [x1,y1,x2,y2]
+            
+            const buckets = new Map(); 
 
             for (let i = 0; i < stars.length; i++) {
                 const s1 = stars[i];
@@ -255,7 +255,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
                     if (distSq < distSqMax && distSq > distSqMin) {
                         const dist = Math.sqrt(distSq);
                         const alpha = baseOpacity * (1 - dist / lineDist);
-                        // Квантуем альфу до 0.02, чтобы было меньше цветов
+                        
                         const key = Math.round(alpha * 50) / 50;
                         let arr = buckets.get(key);
                         if (!arr) { arr = []; buckets.set(key, arr); }
@@ -275,7 +275,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
             }
         }
 
-        // --- Точки (с тенью — но только если частиц немного) ---
+        
         const useShadow = stars.length < 120;
         if (useShadow) {
             ctx.shadowBlur = 20;
@@ -294,7 +294,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
         if (useShadow) ctx.shadowBlur = 0;
     }
 
-    // ---------- Цикл ----------
+    
 
     animate() {
         if (!this.enabled) {
@@ -325,7 +325,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
         this.canvas.style.display = 'none';
     }
 
-    // ---------- Вкл/выкл ----------
+    
 
     toggle() {
         this.enabled = !this.enabled;
@@ -333,7 +333,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
         const indicator = document.getElementById('particlesIndicator');
         if (indicator) indicator.classList.toggle('off', !this.enabled);
 
-        // Класс на body для CSS (кнопка «Настройки частиц»)
+        
         document.body.classList.toggle('particles-enabled', this.enabled);
 
         if (this.enabled) {
@@ -346,7 +346,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
         } else {
             this.stopLoop();
 
-            // Если панель настроек открыта — закрыть
+            
             const panel = document.getElementById('particlesSettingsPanel');
             if (panel && panel.classList.contains('visible')) {
                 this.toggleSettings();
@@ -357,13 +357,13 @@ window.toggleParticlesSettings = () => this.toggleSettings();
 
     }
 
-    // ---------- Настройки ----------
+    
 
     updateSetting(setting, value) {
         this[setting] = value;
 
         if (setting === 'STAR_COUNT') {
-            // throttle: пересоздаём частицы не чаще 1 раза за кадр
+            
             this._pendingStarCount = value;
             if (!this._starCountRafId) {
                 this._starCountRafId = requestAnimationFrame(() => {
@@ -400,32 +400,32 @@ window.toggleParticlesSettings = () => this.toggleSettings();
         const willOpen = !panel.classList.contains('visible');
 
         if (willOpen) {
-            // 1. Отсоединяем от меню и вставляем в body, чтобы z-index работал в общем контексте
+            
             panel._originalParent = panel.parentNode;
             panel._originalNext = panel.nextSibling;
             document.body.appendChild(panel);
 
-            // 2. Показываем
+            
             panel.classList.add('visible');
             dropdownMenu.classList.add('panel-open');
 
-            // 4. Backdrop
+            
             if (backdrop) {
                 backdrop.classList.add('visible');
                 backdrop._onClick = () => this.toggleSettings();
                 backdrop.addEventListener('click', backdrop._onClick);
             }
 
-            // 5. Слушатели ползунков
+            
             this.setupSettingsListeners();
             this.updateSettingsPanel();
 
-            // 6. Закрытие по клику вне
+            
             setTimeout(() => {
                 document.addEventListener('click', this.closeSettingsHandler);
             }, 100);
         } else {
-            // Закрытие
+            
             panel.classList.remove('visible');
             dropdownMenu.classList.remove('panel-open');
             this.removeSettingsListeners();
@@ -439,7 +439,7 @@ window.toggleParticlesSettings = () => this.toggleSettings();
                 }
             }
 
-            // 7. Возвращаем панель в меню (в исходное место)
+            
             if (panel._originalParent) {
                 if (panel._originalNext && panel._originalNext.parentNode === panel._originalParent) {
                     panel._originalParent.insertBefore(panel, panel._originalNext);
@@ -454,8 +454,8 @@ window.toggleParticlesSettings = () => this.toggleSettings();
     }
 
     _positionPanel(panel, menu) {
-        // Панель центрируется CSS (position: fixed + top/left 50%).
-        // JS-позиционирование больше не нужно.
+        
+        
         return;
 
     }

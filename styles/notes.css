@@ -1,6 +1,4 @@
-/* ============================================ */
-/* NOTES — финальная версия                     */
-/* ============================================ */
+
 
 .notes-btn {
     position: fixed;
@@ -30,8 +28,6 @@
     border-color: var(--accent-bright);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 20px rgba(var(--accent-rgb), 0.5);
 }
-
-/* ---------- Панель ---------- */
 
 .notes-panel {
     position: fixed;
@@ -116,8 +112,6 @@
     color: #ff6b6b;
 }
 
-/* ---------- Список ---------- */
-
 .notes-list {
     overflow-y: auto;
     display: flex;
@@ -145,8 +139,6 @@
     font-size: 0.85rem;
     line-height: 1.5;
 }
-
-/* ---------- Карточка ---------- */
 
 .note-card {
     background: rgba(255, 255, 255, 0.04);
@@ -216,8 +208,6 @@
     border-color: rgba(255, 85, 85, 0.5);
 }
 
-/* ---------- Textarea ---------- */
-
 .note-text {
     width: 100%;
     height: 60px;
@@ -249,8 +239,6 @@
 body.hud-hidden .notes-btn { opacity: 0; pointer-events: none; }
 body.hud-hidden .notes-panel { display: none !important; }
 
-/* ---------- Закреплённые ---------- */
-
 .note-card.pinned {
     border-color: rgba(var(--accent-bright-rgb), 0.5);
     background: rgba(var(--accent-dark-rgb), 0.3);
@@ -274,8 +262,6 @@ body.hud-hidden .notes-panel { display: none !important; }
     box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.4);
 }
 
-/* ---------- Мобилка ---------- */
-
 @media (max-width: 768px) {
     .note-text {
         height: 70px;
@@ -283,8 +269,6 @@ body.hud-hidden .notes-panel { display: none !important; }
         max-height: 70px;
     }
 }
-
-/* ---------- Drag-состояние карточки ---------- */
 
 .note-card.dragging-card {
     opacity: 0.4;

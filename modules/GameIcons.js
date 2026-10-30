@@ -13,7 +13,7 @@ class GameIcons {
         this.panel = document.getElementById('gameIcons');
         if (!this.panel) return;
 
-        // Защита от двойного init (двойные обработчики на кнопках)
+        
         if (this._initialized) {
             this.updateVisibility();
             this.updateIndicator();
@@ -22,7 +22,7 @@ class GameIcons {
         this._initialized = true;
 
         this.updateVisibility();
-        this.updateIndicator(); // <-- раньше не вызывалось
+        this.updateIndicator(); 
 
         document.getElementById('gameIconAim')
             ?.addEventListener('click', () => this.app.aim?.open());

@@ -1,12 +1,4 @@
-/* ============================================ */
-/* PARTICLES — панель настроек + кнопка         */
-/* ============================================ */
 
-/* ============================================ */
-/* PARTICLES — панель настроек + кнопка         */
-/* ============================================ */
-
-/* ---------- Панель ---------- */
 
 .particles-settings-panel {
     position: fixed;
@@ -35,8 +27,6 @@
     display: flex;
 }
 
-/* ---------- Контент ---------- */
-
 .particles-settings-content {
     flex: 1;
     min-height: 0;
@@ -52,8 +42,6 @@
 .particles-settings-content::-webkit-scrollbar {
     width: 4px;
 }
-
-/* ---------- Группа настроек ---------- */
 
 .settings-group {
     margin-bottom: 6px;
@@ -89,8 +77,6 @@
     min-width: auto;
     opacity: 1;
 }
-
-/* ---------- Футер ---------- */
 
 .particles-settings-footer {
     display: flex;
@@ -130,8 +116,6 @@
     box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.6);
 }
 
-/* ---------- Кнопка «Настройки частиц» ---------- */
-
 .dropdown-item[onclick="toggleParticlesSettings()"] {
     position: relative;
     overflow: visible;
@@ -140,8 +124,6 @@
 body:not(.particles-enabled) .dropdown-item[onclick="toggleParticlesSettings()"] {
     display: none;
 }
-
-/* ---------- Backdrop ---------- */
 
 .particles-settings-backdrop {
     position: fixed;
@@ -160,8 +142,6 @@ body:not(.particles-enabled) .dropdown-item[onclick="toggleParticlesSettings()"]
     pointer-events: auto;
 }
 
-/* ---------- Мобилка ---------- */
-
 @media (max-width: 768px) {
     .particles-settings-panel {
         width: calc(100vw - 24px);
@@ -176,10 +156,6 @@ body:not(.particles-enabled) .dropdown-item[onclick="toggleParticlesSettings()"]
         padding: 10px;
     }
 }
-
-/* ============================================ */
-/* PARTICLES: мобилка — не на весь экран         */
-/* ============================================ */
 
 @media (max-width: 768px) {
     .particles-settings-panel {
@@ -203,4 +179,3 @@ body:not(.particles-enabled) .dropdown-item[onclick="toggleParticlesSettings()"]
     }
 }
 
-/* ============================================ */

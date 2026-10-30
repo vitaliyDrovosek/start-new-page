@@ -100,7 +100,7 @@ class Notes {
         this.updateIndicator();
     }
 
-    // ---------- Данные ----------
+    
 
     getNotes() {
         if (!Array.isArray(this.app.data.notes)) {
@@ -133,7 +133,7 @@ class Notes {
         return 'n_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
     }
 
-    // ---------- CRUD ----------
+    
 
     addNote() {
         const notes = this.getNotes();
@@ -214,7 +214,7 @@ class Notes {
         this.emptyNoteIds.clear();
     }
 
-    // ---------- Копирование ----------
+    
 
     async copyNote(id) {
         const notes = this.getNotes();
@@ -270,7 +270,7 @@ class Notes {
         }, 1000);
     }
 
-    // ---------- Ввод ----------
+    
 
     updateNoteText(id, text) {
         const notes = this.getNotes();
@@ -298,7 +298,7 @@ class Notes {
         this.app.storage.save();
     }
 
-    // ---------- Рендер ----------
+    
 
     render() {
         if (!this.list) return;
@@ -327,7 +327,7 @@ class Notes {
         card.className = 'note-card' + (n.pinned ? ' pinned' : '');
         card.dataset.id = n.id;
 
-        // Header
+        
         const header = document.createElement('div');
         header.className = 'note-card-header';
 
@@ -362,7 +362,7 @@ class Notes {
         actions.append(pinBtn, copyBtn, delBtn);
         header.append(dateEl, actions);
 
-        // Textarea
+        
         const ta = document.createElement('textarea');
         ta.className = 'note-text';
         ta.placeholder = 'Текст заметки...';
@@ -389,7 +389,7 @@ class Notes {
         return btn;
     }
 
-    // ---------- Drag ----------
+    
 
     startDrag(id, e, card) {
         if (!e) return;
@@ -472,7 +472,7 @@ class Notes {
         setTimeout(() => { this._justDragged = false; }, 50);
     }
 
-    // ---------- Утилиты ----------
+    
 
     formatDate(ts) {
         if (!ts) return '';
@@ -514,7 +514,7 @@ class Notes {
 
     hide() {
         this.flushSaves();
-        // render() здесь не нужен — данные не менялись
+        
         this.panel.classList.remove('visible');
         this.visible = false;
         const overlay = document.getElementById('mobileHudOverlay');

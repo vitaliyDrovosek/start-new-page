@@ -1,6 +1,4 @@
-/* ============================================ */
-/* RESPONSIVE                                   */
-/* ============================================ */
+
 
 @media (max-width: 1200px) {
     .dropdown-columns {
@@ -13,8 +11,6 @@
         grid-template-columns: repeat(2, minmax(200px, 1fr));
     }
 }
-
-/* ---------- Планшеты / мобилки (<768px) ---------- */
 
 @media (max-width: 768px) {
     .clock {
@@ -40,7 +36,7 @@
         max-height: 280px;
     }
 
-    /* Группы — горизонтальный скролл со snap */
+    
     .groups {
         padding: 0 12px;
         margin: 8px auto 100px;
@@ -77,7 +73,7 @@
         min-height: 44px;
     }
 
-    /* Дропдаун — шторка снизу */
+    
     .dropdown-container {
         bottom: calc(20px + var(--safe-bottom));
         right: calc(20px + var(--safe-right));
@@ -228,7 +224,7 @@
         margin: 4px 0;
     }
 
-    /* Volume / Hue / RGB — крупнее для пальцев */
+    
     .volume-control {
         padding: 10px 14px;
         gap: 8px;
@@ -285,7 +281,7 @@
         min-height: 44px;
     }
 
-    /* Погода */
+    
     .weather-widget {
         top: calc(10px + var(--safe-top));
         right: calc(10px + var(--safe-right));
@@ -303,7 +299,7 @@
     .weather-detail-label { font-size: 0.7rem; }
     .weather-detail-value { font-size: 0.9rem; }
 
-    /* Иконки игр */
+    
     .game-icons {
         top: calc(12px + var(--safe-top));
         left: calc(12px + var(--safe-left));
@@ -315,7 +311,7 @@
         font-size: 1.2rem;
     }
 
-    /* Виджет времени */
+    
     .time-widget {
         min-width: 200px;
         padding: 12px 14px;
@@ -329,7 +325,7 @@
     .tw-preset { min-height: 32px; padding: 6px 10px; font-size: 0.75rem; }
     .tw-custom-input { min-height: 32px; font-size: 0.8rem; width: 60px; }
 
-    /* Aim */
+    
     .aim-overlay {
         padding: 12px;
         padding-top: calc(60px + var(--safe-top));
@@ -357,12 +353,12 @@
     .aim-result-actions { gap: 10px; flex-wrap: wrap; justify-content: center; }
     .aim-btn { padding: 12px 24px; font-size: 0.9rem; min-height: 44px; }
 
-    /* Typing */
+    
     .typing-field { gap: 20px; padding: 20px 12px; }
     .typing-word { font-size: 1.8rem; letter-spacing: 2px; }
     .typing-input { font-size: 1.1rem; padding: 14px 18px; letter-spacing: 2px; }
 
-    /* Достижения */
+    
     .achievement-toast {
         width: calc(100% - 24px - var(--safe-left) - var(--safe-right));
         left: calc(-100% - 24px);
@@ -387,12 +383,12 @@
     .achievement-card-title { font-size: 1rem; }
     .achievement-card-desc { font-size: 0.8rem; }
 
-    /* Time-center */
+    
     .time-center { gap: 16px; }
     .time-center-item { font-size: clamp(1.8rem, 12vw, 3rem); letter-spacing: 2px; }
     .time-center-sep { font-size: clamp(1rem, 6vw, 1.6rem); }
 
-    /* Glow — легче */
+    
     .glow-ball,
     .glow-ball-small,
     .glow-ball-bottom {
@@ -406,8 +402,6 @@
         height: 100%;
     }
 }
-
-/* ---------- Маленькие экраны (<480px) ---------- */
 
 @media (max-width: 480px) {
     .clock {
@@ -478,8 +472,6 @@
     }
 }
 
-/* ---------- Маленькая высота + landscape ---------- */
-
 @media (max-height: 500px) and (orientation: landscape) {
     .top {
         min-height: 20vh;
@@ -535,8 +527,6 @@
     }
 }
 
-/* ---------- Тач-устройства ---------- */
-
 @media (hover: none) and (pointer: coarse) {
     .dropdown-item:hover,
     .link:hover,
@@ -572,8 +562,6 @@
     }
 }
 
-/* ---------- Базовый `.dropdown-header` ---------- */
-
 .dropdown-header {
     display: none;
 }
@@ -583,8 +571,6 @@
         display: flex;
     }
 }
-
-/* ---------- Мобилки: маленькие экраны (<380px) ---------- */
 
 @media (max-width: 380px) {
     .volume-control {

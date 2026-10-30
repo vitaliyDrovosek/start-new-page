@@ -8,7 +8,7 @@ class CalculatorUI {
         this.lastResult = null;
         this._downInside = false;
 
-        // Кэш обработчиков (для снятия, если понадобится)
+        
         this._boundDocMouseDown = this._handleDocMouseDown.bind(this);
         this._boundDocMouseUp = this._handleDocMouseUp.bind(this);
     }
@@ -18,7 +18,7 @@ class CalculatorUI {
         this.container = document.getElementById('calcResult');
         if (!this.container || !this.input) return;
 
-        // Кнопка копирования — делегирование на контейнере
+        
         this.container.addEventListener('click', (e) => {
             const btn = e.target.closest('.calc-copy-btn');
             if (!btn) return;
@@ -28,14 +28,14 @@ class CalculatorUI {
             }
         });
 
-        // Закрытие по клику вне поля и контейнера
+        
         document.addEventListener('mousedown', this._boundDocMouseDown, true);
         document.addEventListener('mouseup', this._boundDocMouseUp, true);
 
         this.input.addEventListener('input', () => this.render());
         this.input.addEventListener('focus', () => this.render());
 
-        // Enter — в capture-фазе, чтобы отработать раньше History.js
+        
         this.input.addEventListener('keydown', (e) => this._handleEnter(e), true);
     }
 
@@ -64,7 +64,7 @@ class CalculatorUI {
         if (!Calculator.isMathExpression(query)) return;
 
         const result = Calculator.calculate(query);
-        if (result === null) return; // не даёт результата — не мешаем поиску
+        if (result === null) return; 
 
         e.preventDefault();
         e.stopImmediatePropagation();
@@ -145,7 +145,7 @@ class CalculatorUI {
         ta.focus();
         ta.select();
         ta.setSelectionRange(0, text.length);
-        try { document.execCommand('copy'); } catch { /* noop */ }
+        try { document.execCommand('copy'); } catch {  }
         document.body.removeChild(ta);
     }
 

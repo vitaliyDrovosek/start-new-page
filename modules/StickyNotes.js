@@ -92,6 +92,8 @@ class StickyNotes {
             y: 100 + Math.random() * 200,
             color: 'yellow',
             expanded: false,
+            width: 240,
+            height: 240,
             createdAt: Date.now()
         };
         notes.push(note);
@@ -177,7 +179,9 @@ class StickyNotes {
                     ta.style.maxHeight = '';
                     ta.style.overflowY = '';
                 }
-                if (!note.height) this.autoGrowText(ta);
+                // если размер ручной — textarea заполняет стикер
+                if (note.height) this.fitTextareaToNote(ta, el);
+                else this.autoGrowText(ta);
             }
             this.updateReadMoreButton(id);
         }
@@ -200,8 +204,10 @@ class StickyNotes {
         el.dataset.id = note.id;
         el.style.left = (note.x ?? 100) + 'px';
         el.style.top = (note.y ?? 100) + 'px';
-        if (note.width)  el.style.width  = Math.max(30, note.width)  + 'px';
-        if (note.height) el.style.height = Math.max(30, note.height) + 'px';
+        if (note.width)  el.style.width  = Math.max(240, note.width)  + 'px';
+        if (note.height) el.style.height = Math.max(240, note.height) + 'px';
+            el.dataset.manualSize = '1';
+            el.dataset.manualSize = '1';
 
         el.innerHTML = `
             <div class="sticky-drag-handle" title="РџРµСЂРµС‚Р°С‰РёС‚СЊ">в ї</div>
@@ -301,7 +307,12 @@ class StickyNotes {
         });
 
         requestAnimationFrame(() => {
-            if (!note.height) this.autoGrowText(textEl);
+            if (note.height) {
+                // ручной размер — textarea растягивается вместе со стикером
+                this.fitTextareaToNote(textEl, el);
+            } else {
+                this.autoGrowText(textEl);
+            }
             this.updateReadMoreButton(note.id);
             this._clampToScreen(el);
         });
@@ -329,9 +340,24 @@ class StickyNotes {
         el.style.overflowY = contentH > maxH ? 'auto' : 'hidden';
 
         if (noteEl) {
-            noteEl.style.height = 'auto';
-            noteEl.style.minHeight = '0';
-        }
+        if (noteEl.dataset.manualSize === '1') return;
+        noteEl.style.height = 'auto';
+        noteEl.style.minHeight = '';
+    }
+    }
+
+    /**
+     * Переводит textarea в режим "заполни родителя".
+     * Используется, когда у стикера задан note.height (ручной ресайз).
+     * Тогда textarea растягивается/сжимается вместе с .sticky-note.
+     */
+    fitTextareaToNote(ta, noteEl) {
+        if (!ta) return;
+        ta.style.flex = '1 1 auto';
+        ta.style.height = 'auto';
+        ta.style.minHeight = '0';
+        ta.style.maxHeight = 'none';
+        ta.style.overflowY = 'auto';
     }
 
     updateReadMoreButton(id) {
@@ -425,6 +451,9 @@ class StickyNotes {
 
         el.classList.add('resizing');
 
+        const ta = el.querySelector('.sticky-text');
+        if (ta) this.fitTextareaToNote(ta, el);
+
         document.addEventListener('mousemove', this.boundResizeMove);
         document.addEventListener('mouseup', this.boundResizeEnd);
         document.addEventListener('touchmove', this.boundResizeMove, { passive: false });
@@ -440,14 +469,14 @@ class StickyNotes {
         const dy = cy - this.resizeStartY;
 
         if (this.resizeDir === 'right' || this.resizeDir === 'corner') {
-            const w = Math.max(30, Math.min(600, this.resizeStartW + dx));
+            const w = Math.max(240, Math.min(600, this.resizeStartW + dx));
             this.resizeEl.style.width = w + 'px';
         }
         if (this.resizeDir === 'bottom' || this.resizeDir === 'corner') {
             const rect = this.resizeEl.getBoundingClientRect();
             const top = rect.top;
             const maxH = window.innerHeight - top - 10;
-            const h = Math.max(30, Math.min(maxH, this.resizeStartH + dy));
+            const h = Math.max(240, Math.min(maxH, this.resizeStartH + dy));
             this.resizeEl.style.height = h + 'px';
         }
     }
@@ -472,9 +501,15 @@ class StickyNotes {
         const notes = this.getNotes();
         const note = notes.find(n => n.id === id);
         if (note) {
-            if (Number.isFinite(w)) note.width = Math.max(30, w);
-            if (Number.isFinite(h)) note.height = Math.max(30, h);
+            if (Number.isFinite(w)) note.width  = Math.max(240, w);
+            if (Number.isFinite(h)) note.height = Math.max(240, h);
             this.app.storage.save();
+        }
+
+        // после ресайза — textarea заполняет стикер
+        const ta = el.querySelector('.sticky-text');
+        if (ta && note && note.height) {
+            this.fitTextareaToNote(ta, el);
         }
 
         setTimeout(() => this.updateReadMoreButton(id), 50);

@@ -39,7 +39,7 @@ class Groups {
         div.className = 'group';
         div.classList.toggle('locked', locked);
 
-        // Заголовок группы
+        
         const title = document.createElement('div');
         title.className = 'group-title';
 
@@ -47,7 +47,7 @@ class Groups {
         nameSpan.textContent = group.name || '(без имени)';
         title.appendChild(nameSpan);
 
-        // Клик по названию — переименование
+        
         nameSpan.addEventListener('click', (e) => {
             e.stopPropagation();
             if (locked) return;
@@ -59,7 +59,7 @@ class Groups {
             }
         });
 
-        // Крестик удаления группы
+        
         if (!locked) {
             const delSpan = document.createElement('span');
             delSpan.textContent = '✕';
@@ -75,15 +75,15 @@ class Groups {
 
         div.appendChild(title);
 
-        // Клик по пустому месту группы — добавить ссылку
+        
         div.addEventListener('click', (e) => {
             if (locked) return;
-            // Игнорируем клики по ссылкам и элементам заголовка
+            
             if (e.target.closest('a') || e.target.closest('.group-title')) return;
             this.addTab(gi);
         });
 
-        // Ссылки
+        
         (group.links || []).forEach((link) => {
             div.appendChild(this._renderLink(link, locked));
         });
@@ -111,11 +111,11 @@ class Groups {
                 e.stopPropagation();
 
                 const display = prompt('Отображаемое имя:', link.customName || link.name || '');
-                if (display === null) return; // отмена — ничего не меняем
+                if (display === null) return; 
                 link.customName = display.trim() || link.customName;
 
                 const real = prompt('URL:', link.url || '');
-                if (real === null) return; // отмена — оставляем старый URL
+                if (real === null) return; 
                 if (real.trim()) link.url = real.trim();
 
                 this.app.storage.save();

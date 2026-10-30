@@ -3,16 +3,16 @@ class Background {
         this.app = app;
         this.restoringTime = false;
 
-        // Кэш DOM-узлов (найдём в init)
+        
         this._img = null;
         this._vid = null;
         this._wrapper = null;
 
-        // Throttle для сохранения videoCurrentTime
+        
         this._lastTimeSave = 0;
-        this._timeSaveInterval = 5000; // мс
+        this._timeSaveInterval = 5000; 
 
-        // Лимит попыток play()
+        
         this._playAttempts = 0;
         this._maxPlayAttempts = 5;
     }
@@ -34,7 +34,7 @@ class Background {
         const { img, vid, wrapper } = this._getEls();
         if (!img || !vid || !wrapper) return;
 
-        // --- Полный сброс предыдущего состояния ---
+        
         img.style.display = 'none';
         img.removeAttribute('src');
 
@@ -49,7 +49,7 @@ class Background {
 
         this._playAttempts = 0;
 
-        // --- YouTube (плейлист или одиночное видео) ---
+        
         if (this.app.data.youtubePlaylistId || this.app.data.youtubeId) {
             wrapper.style.display = 'block';
 
@@ -78,7 +78,7 @@ class Background {
             return;
         }
 
-        // --- Картинка или видео ---
+        
         if (!this.app.data.background) return;
 
         const url = this.app.data.background.toLowerCase();
@@ -94,7 +94,7 @@ class Background {
             vid.muted = muted;
             if (!muted) vid.volume = vol / 100;
 
-            // Throttle-запись currentTime в data
+            
             vid.ontimeupdate = () => {
                 const now = performance.now();
                 if (now - this._lastTimeSave >= this._timeSaveInterval) {
@@ -138,7 +138,7 @@ class Background {
     }
 
     _isMuted() {
-        return this.app.data.isMuted !== false; // по умолчанию замьючено
+        return this.app.data.isMuted !== false; 
     }
 
     _getVolume() {
@@ -146,10 +146,10 @@ class Background {
         return Number.isFinite(v) ? Math.max(0, Math.min(100, v)) : 50;
     }
 
-    // ---------- Парсинг YouTube-ссылок ----------
+    
 
     extractYoutubeId(url) {
-        // Поддержка: youtu.be/ID, watch?v=ID, /embed/ID, /shorts/ID, /v/ID
+        
         const re = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|v\/|u\/\w\/))([A-Za-z0-9_-]{11})/;
         const m = url.match(re);
         return m ? m[1] : null;
@@ -167,7 +167,7 @@ class Background {
         const trimmed = url.trim();
         const isYouTube = trimmed.includes('youtube.com') || trimmed.includes('youtu.be');
 
-        // --- Сначала валидация, потом сброс ---
+        
         let nextYoutubeId = null;
         let nextPlaylistId = null;
         let nextBackground = null;
@@ -182,13 +182,13 @@ class Background {
                 nextYoutubeId = youtubeId;
             } else {
                 alert('Неверная YouTube ссылка!');
-                return; // ничего не сбрасываем
+                return; 
             }
         } else {
             nextBackground = trimmed;
         }
 
-        // --- Применяем ---
+        
         this.app.data.youtubeId = nextYoutubeId;
         this.app.data.youtubePlaylistId = nextPlaylistId;
         this.app.data.background = nextBackground;

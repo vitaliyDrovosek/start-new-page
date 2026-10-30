@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 
     <title>main page</title>
 
@@ -12,63 +13,22 @@
     <link rel="apple-touch-icon" href="icons/icon-192.png">
 
     <link rel="stylesheet" href="styles.css">
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+            m[i].l = 1 * new Date();
+            for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+            k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+        })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=113937382', 'ym');
 
+        ym(113937382, 'init', { ssr: true, webvisor: true, clickmap: true, ecommerce: "dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce: true, trackLinks: true });
+    </script>
+    <noscript>
+        <div><img src="https://mc.yandex.ru/watch/113937382" style="position:absolute; left:-9999px;" alt="" /></div>
+    </noscript>
+    <!-- /Yandex.Metrika counter -->
     <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
-<style id="grain-slider-hard-fix">
-#grainOpacity {
-    -webkit-appearance: none !important;
-    appearance: none !important;
-    display: block !important;
-    width: 100% !important;
-    height: 4px !important;
-    border-radius: 10px !important;
-    outline: none !important;
-    cursor: pointer !important;
-    border: none !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-#grainOpacity::-webkit-slider-runnable-track {
-    height: 4px !important;
-    border-radius: 10px !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: none !important;
-}
-#grainOpacity::-webkit-slider-thumb {
-    -webkit-appearance: none !important;
-    appearance: none !important;
-    width: 16px !important;
-    height: 16px !important;
-    border-radius: 50% !important;
-    background: linear-gradient(135deg, var(--accent-bright) 0%, var(--accent) 100%) !important;
-    border: 2px solid #fff !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), 0 0 12px rgba(var(--accent-rgb), 0.5) !important;
-    cursor: pointer !important;
-    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-    margin-top: -6px !important;
-}
-#grainOpacity::-webkit-slider-thumb:hover {
-    transform: scale(1.2) !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), 0 2px 15px rgba(var(--accent-rgb), 0.6) !important;
-}
-#grainOpacity::-moz-range-track {
-    background: rgba(255, 255, 255, 0.2) !important;
-    height: 4px !important;
-    border-radius: 10px !important;
-    border: none !important;
-}
-#grainOpacity::-moz-range-thumb {
-    width: 16px !important;
-    height: 16px !important;
-    border-radius: 50% !important;
-    background: var(--accent) !important;
-    border: 2px solid #fff !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), 0 0 12px rgba(var(--accent-rgb), 0.5) !important;
-    cursor: pointer !important;
-}
-</style>
 </head>
 
 <body class="blur-enabled">
@@ -81,11 +41,14 @@
     <div class="overlay"></div>
 
     <div class="game-icons" id="gameIcons">
-        <button class="game-icon" id="gameIconAim" title="Aim Trainer"><span class="iconify" data-icon="mdi:target"></span></button>
-        <button class="game-icon" id="gameIconTyping" title="Typing Speed"><span class="iconify" data-icon="mdi:keyboard-outline"></span></button>
+        <button class="game-icon" id="gameIconAim" title="Aim Trainer"><span class="iconify"
+                data-icon="mdi:target"></span></button>
+        <button class="game-icon" id="gameIconTyping" title="Typing Speed"><span class="iconify"
+                data-icon="mdi:keyboard-outline"></span></button>
     </div>
 
-    <button class="notes-btn" id="notesBtn" title="Заметки"><span class="iconify" data-icon="mdi:notebook-outline"></span></button>
+    <button class="notes-btn" id="notesBtn" title="Заметки"><span class="iconify"
+            data-icon="mdi:notebook-outline"></span></button>
 
     <div class="notes-panel" id="notesPanel">
         <div class="notes-header">
@@ -127,12 +90,6 @@
         </div>
     </div>
 
-    <div class="time-center" id="timeCenter">
-        <div class="time-center-item" id="timeCenterSw">00:00.00</div>
-        <div class="time-center-sep" id="timeCenterSep">|</div>
-        <div class="time-center-item" id="timeCenterCd">00:00</div>
-    </div>
-
     <div class="time-widget weather-widget" id="weatherWidget">
         <div class="tw-drag" id="weatherDrag" title="Перетащить">⠿</div>
 
@@ -170,6 +127,8 @@
 
     <div class="top">
         <div class="clock" id="clock"></div>
+        <div class="top-time-item hidden" id="topSwDisplay"></div>
+        <div class="top-time-item hidden" id="topCdDisplay"></div>
         <div class="search-container">
             <input id="searchInput" class="search-input" placeholder="Поиск..." autocomplete="off">
             <div id="calcResult" class="calc-result-container"></div>
@@ -187,6 +146,7 @@
 
             <div class="dropdown-columns">
 
+                <!-- ===================== ИГРЫ ===================== -->
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Игры</div>
 
@@ -213,41 +173,63 @@
                     </button>
                 </div>
 
+                <!-- ===================== ВРЕМЯ И СОБЫТИЯ ===================== -->
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Время и события</div>
 
-                    <button class="dropdown-item" onclick="app.timeWidget.toggle()" id="timeWidgetToggleBtn">
-                        <span>Виджет времени</span>
-                        <span id="timeWidgetIndicator" class="toggle-indicator"></span>
-                    </button>
+                    <!-- Виджет времени: РОДИТЕЛЬ СНАРУЖИ items -->
+                    <div class="dropdown-subgroup" data-subgroup-parent="timeWidgetIndicator">
+                        <button class="dropdown-item" onclick="app.timeWidget.toggle()" id="timeWidgetToggleBtn">
+                            <span>Виджет времени</span>
+                            <span id="timeWidgetIndicator" class="toggle-indicator"></span>
+                        </button>
 
-                    <button class="dropdown-item" onclick="app.hud.toggleAutoSleep()" id="timeAutoSleepToggleBtn">
-                        <span>Спящий режим при таймере</span>
-                        <span id="timeAutoSleepIndicator" class="toggle-indicator"></span>
-                    </button>
+                        <div class="dropdown-subgroup-items">
+                            <button class="dropdown-item dropdown-subitem" onclick="app.hud.toggleAutoSleep()"
+                                id="timeAutoSleepToggleBtn">
+                                <span>Спящий режим при таймере</span>
+                                <span id="timeAutoSleepIndicator" class="toggle-indicator"></span>
+                            </button>
 
-                    <button class="dropdown-item" onclick="app.timeWidget.toggleSleepDisplay()" id="timeCenterSleepToggleBtn">
-                        <span>Таймер/секундомер в sleep</span>
-                        <span id="timeCenterSleepIndicator" class="toggle-indicator"></span>
-                    </button>
+                            <button class="dropdown-item dropdown-subitem" onclick="app.timeWidget.toggleSleepDisplay()"
+                                id="timeCenterSleepToggleBtn">
+                                <span>Таймер/секундомер в sleep</span>
+                                <span id="timeCenterSleepIndicator" class="toggle-indicator"></span>
+                            </button>
+
+                            <button class="dropdown-item dropdown-subitem" onclick="app.timeWidget.toggleClockDisplay()"
+                                id="timeCenterClockToggleBtn">
+                                <span>Таймер у часов (sleep)</span>
+                                <span id="timeCenterClockIndicator" class="toggle-indicator"></span>
+                            </button>
+                        </div>
+                    </div>
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.countdown.toggle()" id="countdownToggleBtn">
-                        <span>Счётчик дней</span>
-                        <span id="countdownIndicator" class="toggle-indicator"></span>
-                    </button>
+                    <!-- Счётчик дней: РОДИТЕЛЬ СНАРУЖИ items -->
+                    <div class="dropdown-subgroup" data-subgroup-parent="countdownIndicator">
+                        <button class="dropdown-item" onclick="app.countdown.toggle()" id="countdownToggleBtn">
+                            <span>Счётчик дней</span>
+                            <span id="countdownIndicator" class="toggle-indicator"></span>
+                        </button>
 
-                    <button class="dropdown-item" onclick="app.countdown.addEvent(); app.hud.hideDropdown()">
-                        <span>Добавить событие</span>
-                    </button>
+                        <div class="dropdown-subgroup-items">
+                            <button class="dropdown-item dropdown-subitem"
+                                onclick="app.countdown.addEvent(); app.hud.hideDropdown()">
+                                <span>Добавить событие</span>
+                            </button>
 
-                    <button class="dropdown-item" onclick="app.countdown.togglePin()" id="countdownPinToggleBtn">
-                        <span>Закрепить отсчёты</span>
-                        <span id="countdownPinIndicator" class="toggle-indicator"></span>
-                    </button>
+                            <button class="dropdown-item dropdown-subitem" onclick="app.countdown.togglePin()"
+                                id="countdownPinToggleBtn">
+                                <span>Закрепить отсчёты</span>
+                                <span id="countdownPinIndicator" class="toggle-indicator"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- ===================== ОФОРМЛЕНИЕ ===================== -->
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Оформление</div>
 
@@ -272,32 +254,40 @@
                             <span>Яркость</span>
                             <span id="brightnessValue">60%</span>
                         </label>
-                        <input type="range" id="brightnessSlider" class="hue-slider" min="10" max="100" value="60" step="1">
+                        <input type="range" id="brightnessSlider" class="hue-slider" min="10" max="100" value="60"
+                            step="1">
 
                         <label for="opacitySlider">
                             <span>Прозрачность</span>
                             <span id="opacityValue">100%</span>
                         </label>
-                        <input type="range" id="opacitySlider" class="hue-slider" min="20" max="100" value="100" step="1">
+                        <input type="range" id="opacitySlider" class="hue-slider" min="20" max="100" value="100"
+                            step="1">
 
                         <button id="rgbModeBtn" class="rgb-mode-btn">RGB</button>
                     </div>
                 </div>
 
+                <!-- ===================== ЭФФЕКТЫ ===================== -->
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Эффекты</div>
 
-                    <button class="dropdown-item" onclick="app.hud.toggleGrain()" id="grainToggleBtn">
-                        <span>Зернистый шум</span>
-                        <span id="grainIndicator" class="toggle-indicator"></span>
-                    </button>
+                    <!-- Зернистый шум: РОДИТЕЛЬ СНАРУЖИ items -->
+                    <div class="dropdown-subgroup" data-subgroup-parent="grainIndicator">
+                        <button class="dropdown-item" onclick="app.hud.toggleGrain()" id="grainToggleBtn">
+                            <span>Зернистый шум</span>
+                            <span id="grainIndicator" class="toggle-indicator"></span>
+                        </button>
 
-                    <div class="hue-control grain-opacity-control">
-                        <label for="grainOpacity">
-                            <span>Интенсивность шума</span>
-                            <span id="grainOpacityValue">5.5%</span>
-                        </label>
-                        <input type="range" id="grainOpacity"  min="0" max="30" value="5.5" step="1">
+                        <div class="dropdown-subgroup-items">
+                            <div class="hue-control grain-opacity-control dropdown-subitem-block">
+                                <label for="grainOpacity">
+                                    <span>Интенсивность шума</span>
+                                    <span id="grainOpacityValue">5.5%</span>
+                                </label>
+                                <input type="range" id="grainOpacity" min="0" max="30" value="5.5" step="1">
+                            </div>
+                        </div>
                     </div>
 
                     <button class="dropdown-item" onclick="app.hud.toggleGlow()" id="glowToggleBtn">
@@ -310,15 +300,21 @@
                         <span id="blurIndicator" class="toggle-indicator"></span>
                     </button>
 
-                    <button class="dropdown-item" onclick="app.particles.toggle()" id="particlesToggleBtn">
-                        <span>Частицы</span>
-                        <span id="particlesIndicator" class="toggle-indicator"></span>
-                    </button>
+                    <!-- Частицы: РОДИТЕЛЬ СНАРУЖИ items -->
+                    <div class="dropdown-subgroup" data-subgroup-parent="particlesIndicator">
+                        <button class="dropdown-item" onclick="app.particles.toggle()" id="particlesToggleBtn">
+                            <span>Частицы</span>
+                            <span id="particlesIndicator" class="toggle-indicator"></span>
+                        </button>
 
-                    <button class="dropdown-item" onclick="toggleParticlesSettings()">
-                        <span>Настройки частиц</span>
-                    </button>
+                        <div class="dropdown-subgroup-items">
+                            <button class="dropdown-item dropdown-subitem" onclick="toggleParticlesSettings()">
+                                <span>Настройки частиц</span>
+                            </button>
+                        </div>
+                    </div>
 
+                    <!-- Панель настроек частиц — СНАРУЖИ подгруппы (всплывает в body) -->
                     <div class="particles-settings-panel" id="particlesSettingsPanel">
                         <div class="particles-settings-content">
                             <div class="settings-group">
@@ -365,15 +361,25 @@
                     </div>
                 </div>
 
+                <!-- ===================== ПОИСК И ИНТЕРФЕЙС ===================== -->
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Поиск и интерфейс</div>
 
-                    <button class="dropdown-item" onclick="app.hud.toggleGroupsLock()" id="groupsLockToggleBtn">
-                        <span>Блокировка групп</span>
-                        <span id="groupsLockIndicator" class="toggle-indicator"></span>
-                    </button>
+                    <!-- Блокировка групп: РОДИТЕЛЬ СНАРУЖИ items -->
+                    <div class="dropdown-subgroup" data-subgroup-parent="groupsLockIndicator"
+                        data-subgroup-invert="true">
+                        <button class="dropdown-item" onclick="app.hud.toggleGroupsLock()" id="groupsLockToggleBtn">
+                            <span>Блокировка групп</span>
+                            <span id="groupsLockIndicator" class="toggle-indicator"></span>
+                        </button>
 
-                    <button class="dropdown-item" onclick="app.groups.add(); app.hud.hideDropdown()">Добавить группу</button>
+                        <div class="dropdown-subgroup-items">
+                            <button class="dropdown-item dropdown-subitem"
+                                onclick="app.groups.add(); app.hud.hideDropdown()">
+                                <span>Добавить группу</span>
+                            </button>
+                        </div>
+                    </div>
 
                     <div class="dropdown-divider"></div>
 
@@ -389,8 +395,10 @@
                         <span id="openMethodIndicator" class="toggle-indicator"></span>
                     </button>
 
-                    <button class="dropdown-item" onclick="app.search.setEngine('yandex'); app.hud.hideDropdown()" id="engineYandex">Яндекс</button>
-                    <button class="dropdown-item" onclick="app.search.setEngine('google'); app.hud.hideDropdown()" id="engineGoogle">Google</button>
+                    <button class="dropdown-item" onclick="app.search.setEngine('yandex'); app.hud.hideDropdown()"
+                        id="engineYandex">Яндекс</button>
+                    <button class="dropdown-item" onclick="app.search.setEngine('google'); app.hud.hideDropdown()"
+                        id="engineGoogle">Google</button>
 
                     <div class="dropdown-divider"></div>
 
@@ -401,38 +409,62 @@
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.hud.toggleSleepMode()" id="sleepModeToggleBtn">
-                        <span>Режим ожидания</span>
-                        <span id="sleepModeIndicator" class="toggle-indicator"></span>
-                    </button>
+                    <!-- Режим ожидания: РОДИТЕЛЬ СНАРУЖИ items -->
+                    <div class="dropdown-subgroup" data-subgroup-parent="sleepModeIndicator">
+                        <button class="dropdown-item" onclick="app.hud.toggleSleepMode()" id="sleepModeToggleBtn">
+                            <span>Режим ожидания</span>
+                            <span id="sleepModeIndicator" class="toggle-indicator"></span>
+                        </button>
 
-                    <div class="hue-control sleep-timeout-control" id="sleepTimeoutControl">
-                        <label for="sleepTimeout">
-                            <span>Таймаут (сек)</span>
-                            <span id="sleepTimeoutValue">15</span>
-                        </label>
-                        <input type="range" id="sleepTimeout" class="hue-slider" min="5" max="120" value="15" step="5">
+                        <div class="dropdown-subgroup-items">
+                            <div class="hue-control sleep-timeout-control dropdown-subitem-block"
+                                id="sleepTimeoutControl">
+                                <label for="sleepTimeout">
+                                    <span>Таймаут (сек)</span>
+                                    <span id="sleepTimeoutValue">15</span>
+                                </label>
+                                <input type="range" id="sleepTimeout" class="hue-slider" min="5" max="120" value="15"
+                                    step="5">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="dropdown-divider"></div>
 
-                    <button class="dropdown-item" onclick="app.history.toggle()" id="toggleHistoryBtn">
-                        <span>История поиска</span>
-                        <span id="historyIndicator" class="toggle-indicator"></span>
-                    </button>
+                    <!-- История поиска: РОДИТЕЛЬ СНАРУЖИ items -->
+                    <div class="dropdown-subgroup" data-subgroup-parent="historyIndicator">
+                        <button class="dropdown-item" onclick="app.history.toggle()" id="toggleHistoryBtn">
+                            <span>История поиска</span>
+                            <span id="historyIndicator" class="toggle-indicator"></span>
+                        </button>
 
-                    <button class="dropdown-item" onclick="app.history.clear(); app.hud.hideDropdown()">Очистить историю</button>
+                        <div class="dropdown-subgroup-items">
+                            <button class="dropdown-item dropdown-subitem"
+                                onclick="app.history.clear(); app.hud.hideDropdown()">
+                                <span>Очистить историю</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- ===================== СТИКЕРЫ И КОНФИГ ===================== -->
                 <div class="dropdown-column">
                     <div class="dropdown-column-title">Стикеры и конфиг</div>
 
-                    <button class="dropdown-item" onclick="app.stickyNotes.toggle()" id="stickyNotesToggleBtn">
-                        <span>Стикеры на странице</span>
-                        <span id="stickyNotesIndicator" class="toggle-indicator"></span>
-                    </button>
+                    <!-- Стикеры: РОДИТЕЛЬ СНАРУЖИ items -->
+                    <div class="dropdown-subgroup" data-subgroup-parent="stickyNotesIndicator">
+                        <button class="dropdown-item" onclick="app.stickyNotes.toggle()" id="stickyNotesToggleBtn">
+                            <span>Стикеры на странице</span>
+                            <span id="stickyNotesIndicator" class="toggle-indicator"></span>
+                        </button>
 
-                    <button class="dropdown-item" onclick="app.stickyNotes.addNote(); app.hud.hideDropdown()">Добавить стикер</button>
+                        <div class="dropdown-subgroup-items">
+                            <button class="dropdown-item dropdown-subitem"
+                                onclick="app.stickyNotes.addNote(); app.hud.hideDropdown()">
+                                <span>Добавить стикер</span>
+                            </button>
+                        </div>
+                    </div>
 
                     <div class="dropdown-divider"></div>
 
@@ -595,34 +627,17 @@
 
     <div id="stickyNotesContainer" class="sticky-notes-container"></div>
 
+    <div class="time-center" id="timeCenter">
+        <div class="time-center-item hidden-item" id="timeCenterSw"></div>
+        <div class="time-center-item hidden-item" id="timeCenterCd"></div>
+    </div>
+
     <script type="module" src="app.js"></script>
 
     <div class="glow-ball"></div>
     <div class="glow-ball-small"></div>
     <div class="glow-ball-bottom"></div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const setupGrainSlider = () => {
-            const slider = document.getElementById('grainOpacity');
-            const valEl = document.getElementById('grainOpacityValue');
-            if (!slider) return;
-            slider.addEventListener('input', (e) => {
-                const v = parseInt(e.target.value);
-                if (valEl) valEl.textContent = v + '%';
-                if (window.app && window.app.grain) {
-                    window.app.data.grainOpacity = v;
-                    window.app.grain.apply();
-                }
-            });
-            slider.addEventListener('change', () => {
-                if (window.app) window.app.storage.save();
-            });
-        };
-        setupGrainSlider();
-        setTimeout(setupGrainSlider, 500);
-    });
-    </script>
 </body>
 
 </html>

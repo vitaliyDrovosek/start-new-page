@@ -6,20 +6,18 @@ class HUD {
 
         this._sleepTimeoutSlider = null;
         this._sleepTimeoutValueEl = null;
-        this.clockInterval = null;
 
         this.tabVisible = true;
         this._initialized = false;
 
-        // rAF-throttle для движения
+        
         this._lastMouseX = 0;
         this._lastMouseY = 0;
         this._lastTouchX = 0;
         this._lastTouchY = 0;
         this._moveRafId = null;
 
-        // Кэш DOM
-        this._clockEl = null;
+        
 
         this.boundHandlers = this.createBoundHandlers();
     }
@@ -41,8 +39,6 @@ class HUD {
         if (this._initialized) return;
         this._initialized = true;
 
-        this._clockEl = document.getElementById('clock');
-
         const h = this.boundHandlers;
 
         document.addEventListener('mousemove', h.handleMouseMove, { passive: true });
@@ -55,7 +51,7 @@ class HUD {
         window.addEventListener('blur', h.handleWindowBlur);
         window.addEventListener('focus', h.handleWindowFocus);
 
-        // Закрытие дропдауна по клику вне
+        
         let _downInside = false;
         document.addEventListener('mousedown', (e) => {
             const menu = document.getElementById('dropdownMenu');
@@ -71,10 +67,10 @@ class HUD {
             const menu = document.getElementById('dropdownMenu');
             if (!menu || !menu.classList.contains('show')) return;
 
-            // Если открыта панель настроек частиц — не закрываем меню
+            
             const particlesPanel = document.getElementById('particlesSettingsPanel');
             if (particlesPanel && particlesPanel.classList.contains('visible')) {
-                // Но если клик был по самому меню — пусть работает как обычно
+                
                 const insideMenu = !!(e.target.closest && e.target.closest('#dropdownMenu'));
                 if (!insideMenu) return;
             }
@@ -89,9 +85,7 @@ class HUD {
             }
         }, true);
 
-        this.startClock();
-
-        // Ползунок таймаута сна
+        
         this._sleepTimeoutSlider = document.getElementById('sleepTimeout');
         this._sleepTimeoutValueEl = document.getElementById('sleepTimeoutValue');
         if (this._sleepTimeoutSlider) {
@@ -120,7 +114,7 @@ class HUD {
         this.updateBlurIndicator();
     }
 
-    // ---------- Активность (throttle через rAF) ----------
+    
 
     _scheduleActivity() {
         if (this._moveRafId) return;
@@ -200,30 +194,9 @@ class HUD {
         this.clearSleepTimer();
     }
 
-    // ---------- Часы ----------
+    
 
-    startClock() {
-        this.updateClock();
-        this.clockInterval = setInterval(() => this.updateClock(), 1000);
-    }
-
-    stopClock() {
-        if (this.clockInterval) {
-            clearInterval(this.clockInterval);
-            this.clockInterval = null;
-        }
-    }
-
-    updateClock() {
-        if (!this._clockEl) return;
-        this._clockEl.textContent = new Date().toLocaleTimeString('ru-RU', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-    }
-
-    // ---------- Спящий режим ----------
+    
 
     show() {
         document.body.classList.remove('hud-hidden');
@@ -235,13 +208,14 @@ class HUD {
         if (!this.app.data.sleepModeEnabled) return;
         if (!this.app.data.timeAutoSleepEnabled && this.app.timeWidget?.isActive()) return;
         document.body.classList.add('hud-hidden');
-        if (this.app.timeWidget?.isActive()) this.app.timeWidget.renderCenter();
+        this.app.timeWidget?.hideCenter?.();
+        this.app.timeWidget?._positionCenterNearClock?.();
     }
 
     forceHide() {
         if (!this.tabVisible) return;
         document.body.classList.add('hud-hidden');
-        if (this.app.timeWidget?.isActive()) this.app.timeWidget.renderCenter();
+        this.app.timeWidget?.hideCenter?.();
         this.clearSleepTimer();
     }
 
@@ -261,7 +235,7 @@ class HUD {
         }
     }
 
-    // ---------- Индикаторы ----------
+    
 
     toggleSleepMode() {
         this.app.data.sleepModeEnabled = !this.app.data.sleepModeEnabled;
@@ -301,11 +275,6 @@ class HUD {
     updateGroupsLockIndicator() {
         const indicator = document.getElementById('groupsLockIndicator');
         if (indicator) indicator.classList.toggle('off', !this.app.data.groupsLocked);
-        const addGroupBtn = document.querySelector('.dropdown-item[onclick="app.groups.add(); app.hud.hideDropdown()"]');
-        if (addGroupBtn) {
-            addGroupBtn.style.display = this.app.data.groupsLocked ? 'none' : 'flex';
-        }
-
     }
 
     toggleGlow() {
@@ -368,7 +337,7 @@ class HUD {
 
     toggleGameIcons() { this.app.gameIcons?.toggle(); }
 
-    // ---------- Дропдаун ----------
+    
 
     toggleDropdown() {
         const menu = document.getElementById('dropdownMenu');

@@ -1,6 +1,4 @@
-/* ============================================ */
-/* ICONS (iconify)                              */
-/* ============================================ */
+
 
 .iconify {
     display: inline-flex;
@@ -10,8 +8,6 @@
     flex-shrink: 0;
     line-height: 1;
 }
-
-/* ---------- Заметки ---------- */
 
 .note-action .iconify {
     width: 14px;
@@ -39,8 +35,6 @@
     color: var(--text-primary);
 }
 
-/* ---------- Иконки игр ---------- */
-
 .game-icon .iconify {
     width: 18px;
     height: 18px;
@@ -50,8 +44,6 @@
 .game-icon:hover .iconify {
     color: var(--accent-bright);
 }
-
-/* ---------- Мобилка ---------- */
 
 @media (max-width: 768px) {
     .note-action .iconify { width: 16px; height: 16px; }

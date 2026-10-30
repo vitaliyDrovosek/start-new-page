@@ -37,7 +37,7 @@ class Storage {
             background: savedData.background || null,
             youtubeId: savedData.youtubeId || null,
             youtubePlaylistId: savedData.youtubePlaylistId || null,
-            isMuted: savedData.isMuted ?? true,
+            isMuted: true, // при каждой загрузке звук выключен (не читаем из localStorage)
             volume: savedData.volume ?? 50,
             searchEngine: savedData.searchEngine || 'yandex',
             searchHistory: arr(savedData.searchHistory),
@@ -67,6 +67,7 @@ class Storage {
             timeWidgetPos: savedData.timeWidgetPos ?? null,
             timeAutoSleepEnabled: savedData.timeAutoSleepEnabled ?? true,
             timeCenterInSleepEnabled: savedData.timeCenterInSleepEnabled ?? true,
+            timeCenterInClockEnabled: savedData.timeCenterInClockEnabled ?? false,
             timeWidgetState: savedData.timeWidgetState ?? null,
 
             groupsLocked: savedData.groupsLocked ?? false,
@@ -123,7 +124,9 @@ class Storage {
         try {
             this.syncParticlesFromState();
             this.app.data.glowEnabled = this.app.glowEnabled;
-            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.app.data));
+            // isMuted не пишем в localStorage — при новой загрузке всегда true
+            const { isMuted, ...toSave } = this.app.data;
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(toSave));
         } catch (err) {
             console.error('[Storage] save failed:', err);
         }

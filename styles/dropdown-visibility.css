@@ -1,43 +1,5 @@
-/* ============================================ */
-/* DROPDOWN: СКРЫТИЕ ПОДПУНКТОВ ПО РОДИТЕЛЮ     */
-/* ============================================ */
 
-/* HIDE SUB-ITEMS в меню (по родителю)          */
-/* ============================================ */
 
-/* Стикеры: «Добавить стикер» скрыт при выключенных стикерах */
-body:not(:has(#stickyNotesIndicator:not(.off))) .dropdown-item[onclick="app.stickyNotes.addNote(); app.hud.hideDropdown()"] {
-    display: none;
-}
-
-/* Время: подпункты скрыты, если «Виджет времени» выключен */
-body:has(#timeWidgetIndicator.off) #timeAutoSleepToggleBtn,
-body:has(#timeWidgetIndicator.off) #timeCenterSleepToggleBtn {
-    display: none;
-}
-
-/* Счётчик: подпункты скрыты, если счётчик выключен */
-body:has(#countdownIndicator.off) .dropdown-item[onclick="app.countdown.addEvent(); app.hud.hideDropdown()"],
-body:has(#countdownIndicator.off) #countdownPinToggleBtn {
-    display: none;
-}
-
-/* История: «Очистить историю» скрыт при выключенной истории */
-body:has(#historyIndicator.off) .dropdown-item[onclick="app.history.clear(); app.hud.hideDropdown()"] {
-    display: none;
-}
-
-/* Группы: «Добавить группу» скрыт при блокировке */
-body:has(#groupsLockIndicator:not(.off)) .dropdown-item[onclick="app.groups.add(); app.hud.hideDropdown()"] {
-    visibility: hidden;
-    pointer-events: none;
-}
-
-/* Шум: слайдер интенсивности виден только при включённом шуме */
-.grain-opacity-control {
-    display: none;
-}
-
-body:has(#grainToggleBtn .toggle-indicator:not(.off)) .grain-opacity-control {
-    display: flex;
+body:not(.blur-enabled) #blurToggleBtn {
+    opacity: 0.6;
 }

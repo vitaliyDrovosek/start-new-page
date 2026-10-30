@@ -19,11 +19,11 @@ class Hue {
         this._hueTracked = false;
         this._metaThemeColor = null;
 
-        // rAF-throttle для applyAll
+        
         this._applyRafId = null;
         this._applyPending = false;
 
-        // Отслеживаем предыдущее состояние для оптимизаций
+        
         this._lastBrightness = null;
     }
 
@@ -89,10 +89,10 @@ class Hue {
             this.rgbButton.addEventListener('click', () => this.toggleRgbMode());
         }
 
-        // Первый apply — сразу
+        
         this.applyAll();
 
-        // Восстановление сохранённого RGB-режима (без save() и ачивки)
+        
         const savedRgbMode = this.app.data.rgbMode === true;
         if (savedRgbMode) {
             this.rgbMode = true;
@@ -102,7 +102,7 @@ class Hue {
         this.updateRgbButton();
     }
 
-    // ---------- rAF-throttle ----------
+    
 
     _scheduleApply() {
         if (this._applyRafId) return;
@@ -112,7 +112,7 @@ class Hue {
         });
     }
 
-    // ---------- RGB ----------
+    
 
     toggleRgbMode() {
         this.rgbMode = !this.rgbMode;
@@ -137,7 +137,7 @@ class Hue {
         this.rgbButton.textContent = this.rgbMode ? 'RGB: ВКЛ' : 'RGB';
     }
 
-    // ---------- Основной apply ----------
+    
 
     applyAll() {
         const hue = ((this.currentHue % 360) + 360) % 360;
@@ -147,7 +147,7 @@ class Hue {
         const bFactor = 0.5 + (brightness / 100) * 0.7;
         const root = document.documentElement;
 
-        // Генерируем все цвета разом
+        
         const accent          = this.hsl(hue, 75, 60 * bFactor);
         const accentHover     = this.hsl(hue, 80, 68 * bFactor);
         const accentRgb       = this.hslToRgbStr(hue, 75, 60 * bFactor);
@@ -171,7 +171,7 @@ class Hue {
         const accentInvert    = this.hsl(invertHue, 70, 60 * bFactor);
         const accentInvertRgb = this.hslToRgbStr(invertHue, 70, 60 * bFactor);
 
-        // Применяем
+        
         root.style.setProperty('--accent', accent);
         root.style.setProperty('--accent-hover', accentHover);
         root.style.setProperty('--accent-rgb', accentRgb);
@@ -194,7 +194,7 @@ class Hue {
         if (this.brightnessLabel) this.brightnessLabel.textContent = brightness + '%';
         if (this.opacityLabel)    this.opacityLabel.textContent = opacity + '%';
 
-        // Градиент слайдера зависит от brightness — обновляем только при её изменении
+        
         if (this.slider && this._lastBrightness !== brightness) {
             this._lastBrightness = brightness;
             const l = Math.round(60 * bFactor);
@@ -208,17 +208,17 @@ class Hue {
                 hsl(360, 80%, ${l}%))`;
         }
 
-        // meta[theme-color] — только если есть
+        
         this._metaThemeColor?.setAttribute('content', this.hsl(hue, 20, 8));
 
-        // Glow — палитра зависит от hue, не от brightness/opacity.
-        // В RGB-режиме Glow сам крутит цикл — не дёргаем.
+        
+        
         if (this.app.glow && !this.rgbMode) {
             this.app.glow.applyPalette();
         }
     }
 
-    // ---------- Внешние вызовы ----------
+    
 
     apply(hue) {
         if (hue !== undefined) this.currentHue = this._clamp(Number(hue), 0, 360, 220);
@@ -235,7 +235,7 @@ class Hue {
         this.applyAll();
     }
 
-    // ---------- Утилиты ----------
+    
 
     _clamp(v, min, max, fallback) {
         if (!Number.isFinite(v)) return fallback;

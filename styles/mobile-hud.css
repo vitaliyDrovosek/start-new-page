@@ -24,30 +24,19 @@
     }
 }
 
-/* ============================================ */
-/* SLEEP MODE OVERRIDES                         */
-/* ============================================ */
-
-/* Если шум отключен в спящем режиме */
 body.hud-hidden.sleep-no-grain .grain-overlay {
     opacity: 0 !important;
     animation: none !important;
 }
 
-/* Если размытие отключено в спящем режиме */
 body.hud-hidden.sleep-no-blur #bgVideo,
 body.hud-hidden.sleep-no-blur .youtube-wrapper iframe {
     filter: blur(0) !important;
 }
 
-/* ============================================ */
-/* MOBILE: кнопка дропдауна скрывается, меню    */
-/* по центру экрана                             */
-/* ============================================ */
-
 @media (max-width: 768px) {
 
-    /* Кнопка ☰ исчезает, когда меню открыто */
+    
     body.dropdown-open .dropdown-button {
         opacity: 0 !important;
         pointer-events: none !important;
@@ -55,7 +44,7 @@ body.hud-hidden.sleep-no-blur .youtube-wrapper iframe {
         transition: opacity 0.2s ease, transform 0.2s ease;
     }
 
-    /* Меню по центру экрана */
+    
     .dropdown-menu {
         position: fixed !important;
         top: 50% !important;
@@ -81,7 +70,7 @@ body.hud-hidden.sleep-no-blur .youtube-wrapper iframe {
         animation: dropdownCenterIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Шапка меню */
+    
     .dropdown-header {
         display: flex;
         align-items: center;
@@ -132,7 +121,7 @@ body.hud-hidden.sleep-no-blur .youtube-wrapper iframe {
         transform: scale(0.95);
     }
 
-    /* Колонки внутри меню */
+    
     .dropdown-columns {
         grid-template-columns: 1fr !important;
         gap: 10px;
@@ -162,7 +151,7 @@ body.hud-hidden.sleep-no-blur .youtube-wrapper iframe {
         transform: scale(0.98);
     }
 
-    /* Панель частиц на мобилке — на весь экран */
+    
     .particles-settings-panel {
         position: fixed;
         inset: 0;

@@ -1,13 +1,12 @@
-/* ============================================ */
-/* CLOCK + BACKGROUND + OVERLAY + HUD           */
-/* ============================================ */
+
 
 .clock {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: clamp(2.5rem, 8vw, 4rem);
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 0 auto 12px;
+    font-size: clamp(2rem, 6vw, 3.2rem);
     font-weight: 300;
     color: var(--text-primary);
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
@@ -19,13 +18,18 @@
     transition: top 0.5s ease, right 0.5s ease, font-size 0.5s ease,
                 background 0.5s ease, padding 0.5s ease,
                 border-radius 0.5s ease, box-shadow 0.5s ease;
+
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
 }
 
 body.hud-hidden .clock {
+    position: absolute;
     top: calc(20px + var(--safe-top));
     right: calc(30px + var(--safe-right));
     left: auto;
     transform: none;
+    margin: 0;
     font-size: 1.5rem;
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
@@ -34,6 +38,9 @@ body.hud-hidden .clock {
     border-radius: 30px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
+    min-width: 130px;
+    text-align: center;
 }
 
 body.hud-hidden .top .search-container,
@@ -50,7 +57,6 @@ body.hud-hidden .overlay {
     transition: opacity 0.5s ease;
 }
 
-/* Курсор: потомки наследуют — без * */
 body.hud-hidden {
     cursor: none !important;
 }

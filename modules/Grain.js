@@ -4,7 +4,7 @@ class Grain {
         this.el = null;
         this._initialized = false;
 
-        // Кэш DOM-элементов слайдера (чтобы не искать getElementById на каждый apply)
+        
         this._indicator = null;
         this._slider = null;
         this._valEl = null;
@@ -23,6 +23,18 @@ class Grain {
         this._valEl     = document.getElementById('grainOpacityValue');
 
         this.apply();
+        // Обработчики ползунка интенсивности шума
+        if (this._slider) {
+            this._slider.addEventListener('input', (e) => {
+                const v = parseInt(e.target.value, 10) || 0;
+                this.app.data.grainOpacity = v;
+                this.apply();
+            });
+            this._slider.addEventListener('change', () => {
+                this.app.storage.save();
+            });
+        }
+
     }
 
     _isEnabled() {
@@ -68,7 +80,7 @@ class Grain {
 
         const opacity = this._getOpacity();
         if (this._slider) {
-            // не трогаем value, если пользователь как раз тянет слайдер
+            
             if (document.activeElement !== this._slider) {
                 this._slider.value = opacity;
             }
